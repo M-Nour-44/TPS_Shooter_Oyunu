@@ -1,0 +1,41 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{4493728E-78E0-FAC0-AAA4-7C3C9026A992}|Unity.VisualStudio.Editor.csproj|c:\\users\\sabre\\onedrive\\desktop\\unity\\tps shooter oyunu\\library\\packagecache\\com.unity.ide.visualstudio@2.0.22\\editor\\visualstudiointegration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4493728E-78E0-FAC0-AAA4-7C3C9026A992}|Unity.VisualStudio.Editor.csproj|solutionrelative:library\\packagecache\\com.unity.ide.visualstudio@2.0.22\\editor\\visualstudiointegration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "VisualStudioIntegration.cs",
+              "DocumentMoniker": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Library\\PackageCache\\com.unity.ide.visualstudio@2.0.22\\Editor\\VisualStudioIntegration.cs",
+              "RelativeDocumentMoniker": "Library\\PackageCache\\com.unity.ide.visualstudio@2.0.22\\Editor\\VisualStudioIntegration.cs",
+              "ToolTip": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Library\\PackageCache\\com.unity.ide.visualstudio@2.0.22\\Editor\\VisualStudioIntegration.cs",
+              "RelativeToolTip": "Library\\PackageCache\\com.unity.ide.visualstudio@2.0.22\\Editor\\VisualStudioIntegration.cs",
+              "ViewState": "AgIAAEYAAAAAAAAAAAAMwDYAAADIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-10T22:48:09.183Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
