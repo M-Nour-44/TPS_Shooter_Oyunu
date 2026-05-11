@@ -58292,9 +58292,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dbd62af2a25df34c9a8e8a7bcb2c370, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  velocity: 5
-  sprintAdittion: 3.5
-  jumpForce: 18
+  velocity: 3
+  sprintAdittion: 1.5
+  jumpForce: 14
   jumpTime: 0.85
   gravity: 9.8
 --- !u!1 &140185544094822909
