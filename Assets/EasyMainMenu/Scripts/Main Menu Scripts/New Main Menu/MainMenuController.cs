@@ -181,7 +181,12 @@ namespace EMM
 
         public void QuitGame()
         {
-            Application.Quit();
+            PlayClickSound();
+            #if UNITY_EDITOR
+                 UnityEditor.EditorApplication.isPlaying = false;
+            #else
+                Application.Quit();
+                #endif
         }
 
         void PlayClickSound()

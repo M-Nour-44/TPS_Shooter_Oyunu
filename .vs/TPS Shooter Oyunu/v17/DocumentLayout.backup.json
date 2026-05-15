@@ -3,40 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|c:\\users\\sabre\\onedrive\\desktop\\unity\\tps shooter oyunu\\assets\\scripts\\pausecamerainput.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\pausecamerainput.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|c:\\users\\sabre\\onedrive\\desktop\\unity\\tps shooter oyunu\\assets\\easymainmenu\\scripts\\main menu scripts\\new main menu\\mainmenucontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|solutionrelative:assets\\easymainmenu\\scripts\\main menu scripts\\new main menu\\mainmenucontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|c:\\users\\sabre\\onedrive\\desktop\\unity\\tps shooter oyunu\\assets\\scripts\\playerscript.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\playerscript.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|c:\\users\\sabre\\onedrive\\desktop\\unity\\tps shooter oyunu\\assets\\easymainmenu\\scripts\\ingame scripts\\pausemenu\\uicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|solutionrelative:assets\\easymainmenu\\scripts\\ingame scripts\\pausemenu\\uicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CC195F6C-3521-7583-5ACC-13EF19D7E4DB}|Cinemachine.csproj|C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\library\\packagecache\\com.unity.cinemachine@2.10.7\\runtime\\behaviours\\cinemachinebrain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CC195F6C-3521-7583-5ACC-13EF19D7E4DB}|Cinemachine.csproj|solutionrelative:library\\packagecache\\com.unity.cinemachine@2.10.7\\runtime\\behaviours\\cinemachinebrain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC195F6C-3521-7583-5ACC-13EF19D7E4DB}|Cinemachine.csproj|C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\library\\packagecache\\com.unity.cinemachine@2.10.7\\runtime\\behaviours\\cinemachinevirtualcamera.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CC195F6C-3521-7583-5ACC-13EF19D7E4DB}|Cinemachine.csproj|solutionrelative:library\\packagecache\\com.unity.cinemachine@2.10.7\\runtime\\behaviours\\cinemachinevirtualcamera.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC195F6C-3521-7583-5ACC-13EF19D7E4DB}|Cinemachine.csproj|C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\library\\packagecache\\com.unity.cinemachine@2.10.7\\runtime\\behaviours\\cinemachinecollider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CC195F6C-3521-7583-5ACC-13EF19D7E4DB}|Cinemachine.csproj|solutionrelative:library\\packagecache\\com.unity.cinemachine@2.10.7\\runtime\\behaviours\\cinemachinecollider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\assets\\scripts\\rifle.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\rifle.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\assets\\scripts\\switchcamera.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\switchcamera.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\assets\\scripts\\objects.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\objects.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4493728E-78E0-FAC0-AAA4-7C3C9026A992}|Unity.VisualStudio.Editor.csproj|C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\library\\packagecache\\com.unity.ide.visualstudio@2.0.22\\editor\\visualstudiointegration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4493728E-78E0-FAC0-AAA4-7C3C9026A992}|Unity.VisualStudio.Editor.csproj|solutionrelative:library\\packagecache\\com.unity.ide.visualstudio@2.0.22\\editor\\visualstudiointegration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\assets\\easymainmenu\\scripts\\ingame scripts\\pausemenu\\pausemenuoptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|solutionrelative:assets\\easymainmenu\\scripts\\ingame scripts\\pausemenu\\pausemenuoptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -55,112 +31,40 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "PauseCameraInput.cs",
-              "DocumentMoniker": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\Scripts\\PauseCameraInput.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\PauseCameraInput.cs",
-              "ToolTip": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\Scripts\\PauseCameraInput.cs",
-              "RelativeToolTip": "Assets\\Scripts\\PauseCameraInput.cs",
-              "ViewState": "AgIAACgAAAAAAAAAAAAwwEkAAAABAAAAAAAAAA==",
+              "Title": "MainMenuController.cs",
+              "DocumentMoniker": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\EasyMainMenu\\Scripts\\Main Menu Scripts\\New Main Menu\\MainMenuController.cs",
+              "RelativeDocumentMoniker": "Assets\\EasyMainMenu\\Scripts\\Main Menu Scripts\\New Main Menu\\MainMenuController.cs",
+              "ToolTip": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\EasyMainMenu\\Scripts\\Main Menu Scripts\\New Main Menu\\MainMenuController.cs",
+              "RelativeToolTip": "Assets\\EasyMainMenu\\Scripts\\Main Menu Scripts\\New Main Menu\\MainMenuController.cs",
+              "ViewState": "AgIAAKYAAAAAAAAAAAAAALwAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-14T23:03:11.468Z",
+              "WhenOpened": "2026-05-15T16:52:48.212Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "UIController.cs",
+              "DocumentMoniker": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\EasyMainMenu\\Scripts\\inGame Scripts\\PauseMenu\\UIController.cs",
+              "RelativeDocumentMoniker": "Assets\\EasyMainMenu\\Scripts\\inGame Scripts\\PauseMenu\\UIController.cs",
+              "ToolTip": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\EasyMainMenu\\Scripts\\inGame Scripts\\PauseMenu\\UIController.cs",
+              "RelativeToolTip": "Assets\\EasyMainMenu\\Scripts\\inGame Scripts\\PauseMenu\\UIController.cs",
+              "ViewState": "AgIAAMsAAAAAAAAAAAAIwNoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-15T16:35:01.953Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "CinemachineBrain.cs",
-              "DocumentMoniker": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Library\\PackageCache\\com.unity.cinemachine@2.10.7\\Runtime\\Behaviours\\CinemachineBrain.cs",
-              "RelativeDocumentMoniker": "Library\\PackageCache\\com.unity.cinemachine@2.10.7\\Runtime\\Behaviours\\CinemachineBrain.cs",
-              "ToolTip": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Library\\PackageCache\\com.unity.cinemachine@2.10.7\\Runtime\\Behaviours\\CinemachineBrain.cs",
-              "RelativeToolTip": "Library\\PackageCache\\com.unity.cinemachine@2.10.7\\Runtime\\Behaviours\\CinemachineBrain.cs",
-              "ViewState": "AgIAAOUDAAAAAAAAAAAwwAYEAAAAAAAAAAAAAA==",
+              "Title": "PauseMenuOptions.cs",
+              "DocumentMoniker": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\EasyMainMenu\\Scripts\\inGame Scripts\\PauseMenu\\PauseMenuOptions.cs",
+              "RelativeDocumentMoniker": "Assets\\EasyMainMenu\\Scripts\\inGame Scripts\\PauseMenu\\PauseMenuOptions.cs",
+              "ToolTip": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\EasyMainMenu\\Scripts\\inGame Scripts\\PauseMenu\\PauseMenuOptions.cs",
+              "RelativeToolTip": "Assets\\EasyMainMenu\\Scripts\\inGame Scripts\\PauseMenu\\PauseMenuOptions.cs",
+              "ViewState": "AgIAACMAAAAAAAAAAAAwwD0AAAA+AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-14T23:00:24.085Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "CinemachineVirtualCamera.cs",
-              "DocumentMoniker": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Library\\PackageCache\\com.unity.cinemachine@2.10.7\\Runtime\\Behaviours\\CinemachineVirtualCamera.cs",
-              "RelativeDocumentMoniker": "Library\\PackageCache\\com.unity.cinemachine@2.10.7\\Runtime\\Behaviours\\CinemachineVirtualCamera.cs",
-              "ToolTip": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Library\\PackageCache\\com.unity.cinemachine@2.10.7\\Runtime\\Behaviours\\CinemachineVirtualCamera.cs",
-              "RelativeToolTip": "Library\\PackageCache\\com.unity.cinemachine@2.10.7\\Runtime\\Behaviours\\CinemachineVirtualCamera.cs",
-              "ViewState": "AgIAAGUCAAAAAAAAAAAgwIQCAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-14T22:59:19.454Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "CinemachineCollider.cs",
-              "DocumentMoniker": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Library\\PackageCache\\com.unity.cinemachine@2.10.7\\Runtime\\Behaviours\\CinemachineCollider.cs",
-              "RelativeDocumentMoniker": "Library\\PackageCache\\com.unity.cinemachine@2.10.7\\Runtime\\Behaviours\\CinemachineCollider.cs",
-              "ToolTip": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Library\\PackageCache\\com.unity.cinemachine@2.10.7\\Runtime\\Behaviours\\CinemachineCollider.cs",
-              "RelativeToolTip": "Library\\PackageCache\\com.unity.cinemachine@2.10.7\\Runtime\\Behaviours\\CinemachineCollider.cs",
-              "ViewState": "AgIAAB0DAAAAAAAAAAAowD0DAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-14T22:58:38.561Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Objects.cs",
-              "DocumentMoniker": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\Scripts\\Objects.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Objects.cs",
-              "ToolTip": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\Scripts\\Objects.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Objects.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAVAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-14T20:32:23.521Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "SwitchCamera.cs",
-              "DocumentMoniker": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\Scripts\\SwitchCamera.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\SwitchCamera.cs",
-              "ToolTip": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\Scripts\\SwitchCamera.cs",
-              "RelativeToolTip": "Assets\\Scripts\\SwitchCamera.cs",
-              "ViewState": "AgIAABwAAAAAAAAAAAAgwDAAAAAjAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-14T20:05:04.812Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Rifle.cs",
-              "DocumentMoniker": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\Scripts\\Rifle.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Rifle.cs",
-              "ToolTip": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\Scripts\\Rifle.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Rifle.cs",
-              "ViewState": "AgIAACQAAAAAAAAAAAAowD0AAAAuAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-14T19:51:00.427Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "playerScript.cs",
-              "DocumentMoniker": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\Scripts\\playerScript.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\playerScript.cs",
-              "ToolTip": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\Scripts\\playerScript.cs",
-              "RelativeToolTip": "Assets\\Scripts\\playerScript.cs",
-              "ViewState": "AgIAAGcAAAAAAAAAAAAowIcAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-14T18:30:02.777Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "VisualStudioIntegration.cs",
-              "DocumentMoniker": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Library\\PackageCache\\com.unity.ide.visualstudio@2.0.22\\Editor\\VisualStudioIntegration.cs",
-              "RelativeDocumentMoniker": "Library\\PackageCache\\com.unity.ide.visualstudio@2.0.22\\Editor\\VisualStudioIntegration.cs",
-              "ToolTip": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Library\\PackageCache\\com.unity.ide.visualstudio@2.0.22\\Editor\\VisualStudioIntegration.cs",
-              "RelativeToolTip": "Library\\PackageCache\\com.unity.ide.visualstudio@2.0.22\\Editor\\VisualStudioIntegration.cs",
-              "ViewState": "AgIAAEYAAAAAAAAAAAAMwDYAAADIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-10T22:48:09.183Z"
+              "WhenOpened": "2026-05-15T16:34:21.329Z"
             }
           ]
         }
