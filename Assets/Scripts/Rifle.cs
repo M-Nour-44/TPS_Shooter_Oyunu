@@ -24,99 +24,120 @@ public class Rifle : MonoBehaviour
     public ParticleSystem muzzleSpark;
     public GameObject impactEffect;
 
-    //  [Header("Sounds and UI")]
-
     private void Awake()
     {
         presentAmmunition = maximumAmmunition;
     }
-    // Update is called once per frame
+
     void Update()
     {
         if (setReloading)
             return;
-        if(presentAmmunition <= 0)
+
+        if (presentAmmunition <= 0)
         {
             StartCoroutine(Reload());
             return;
         }
-        if (Input.GetButton("Fire1") && Time.time >= nextTimeToShoot)
+
+        bool isShooting = Input.GetButton("Fire1");
+
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
+
+        bool isMoving = Mathf.Abs(horizontal) > 0.1f || Mathf.Abs(vertical) > 0.1f;
+
+        if (isShooting && Time.time >= nextTimeToShoot)
         {
             animator.SetBool("Fire", true);
             animator.SetBool("Idle", false);
+            animator.SetBool("FireWalk", isMoving);
+            animator.SetBool("Reloading", false);
+
             nextTimeToShoot = Time.time + 1f / fireCharge;
-            shoot();
+
+            Shoot();
         }
-        else if(Input.GetButton("Fire1") && Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+        else if (isShooting && isMoving)
         {
             animator.SetBool("Idle", false);
-            animator.SetBool("IdleAim", true);
+            animator.SetBool("Fire", false);
             animator.SetBool("FireWalk", true);
-            animator.SetBool("Walk", true);
             animator.SetBool("Reloading", false);
         }
-        else if (Input.GetButton("Fire2") && Input.GetButton("Fire1"))
+        else if (isShooting)
         {
             animator.SetBool("Idle", false);
-            animator.SetBool("IdleAim", true);
-            animator.SetBool("FireWalk", true);
-            animator.SetBool("Walk", true);
+            animator.SetBool("FireWalk", false);
             animator.SetBool("Reloading", false);
         }
         else
         {
             animator.SetBool("Fire", false);
-            animator.SetBool("Idle", true);
             animator.SetBool("FireWalk", false);
             animator.SetBool("Reloading", false);
         }
     }
-    void shoot()
+
+    void Shoot()
     {
-        //Check for mag
-        if(mag == 0)
+        if (mag == 0)
         {
-            //Show ammo out text
             return;
         }
 
         presentAmmunition--;
 
-        if(presentAmmunition == 0)
+        if (presentAmmunition == 0)
         {
             mag--;
         }
 
         muzzleSpark.Play();
+
         RaycastHit hitInfo;
 
-        if(Physics.Raycast(camera.transform.position,camera.transform.forward, out hitInfo, shootingRange))
+        if (Physics.Raycast(camera.transform.position, camera.transform.forward, out hitInfo, shootingRange))
         {
             Debug.Log(hitInfo.transform.name);
 
             Objects objects = hitInfo.transform.GetComponent<Objects>();
 
-            if(objects != null )
+            if (objects != null)
             {
                 objects.objectHitDamage(giveDamageOf);
-                GameObject impactGo = Instantiate(impactEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
+
+                GameObject impactGo = Instantiate(
+                    impactEffect,
+                    hitInfo.point,
+                    Quaternion.LookRotation(hitInfo.normal)
+                );
+
                 Destroy(impactGo, 1f);
             }
-            
         }
     }
+
     IEnumerator Reload()
     {
         player.playerSpeed = 0f;
         player.playerSprint = 0f;
+
         setReloading = true;
+
         Debug.Log("Reloading....");
+
         animator.SetBool("Reloading", true);
+
         yield return new WaitForSeconds(reloadingTime);
+
         animator.SetBool("Reloading", false);
+
         presentAmmunition = maximumAmmunition;
+
         player.playerSpeed = 1.9f;
         player.playerSprint = 3f;
+
         setReloading = false;
     }
 }

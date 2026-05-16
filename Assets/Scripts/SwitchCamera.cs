@@ -13,24 +13,29 @@ public class SwitchCamera : MonoBehaviour
     [Header("Camera Animator")]
     public Animator animator;
 
-    // Update is called once per frame
     void Update()
     {
+        bool isAiming = Input.GetButton("Fire2");
 
-        if (Input.GetButton("Fire2") && Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
+
+        bool isMoving = Mathf.Abs(horizontal) > 0.1f || Mathf.Abs(vertical) > 0.1f;
+
+        if (isAiming && isMoving)
         {
-            animator.SetBool("Idle",false);
+            animator.SetBool("Idle", false);
             animator.SetBool("IdleAim", true);
             animator.SetBool("AimWalk", true);
             animator.SetBool("Walk", true);
 
-
             ThirdPersonCam.SetActive(false);
             ThirdPersonCanvas.SetActive(false);
+
             AimCam.SetActive(true);
             AimCanvas.SetActive(true);
         }
-        else if(Input.GetButton("Fire2"))
+        else if (isAiming)
         {
             animator.SetBool("Idle", false);
             animator.SetBool("IdleAim", true);
@@ -39,18 +44,18 @@ public class SwitchCamera : MonoBehaviour
 
             ThirdPersonCam.SetActive(false);
             ThirdPersonCanvas.SetActive(false);
+
             AimCam.SetActive(true);
             AimCanvas.SetActive(true);
         }
         else
         {
-
-            animator.SetBool("Idle", true);
             animator.SetBool("IdleAim", false);
             animator.SetBool("AimWalk", false);
 
             ThirdPersonCam.SetActive(true);
             ThirdPersonCanvas.SetActive(true);
+
             AimCam.SetActive(false);
             AimCanvas.SetActive(false);
         }

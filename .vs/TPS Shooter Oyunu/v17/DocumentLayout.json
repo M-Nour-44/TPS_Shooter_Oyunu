@@ -3,16 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\assets\\easymainmenu\\scripts\\ingame scripts\\pausemenu\\uicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|solutionrelative:assets\\easymainmenu\\scripts\\ingame scripts\\pausemenu\\uicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|c:\\users\\sabre\\onedrive\\desktop\\unity\\tps shooter oyunu\\assets\\scripts\\playerscript.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\playerscript.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|c:\\users\\sabre\\onedrive\\desktop\\unity\\tps shooter oyunu\\assets\\easymainmenu\\scripts\\main menu scripts\\new main menu\\mainmenucontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|solutionrelative:assets\\easymainmenu\\scripts\\main menu scripts\\new main menu\\mainmenucontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|c:\\users\\sabre\\onedrive\\desktop\\unity\\tps shooter oyunu\\assets\\scripts\\rifle.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\rifle.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\assets\\easymainmenu\\scripts\\ingame scripts\\pausemenu\\pausemenuoptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|solutionrelative:assets\\easymainmenu\\scripts\\ingame scripts\\pausemenu\\pausemenuoptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|c:\\users\\sabre\\onedrive\\desktop\\unity\\tps shooter oyunu\\assets\\scripts\\switchcamera.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\switchcamera.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,7 +22,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -30,41 +30,42 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "MainMenuController.cs",
-              "DocumentMoniker": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\EasyMainMenu\\Scripts\\Main Menu Scripts\\New Main Menu\\MainMenuController.cs",
-              "RelativeDocumentMoniker": "Assets\\EasyMainMenu\\Scripts\\Main Menu Scripts\\New Main Menu\\MainMenuController.cs",
-              "ToolTip": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\EasyMainMenu\\Scripts\\Main Menu Scripts\\New Main Menu\\MainMenuController.cs",
-              "RelativeToolTip": "Assets\\EasyMainMenu\\Scripts\\Main Menu Scripts\\New Main Menu\\MainMenuController.cs",
-              "ViewState": "AgIAAKMAAAAAAAAAAIBJwLwAAAAWAAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "SwitchCamera.cs",
+              "DocumentMoniker": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\Scripts\\SwitchCamera.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\SwitchCamera.cs",
+              "ToolTip": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\Scripts\\SwitchCamera.cs",
+              "RelativeToolTip": "Assets\\Scripts\\SwitchCamera.cs",
+              "ViewState": "AgIAAB0AAAAAAAAAAAAwwD4AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-15T16:52:48.212Z",
+              "WhenOpened": "2026-05-16T16:00:58.898Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Rifle.cs",
+              "DocumentMoniker": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\Scripts\\Rifle.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Rifle.cs",
+              "ToolTip": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\Scripts\\Rifle.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Rifle.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAQwI4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-16T16:00:45.386Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "UIController.cs",
-              "DocumentMoniker": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\EasyMainMenu\\Scripts\\inGame Scripts\\PauseMenu\\UIController.cs",
-              "RelativeDocumentMoniker": "Assets\\EasyMainMenu\\Scripts\\inGame Scripts\\PauseMenu\\UIController.cs",
-              "ToolTip": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\EasyMainMenu\\Scripts\\inGame Scripts\\PauseMenu\\UIController.cs",
-              "RelativeToolTip": "Assets\\EasyMainMenu\\Scripts\\inGame Scripts\\PauseMenu\\UIController.cs",
-              "ViewState": "AgIAANsAAAAAAAAAAAAwwOYAAAAJAAAAAAAAAA==",
+              "Title": "playerScript.cs",
+              "DocumentMoniker": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\Scripts\\playerScript.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\playerScript.cs",
+              "ToolTip": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\Scripts\\playerScript.cs",
+              "RelativeToolTip": "Assets\\Scripts\\playerScript.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-15T16:35:01.953Z",
+              "WhenOpened": "2026-05-16T16:00:37.926Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "PauseMenuOptions.cs",
-              "DocumentMoniker": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\EasyMainMenu\\Scripts\\inGame Scripts\\PauseMenu\\PauseMenuOptions.cs",
-              "RelativeDocumentMoniker": "Assets\\EasyMainMenu\\Scripts\\inGame Scripts\\PauseMenu\\PauseMenuOptions.cs",
-              "ToolTip": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\EasyMainMenu\\Scripts\\inGame Scripts\\PauseMenu\\PauseMenuOptions.cs",
-              "RelativeToolTip": "Assets\\EasyMainMenu\\Scripts\\inGame Scripts\\PauseMenu\\PauseMenuOptions.cs",
-              "ViewState": "AgIAACMAAAAAAAAAAAAwwD0AAAA+AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-15T16:34:21.329Z"
             }
           ]
         }

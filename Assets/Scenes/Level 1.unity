@@ -69851,8 +69851,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef6d60c45d10ba24aa3047c54dc6e613, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSpeed: 1.9
-  playerSprint: 3
+  playerSpeed: 3
+  playerSprint: 6
   PlayerCamera: {fileID: 815234138}
   cC: {fileID: 1523881061}
   gravity: -9.81
@@ -69864,6 +69864,7 @@ MonoBehaviour:
   surfaceMask:
     serializedVersion: 2
     m_Bits: 128
+  aimTurnSpeed: 15
 --- !u!114 &1523881063
 MonoBehaviour:
   m_ObjectHideFlags: 0
