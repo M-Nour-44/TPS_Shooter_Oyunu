@@ -1,3 +1,4 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,6 +24,11 @@ public class Rifle : MonoBehaviour
     [Header("Rifle Effects")]
     public ParticleSystem muzzleSpark;
     public GameObject impactEffect;
+
+    [Header("Sounds & UI")]
+    public AudioClip shootingSound;
+    public AudioClip reloadingSound;
+    public AudioSource audioSource;
 
     private void Awake()
     {
@@ -94,6 +100,7 @@ public class Rifle : MonoBehaviour
         }
 
         muzzleSpark.Play();
+        audioSource.PlayOneShot(shootingSound);
 
         RaycastHit hitInfo;
 
@@ -130,13 +137,13 @@ public class Rifle : MonoBehaviour
         animator.SetBool("Reloading", true);
 
         yield return new WaitForSeconds(reloadingTime);
-
+        audioSource.PlayOneShot(reloadingSound);
         animator.SetBool("Reloading", false);
 
         presentAmmunition = maximumAmmunition;
 
-        player.playerSpeed = 1.9f;
-        player.playerSprint = 3f;
+        player.playerSpeed = 3f;
+        player.playerSprint = 6f;
 
         setReloading = false;
     }

@@ -20,12 +20,14 @@ public class PlayerScript : MonoBehaviour
     public float jumpRange = 1f;
     Vector3 velocity;
 
+
+
     public float turnCalmTime = 0.1f;
     float turnCalmVelocity;
 
     public Transform surfaceCheck;
     bool onSurface;
-    public float surfaceDistance = 0.4f;
+    public float surfaceDistance = 0.6f;
     public LayerMask surfaceMask;
 
     [Header("Aim / Shooting Rotation")]

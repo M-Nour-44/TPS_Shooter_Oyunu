@@ -10,38 +10,14 @@ public class SwitchCamera : MonoBehaviour
     public GameObject ThirdPersonCam;
     public GameObject ThirdPersonCanvas;
 
-    [Header("Camera Animator")]
-    public Animator animator;
-
     void Update()
     {
+        // قراءة زر التصويب فقط
         bool isAiming = Input.GetButton("Fire2");
 
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
-
-        bool isMoving = Mathf.Abs(horizontal) > 0.1f || Mathf.Abs(vertical) > 0.1f;
-
-        if (isAiming && isMoving)
+        if (isAiming)
         {
-            animator.SetBool("Idle", false);
-            animator.SetBool("IdleAim", true);
-            animator.SetBool("AimWalk", true);
-            animator.SetBool("Walk", true);
-
-            ThirdPersonCam.SetActive(false);
-            ThirdPersonCanvas.SetActive(false);
-
-            AimCam.SetActive(true);
-            AimCanvas.SetActive(true);
-        }
-        else if (isAiming)
-        {
-            animator.SetBool("Idle", false);
-            animator.SetBool("IdleAim", true);
-            animator.SetBool("AimWalk", false);
-            animator.SetBool("Walk", false);
-
+            // تفعيل منظور التصويب
             ThirdPersonCam.SetActive(false);
             ThirdPersonCanvas.SetActive(false);
 
@@ -50,9 +26,7 @@ public class SwitchCamera : MonoBehaviour
         }
         else
         {
-            animator.SetBool("IdleAim", false);
-            animator.SetBool("AimWalk", false);
-
+            // العودة للمنظور العادي
             ThirdPersonCam.SetActive(true);
             ThirdPersonCanvas.SetActive(true);
 
