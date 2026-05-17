@@ -3,15 +3,27 @@
   "WorkspaceRootPath": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|c:\\users\\sabre\\onedrive\\desktop\\unity\\tps shooter oyunu\\assets\\scripts\\playerscript.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\playerscript.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|c:\\users\\sabre\\onedrive\\desktop\\unity\\tps shooter oyunu\\assets\\easystart third person controller\\scripts\\thirdpersoncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|solutionrelative:assets\\easystart third person controller\\scripts\\thirdpersoncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|c:\\users\\sabre\\onedrive\\desktop\\unity\\tps shooter oyunu\\assets\\scripts\\rifle.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|c:\\users\\sabre\\onedrive\\desktop\\unity\\tps shooter oyunu\\assets\\scripts\\playerinteraction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\playerinteraction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\assets\\scripts\\doorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\doorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\assets\\scripts\\rifle.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\rifle.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|c:\\users\\sabre\\onedrive\\desktop\\unity\\tps shooter oyunu\\assets\\scripts\\switchcamera.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\assets\\scripts\\playerscript.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\playerscript.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\assets\\scripts\\switchcamera.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{CFC58B88-49D0-DF93-5CA0-D2F5E0EA1610}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\switchcamera.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -22,7 +34,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -30,7 +42,45 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ThirdPersonController.cs",
+              "DocumentMoniker": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\EasyStart Third Person Controller\\Scripts\\ThirdPersonController.cs",
+              "RelativeDocumentMoniker": "Assets\\EasyStart Third Person Controller\\Scripts\\ThirdPersonController.cs",
+              "ToolTip": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\EasyStart Third Person Controller\\Scripts\\ThirdPersonController.cs",
+              "RelativeToolTip": "Assets\\EasyStart Third Person Controller\\Scripts\\ThirdPersonController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-17T14:32:48.364Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "PlayerInteraction.cs",
+              "DocumentMoniker": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\Scripts\\PlayerInteraction.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\PlayerInteraction.cs",
+              "ToolTip": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\Scripts\\PlayerInteraction.cs",
+              "RelativeToolTip": "Assets\\Scripts\\PlayerInteraction.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-17T13:29:48.143Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "DoorController.cs",
+              "DocumentMoniker": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\Scripts\\DoorController.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\DoorController.cs",
+              "ToolTip": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\Scripts\\DoorController.cs",
+              "RelativeToolTip": "Assets\\Scripts\\DoorController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAgwA0AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-17T13:28:15.23Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "SwitchCamera.cs",
               "DocumentMoniker": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\Scripts\\SwitchCamera.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\SwitchCamera.cs",
@@ -38,34 +88,31 @@
               "RelativeToolTip": "Assets\\Scripts\\SwitchCamera.cs",
               "ViewState": "AgIAAB0AAAAAAAAAAAAwwD4AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-16T16:00:58.898Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-16T16:00:58.898Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "Rifle.cs",
               "DocumentMoniker": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\Scripts\\Rifle.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Rifle.cs",
               "ToolTip": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\Scripts\\Rifle.cs",
               "RelativeToolTip": "Assets\\Scripts\\Rifle.cs",
-              "ViewState": "AgIAAAUAAAAAAAAAAAAQwI4AAAABAAAAAAAAAA==",
+              "ViewState": "AgIAABgAAAAAAAAAAAAqwC8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-16T16:00:45.386Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-16T16:00:45.386Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 4,
               "Title": "playerScript.cs",
               "DocumentMoniker": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\Scripts\\playerScript.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\playerScript.cs",
               "ToolTip": "C:\\Users\\sabre\\OneDrive\\Desktop\\Unity\\TPS Shooter Oyunu\\Assets\\Scripts\\playerScript.cs",
               "RelativeToolTip": "Assets\\Scripts\\playerScript.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAhAAAAAAAAAA==",
+              "ViewState": "AgIAACMAAAAAAAAAAAAQwAgAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-16T16:00:37.926Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-16T16:00:37.926Z"
             }
           ]
         }

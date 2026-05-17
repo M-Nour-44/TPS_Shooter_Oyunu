@@ -40,6 +40,12 @@ public class Rifle : MonoBehaviour
         if (setReloading)
             return;
 
+        if (Input.GetKeyDown(KeyCode.R) && presentAmmunition < maximumAmmunition && mag > 0)
+        {
+            StartCoroutine(Reload());
+            return;
+        }
+
         if (presentAmmunition <= 0)
         {
             StartCoroutine(Reload());
@@ -136,8 +142,10 @@ public class Rifle : MonoBehaviour
 
         animator.SetBool("Reloading", true);
 
-        yield return new WaitForSeconds(reloadingTime);
         audioSource.PlayOneShot(reloadingSound);
+
+        yield return new WaitForSeconds(reloadingTime);
+
         animator.SetBool("Reloading", false);
 
         presentAmmunition = maximumAmmunition;
