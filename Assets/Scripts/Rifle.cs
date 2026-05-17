@@ -29,6 +29,8 @@ public class Rifle : MonoBehaviour
     public AudioClip shootingSound;
     public AudioClip reloadingSound;
     public AudioSource audioSource;
+    [SerializeField] private GameObject AmmoOutUI;
+    [SerializeField] private int timeToShowUI = 1;
 
     private void Awake()
     {
@@ -95,6 +97,7 @@ public class Rifle : MonoBehaviour
     {
         if (mag == 0)
         {
+            StartCoroutine(ShowAmmoOut());
             return;
         }
 
@@ -104,6 +107,9 @@ public class Rifle : MonoBehaviour
         {
             mag--;
         }
+
+        AmmoCount.occurrence.UpdateAmmoText(presentAmmunition);
+        AmmoCount.occurrence.UpdateMagText(mag);
 
         muzzleSpark.Play();
         audioSource.PlayOneShot(shootingSound);
@@ -154,5 +160,12 @@ public class Rifle : MonoBehaviour
         player.playerSprint = 6f;
 
         setReloading = false;
+    }
+
+    IEnumerator ShowAmmoOut()
+    {
+        AmmoOutUI.SetActive(true);
+        yield return new WaitForSeconds(timeToShowUI);
+        AmmoOutUI.SetActive(false);
     }
 }
