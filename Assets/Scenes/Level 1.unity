@@ -3909,8 +3909,8 @@ LightingSettings:
   m_PrefabAsset: {fileID: 0}
   m_Name: Settings.lighting
   serializedVersion: 6
-  m_GIWorkflowMode: 0
-  m_EnableBakedLightmaps: 1
+  m_GIWorkflowMode: 1
+  m_EnableBakedLightmaps: 0
   m_EnableRealtimeLightmaps: 0
   m_RealtimeEnvironmentLighting: 1
   m_BounceScale: 1
@@ -8480,7 +8480,7 @@ Transform:
   m_GameObject: {fileID: 815234135}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0020943934, y: -0, z: -0, w: 0.9999978}
-  m_LocalPosition: {x: -12.250614, y: 1.6923658, z: -47.643883}
+  m_LocalPosition: {x: -12.383024, y: 1.6923658, z: -47.643883}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -84881,7 +84881,7 @@ Transform:
   m_GameObject: {fileID: 5157071428694018547}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0020943934, y: -0, z: -0, w: 0.9999978}
-  m_LocalPosition: {x: -12.250614, y: 1.6923658, z: -47.643883}
+  m_LocalPosition: {x: -12.383024, y: 1.6923658, z: -47.643883}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
