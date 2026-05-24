@@ -24,6 +24,7 @@ public class Rifle : MonoBehaviour
     [Header("Rifle Effects")]
     public ParticleSystem muzzleSpark;
     public GameObject impactEffect;
+    public GameObject goreEffect;
 
     [Header("Sounds & UI")]
     public AudioClip shootingSound;
@@ -121,6 +122,7 @@ public class Rifle : MonoBehaviour
             Debug.Log(hitInfo.transform.name);
 
             Objects objects = hitInfo.transform.GetComponent<Objects>();
+            Enemy enemy = hitInfo.transform.GetComponent<Enemy>();
 
             if (objects != null)
             {
@@ -133,6 +135,17 @@ public class Rifle : MonoBehaviour
                 );
 
                 Destroy(impactGo, 1f);
+            }
+            else if(enemy != null)
+            {
+                enemy.enemyHitDamage(giveDamageOf);
+
+                GameObject impactGo = Instantiate(
+                    goreEffect,
+                    hitInfo.point,
+                    Quaternion.LookRotation(hitInfo.normal)
+                );  
+                Destroy(impactGo, 2f); 
             }
         }
     }

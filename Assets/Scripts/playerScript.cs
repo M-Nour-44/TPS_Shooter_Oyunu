@@ -8,6 +8,10 @@ public class PlayerScript : MonoBehaviour
     public float playerSpeed = 3f;
     public float playerSprint = 6f;
 
+    [Header("Player Health Things")]
+    private float playerHealth = 120f;
+    private float presentHealth;
+
     [Header("Player Script Cameras")]
     public Transform PlayerCamera;
 
@@ -36,6 +40,7 @@ public class PlayerScript : MonoBehaviour
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        presentHealth = playerHealth;
     }
 
     void Update()
@@ -172,5 +177,21 @@ public class PlayerScript : MonoBehaviour
         {
             animator.ResetTrigger("Jump");
         }
+    }
+
+    public void playerHitDamage(float takeDamage)
+    {
+        presentHealth -= takeDamage;
+
+        if (presentHealth <= 0)
+        {
+            PlayerDie();
+        }
+    }
+
+    private void PlayerDie()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Object.Destroy(gameObject, 1.0f);
     }
 }
