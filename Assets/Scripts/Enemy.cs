@@ -5,11 +5,14 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
+    
 
     [Header("Enemy Health and Damage")]
     private float enemyHealth = 120f;
     private float presentHealth;
     public float giveDamage = 5f;
+    public HealthBar healthBar;
+    
 
 
     [Header("Enemy Things")]
@@ -33,6 +36,7 @@ public class Enemy : MonoBehaviour
     [Header("Enemy Animation and Spark effect")]
     public Animator anim;
     public ParticleSystem muzzleSpark;
+    public EnemyWeapon enemyWeapon;
 
     [Header("Enemy Mood/Situation")]
     public float visionRadius = 20f;
@@ -43,6 +47,7 @@ public class Enemy : MonoBehaviour
 
     
 
+
     private void Awake()
     {
        
@@ -50,6 +55,7 @@ public class Enemy : MonoBehaviour
         enemyAgent = GetComponent<NavMeshAgent>();
         enemyAgent.speed = enemySpeed;
         presentHealth = enemyHealth;
+        healthBar.GiveFullHealth(enemyHealth);
 
         // Eğer inspector'dan verilmemişse otomatik bul
         if (playerBody == null)
@@ -132,6 +138,8 @@ public class Enemy : MonoBehaviour
         {
 
             muzzleSpark.Play();
+            enemyWeapon.PlayShootingSound();
+            
 
             RaycastHit hit;
             if(Physics.Raycast(ShootingRaycastArea.transform.position, ShootingRaycastArea.transform.forward, out hit, shootingRadius))
@@ -182,6 +190,7 @@ public class Enemy : MonoBehaviour
     public void enemyHitDamage(float takeDamage)
     {
         presentHealth -= takeDamage;
+        healthBar.SetHealth(presentHealth);
 
         if (presentHealth <= 0)
         {
@@ -194,13 +203,14 @@ public class Enemy : MonoBehaviour
     }
 
     private void enemyDie()
-    {
-        enemyAgent.enabled = false;
-        enemyAgent.SetDestination(transform.position);
-        shootingRadius = 0f;
-        visionRadius = 0f;
-        playerInVisionRadius = false;
-        playerInShootingRadius = false;
-        Object.Destroy(gameObject, 5.0f);
-    }
+{
+    enemyAgent.SetDestination(transform.position); 
+    enemyAgent.enabled = false; 
+    
+    shootingRadius = 0f;
+    visionRadius = 0f;
+    playerInVisionRadius = false;
+    playerInShootingRadius = false;
+    Object.Destroy(gameObject, 5.0f);
+}
 }

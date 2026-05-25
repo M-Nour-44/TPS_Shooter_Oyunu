@@ -11,6 +11,7 @@ public class PlayerScript : MonoBehaviour
     [Header("Player Health Things")]
     private float playerHealth = 120f;
     private float presentHealth;
+    public HealthBar healthBar;
 
     [Header("Player Script Cameras")]
     public Transform PlayerCamera;
@@ -20,9 +21,17 @@ public class PlayerScript : MonoBehaviour
     public float gravity = -9.81f;
     public Animator animator;
 
+    [Header("Player Sounds")]
+    public AudioSource playerAudioSource;
+    public AudioClip hitSound;  
+    public float hitSoundCooldown = 0.5f; 
+    private float nextHitSoundTime = 0f;
+
     [Header("Player Jumping and Velocity")]
     public float jumpRange = 1f;
     Vector3 velocity;
+
+    
 
 
 
@@ -41,6 +50,7 @@ public class PlayerScript : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         presentHealth = playerHealth;
+        healthBar.GiveFullHealth(playerHealth);
     }
 
     void Update()
@@ -182,7 +192,16 @@ public class PlayerScript : MonoBehaviour
     public void playerHitDamage(float takeDamage)
     {
         presentHealth -= takeDamage;
-
+        healthBar.SetHealth(presentHealth);
+        if (Time.time >= nextHitSoundTime)
+        {
+            if (playerAudioSource != null && hitSound != null)
+            {
+                playerAudioSource.PlayOneShot(hitSound);
+                
+                nextHitSoundTime = Time.time + hitSoundCooldown;
+            }
+        }
         if (presentHealth <= 0)
         {
             PlayerDie();
