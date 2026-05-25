@@ -22,6 +22,12 @@ public class PlayerScript : MonoBehaviour
     public float gravity = -9.81f;
     public Animator animator;
 
+    [Header("Death Animation")]
+    public string deathBoolName = "Die";
+    public string deathTriggerName = "";
+    public bool destroyPlayerAfterDeath = false;
+    public float destroyDelay = 6f;
+
     [Header("Player Sounds")]
     public AudioSource playerAudioSource;
     public AudioClip hitSound;
@@ -44,7 +50,6 @@ public class PlayerScript : MonoBehaviour
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
-
         presentHealth = playerHealth;
 
         if (healthBar != null)
@@ -67,7 +72,6 @@ public class PlayerScript : MonoBehaviour
             velocity.y = -2f;
         }
 
-        // Gravity
         velocity.y += gravity * Time.deltaTime;
 
         if (cC != null)
@@ -88,8 +92,6 @@ public class PlayerScript : MonoBehaviour
 
         bool isAiming = Input.GetButton("Fire2");
         bool isShooting = Input.GetButton("Fire1");
-
-        // اللاعب يلف مع الكاميرا وقت Aim أو Shooting
         bool shouldFaceCamera = isAiming || isShooting;
 
         bool isSprinting =
@@ -252,7 +254,6 @@ public class PlayerScript : MonoBehaviour
 
         if (presentHealth <= 0)
         {
-            animator.SetBool("Die",true);
             PlayerDie();
         }
     }
@@ -273,24 +274,84 @@ public class PlayerScript : MonoBehaviour
 
         if (animator != null)
         {
-            animator.SetBool("Idle", false);
-            animator.SetBool("Walk", false);
-            animator.SetBool("Running", false);
-            animator.SetBool("AimWalk", false);
-            animator.SetBool("IdleAim", false);
+            animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+
+            SetAnimatorBoolIfExists("Idle", false);
+            SetAnimatorBoolIfExists("Walk", false);
+            SetAnimatorBoolIfExists("Running", false);
+            SetAnimatorBoolIfExists("AimWalk", false);
+            SetAnimatorBoolIfExists("IdleAim", false);
+            ResetAnimatorTriggerIfExists("Jump");
+
+            if (!string.IsNullOrEmpty(deathBoolName))
+            {
+                SetAnimatorBoolIfExists(deathBoolName, true);
+            }
+
+            if (!string.IsNullOrEmpty(deathTriggerName))
+            {
+                SetAnimatorTriggerIfExists(deathTriggerName);
+            }
         }
 
         UIController uiController = FindObjectOfType<UIController>();
 
         if (uiController != null)
         {
-            uiController.openDeathMenu();
+            uiController.SendMessage("openDeathMenu", SendMessageOptions.DontRequireReceiver);
         }
         else
         {
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
             Time.timeScale = 0.0001f;
+        }
+
+        if (destroyPlayerAfterDeath)
+        {
+            Destroy(gameObject, destroyDelay);
+        }
+    }
+
+    private bool HasAnimatorParameter(string parameterName, AnimatorControllerParameterType type)
+    {
+        if (animator == null)
+        {
+            return false;
+        }
+
+        foreach (AnimatorControllerParameter parameter in animator.parameters)
+        {
+            if (parameter.name == parameterName && parameter.type == type)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void SetAnimatorBoolIfExists(string parameterName, bool value)
+    {
+        if (HasAnimatorParameter(parameterName, AnimatorControllerParameterType.Bool))
+        {
+            animator.SetBool(parameterName, value);
+        }
+    }
+
+    private void SetAnimatorTriggerIfExists(string parameterName)
+    {
+        if (HasAnimatorParameter(parameterName, AnimatorControllerParameterType.Trigger))
+        {
+            animator.SetTrigger(parameterName);
+        }
+    }
+
+    private void ResetAnimatorTriggerIfExists(string parameterName)
+    {
+        if (HasAnimatorParameter(parameterName, AnimatorControllerParameterType.Trigger))
+        {
+            animator.ResetTrigger(parameterName);
         }
     }
 }

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e9e94cb8cc27eb45810d511e750480b, type: 3}
   m_Name: Icon Data (Pointer)
   m_EditorClassIdentifier: 
-  Icon: {fileID: 21300000, guid: 9a3e281897d7879468aa1e19e2c2892a, type: 3}
+  Icon: {fileID: 21300000, guid: deade469590212b46a8a669630346703, type: 3}
   DeathIcon: {fileID: 0}
-  IconColor: {r: 0.9339623, g: 0.9339623, b: 0.9339623, a: 1}
+  IconColor: {r: 1, g: 0.9832283, b: 0, a: 1}
   Size: 16
   OffScreenSize: 14
