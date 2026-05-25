@@ -1,68 +1,171 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-
-public class PauseMenuOptions : MonoBehaviour {
-
-
+public class PauseMenuOptions : MonoBehaviour
+{
     [Header("UI References")]
     public Text SelectedItemText;
     public Text SelectedItemInfoText;
     public GameObject OptionsContainer;
 
+    [Header("Menus")]
+    public GameObject PauseMenu;
+    public GameObject DeathMenu;
 
-    // Use this for initialization
-    void Start()
-    {
-    }
-	
     public void Init()
     {
-
-        SelectedItemText.text = "Resume";
-        //edit info as well
-        SelectedItemInfoText.text = "Resumes the Game.";
-        OptionsContainer.SetActive(false);
+        RefreshTextsFromActiveMenu();
+        SetInfo("Resume");
     }
 
-    /// <summary>
-    /// As soon as Player hovers, the info changes
-    /// </summary>
-    /// <param name="name"></param>
+    public void InitDeathMenu()
+    {
+        RefreshTextsFromActiveMenu();
+        SetInfo("Restart");
+    }
+
     public void OnHoverTextChange(string name)
     {
-        //chane the text name to the field selected
-        SelectedItemText.text = name;
-       
+        RefreshTextsFromActiveMenu();
+        SetInfo(name);
+    }
 
-        switch (name)
+    public void OnHoverText(string name)
+    {
+        RefreshTextsFromActiveMenu();
+        SetInfo(name);
+    }
+
+    private void RefreshTextsFromActiveMenu()
+    {
+        GameObject activeMenu = null;
+
+        if (DeathMenu != null && DeathMenu.activeInHierarchy)
+        {
+            activeMenu = DeathMenu;
+        }
+        else if (PauseMenu != null && PauseMenu.activeInHierarchy)
+        {
+            activeMenu = PauseMenu;
+        }
+
+        if (activeMenu == null)
+        {
+            return;
+        }
+
+        Text[] texts = activeMenu.GetComponentsInChildren<Text>(true);
+
+        foreach (Text text in texts)
+        {
+            if (text.gameObject.name == "SelectedItemText")
+            {
+                SelectedItemText = text;
+            }
+
+            if (text.gameObject.name == "SelectedItemInfoText")
+            {
+                SelectedItemInfoText = text;
+            }
+        }
+    }
+
+    private void SetInfo(string name)
+    {
+        string normalizedName = NormalizeName(name);
+
+        if (SelectedItemText != null)
+        {
+            SelectedItemText.text = normalizedName;
+        }
+
+        if (OptionsContainer != null)
+        {
+            OptionsContainer.SetActive(false);
+        }
+
+        if (SelectedItemInfoText == null)
+        {
+            return;
+        }
+
+        switch (normalizedName)
         {
             case "Resume":
-                //edit info as well
                 SelectedItemInfoText.text = "Resumes the Game.";
-                OptionsContainer.SetActive(false);
                 break;
 
             case "Options":
-                //edit info as well
                 SelectedItemInfoText.text = "Change graphics Options.";
-                OptionsContainer.SetActive(true);
+
+                if (OptionsContainer != null)
+                {
+                    OptionsContainer.SetActive(true);
+                }
+
                 break;
 
             case "Main Menu":
-                //edit info as well
                 SelectedItemInfoText.text = "Go back to Main Menu.";
-                OptionsContainer.SetActive(false);
                 break;
 
             case "Load Game":
-                //edit info as well
                 SelectedItemInfoText.text = "Load previously Saved Game.";
-                OptionsContainer.SetActive(false);
+                break;
+
+            case "Restart":
+                SelectedItemInfoText.text = "Restart the current level.";
+                break;
+
+            case "Quit":
+                SelectedItemInfoText.text = "Quit the game.";
+                break;
+
+            default:
+                SelectedItemInfoText.text = "";
                 break;
         }
     }
 
+    private string NormalizeName(string name)
+    {
+        if (string.IsNullOrEmpty(name))
+        {
+            return "";
+        }
+
+        string lowerName = name.ToLower();
+
+        if (lowerName == "resume")
+        {
+            return "Resume";
+        }
+
+        if (lowerName == "options")
+        {
+            return "Options";
+        }
+
+        if (lowerName == "main menu" || lowerName == "mainmenu")
+        {
+            return "Main Menu";
+        }
+
+        if (lowerName == "load game" || lowerName == "loadgame")
+        {
+            return "Load Game";
+        }
+
+        if (lowerName == "restart")
+        {
+            return "Restart";
+        }
+
+        if (lowerName == "quit")
+        {
+            return "Quit";
+        }
+
+        return name;
+    }
 }

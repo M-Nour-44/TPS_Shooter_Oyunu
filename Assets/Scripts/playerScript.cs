@@ -11,6 +11,7 @@ public class PlayerScript : MonoBehaviour
     [Header("Player Health Things")]
     private float playerHealth = 120f;
     private float presentHealth;
+    private bool isDead = false;
     public HealthBar healthBar;
 
     [Header("Player Script Cameras")]
@@ -23,21 +24,15 @@ public class PlayerScript : MonoBehaviour
 
     [Header("Player Sounds")]
     public AudioSource playerAudioSource;
-    public AudioClip hitSound;  
-    public float hitSoundCooldown = 0.5f; 
+    public AudioClip hitSound;
+    public float hitSoundCooldown = 0.5f;
     private float nextHitSoundTime = 0f;
 
     [Header("Player Jumping and Velocity")]
     public float jumpRange = 1f;
     Vector3 velocity;
-
-    
-
-
-
     public float turnCalmTime = 0.1f;
     float turnCalmVelocity;
-
     public Transform surfaceCheck;
     bool onSurface;
     public float surfaceDistance = 0.6f;
@@ -49,12 +44,22 @@ public class PlayerScript : MonoBehaviour
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+
         presentHealth = playerHealth;
-        healthBar.GiveFullHealth(playerHealth);
+
+        if (healthBar != null)
+        {
+            healthBar.GiveFullHealth(playerHealth);
+        }
     }
 
     void Update()
     {
+        if (isDead)
+        {
+            return;
+        }
+
         onSurface = Physics.CheckSphere(surfaceCheck.position, surfaceDistance, surfaceMask);
 
         if (onSurface && velocity.y < 0)
@@ -64,10 +69,13 @@ public class PlayerScript : MonoBehaviour
 
         // Gravity
         velocity.y += gravity * Time.deltaTime;
-        cC.Move(velocity * Time.deltaTime);
+
+        if (cC != null)
+        {
+            cC.Move(velocity * Time.deltaTime);
+        }
 
         PlayerMove();
-
         Jump();
     }
 
@@ -95,12 +103,14 @@ public class PlayerScript : MonoBehaviour
 
         if (direction.magnitude >= 0.1f)
         {
-            animator.SetBool("Idle", false);
-            animator.SetBool("Walk", !isSprinting);
-            animator.SetBool("Running", isSprinting);
-
-            animator.SetBool("IdleAim", isAiming);
-            animator.SetBool("AimWalk", isAiming);
+            if (animator != null)
+            {
+                animator.SetBool("Idle", false);
+                animator.SetBool("Walk", !isSprinting);
+                animator.SetBool("Running", isSprinting);
+                animator.SetBool("IdleAim", isAiming);
+                animator.SetBool("AimWalk", isAiming);
+            }
 
             Vector3 moveDirection;
 
@@ -121,7 +131,9 @@ public class PlayerScript : MonoBehaviour
             }
             else
             {
-                float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + PlayerCamera.eulerAngles.y;
+                float targetAngle =
+                    Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg +
+                    PlayerCamera.eulerAngles.y;
 
                 float angle = Mathf.SmoothDampAngle(
                     transform.eulerAngles.y,
@@ -135,33 +147,49 @@ public class PlayerScript : MonoBehaviour
                 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
             }
 
-            cC.Move(moveDirection.normalized * currentSpeed * Time.deltaTime);
+            if (cC != null)
+            {
+                cC.Move(moveDirection.normalized * currentSpeed * Time.deltaTime);
+            }
         }
         else
         {
-            animator.SetBool("Walk", false);
-            animator.SetBool("Running", false);
-            animator.SetBool("AimWalk", false);
+            if (animator != null)
+            {
+                animator.SetBool("Walk", false);
+                animator.SetBool("Running", false);
+                animator.SetBool("AimWalk", false);
+            }
 
             if (shouldFaceCamera)
             {
                 RotatePlayerWithCamera();
 
-                animator.SetBool("Idle", false);
-                animator.SetBool("IdleAim", isAiming);
+                if (animator != null)
+                {
+                    animator.SetBool("Idle", false);
+                    animator.SetBool("IdleAim", isAiming);
+                }
             }
             else
             {
-                animator.SetBool("Idle", true);
-                animator.SetBool("IdleAim", false);
+                if (animator != null)
+                {
+                    animator.SetBool("Idle", true);
+                    animator.SetBool("IdleAim", false);
+                }
             }
         }
     }
 
     void RotatePlayerWithCamera()
     {
-        float cameraYaw = PlayerCamera.eulerAngles.y;
+        if (PlayerCamera == null)
+        {
+            return;
+        }
 
+        float cameraYaw = PlayerCamera.eulerAngles.y;
         Quaternion targetRotation = Quaternion.Euler(0f, cameraYaw, 0f);
 
         transform.rotation = Quaternion.Slerp(
@@ -175,33 +203,53 @@ public class PlayerScript : MonoBehaviour
     {
         if (Input.GetButtonDown("Jump") && onSurface)
         {
-            animator.SetBool("Walk", false);
-            animator.SetBool("Running", false);
-            animator.SetBool("AimWalk", false);
-
-            animator.SetTrigger("Jump");
+            if (animator != null)
+            {
+                animator.SetBool("Walk", false);
+                animator.SetBool("Running", false);
+                animator.SetBool("AimWalk", false);
+                animator.SetTrigger("Jump");
+            }
 
             velocity.y = Mathf.Sqrt(jumpRange * -2f * gravity);
         }
         else
         {
-            animator.ResetTrigger("Jump");
+            if (animator != null)
+            {
+                animator.ResetTrigger("Jump");
+            }
         }
     }
 
     public void playerHitDamage(float takeDamage)
     {
+        if (isDead)
+        {
+            return;
+        }
+
         presentHealth -= takeDamage;
-        healthBar.SetHealth(presentHealth);
+
+        if (presentHealth < 0)
+        {
+            presentHealth = 0;
+        }
+
+        if (healthBar != null)
+        {
+            healthBar.SetHealth(presentHealth);
+        }
+
         if (Time.time >= nextHitSoundTime)
         {
             if (playerAudioSource != null && hitSound != null)
             {
                 playerAudioSource.PlayOneShot(hitSound);
-                
                 nextHitSoundTime = Time.time + hitSoundCooldown;
             }
         }
+
         if (presentHealth <= 0)
         {
             PlayerDie();
@@ -210,7 +258,38 @@ public class PlayerScript : MonoBehaviour
 
     private void PlayerDie()
     {
-        Cursor.lockState = CursorLockMode.None;
-        Object.Destroy(gameObject, 1.0f);
+        if (isDead)
+        {
+            return;
+        }
+
+        isDead = true;
+
+        if (cC != null)
+        {
+            cC.enabled = false;
+        }
+
+        if (animator != null)
+        {
+            animator.SetBool("Idle", false);
+            animator.SetBool("Walk", false);
+            animator.SetBool("Running", false);
+            animator.SetBool("AimWalk", false);
+            animator.SetBool("IdleAim", false);
+        }
+
+        UIController uiController = FindObjectOfType<UIController>();
+
+        if (uiController != null)
+        {
+            uiController.openDeathMenu();
+        }
+        else
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+            Time.timeScale = 0.0001f;
+        }
     }
 }

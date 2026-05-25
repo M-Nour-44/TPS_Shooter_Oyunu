@@ -14,12 +14,16 @@ public class UIController : MonoBehaviour
     public GameObject saveMenu;
     public GameObject pauseMenu;
 
-    Fader fader;
+    [Header("Death Menu")]
+    public GameObject deathMenu;
+
+    private Fader fader;
 
     [HideInInspector]
-    public bool isOpen;
+    public bool isOpen = false;
 
-    Canvas[] allUI;
+    private bool isDeathMenuOpen = false;
+    private bool isGoingToMainMenu = false;
 
     [Header("Pause Game and Resume Game Events")]
     public UnityEngine.Events.UnityEvent onPause = new UnityEngine.Events.UnityEvent();
@@ -31,20 +35,40 @@ public class UIController : MonoBehaviour
     [HideInInspector]
     public bool usingUFPS = false;
 
-    void Awake()
+    [HideInInspector]
+    public bool openPMenu = true;
+
+    private void Awake()
     {
+        if (saveMenu != null)
+        {
+            saveMenu.SetActive(false);
+        }
+
+        if (pauseMenu != null)
+        {
+            ForceHideMenu(pauseMenu);
+        }
+
+        if (deathMenu != null)
+        {
+            ForceHideMenu(deathMenu);
+        }
+
         HideCursorForGameplay();
+
+        isOpen = false;
+        isDeathMenuOpen = false;
+        isGoingToMainMenu = false;
+        openPMenu = true;
     }
 
-    IEnumerator Start()
+    private IEnumerator Start()
     {
-        // Find fader
         fader = FindObjectOfType<Fader>();
 
-        // Hide cursor immediately when gameplay starts
         HideCursorForGameplay();
 
-        // Wait one frame, then hide again in case another script shows it
         yield return null;
 
         HideCursorForGameplay();
@@ -52,83 +76,114 @@ public class UIController : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
     }
 
-    void Update()
+    private void Update()
     {
-        // If using UFPS
-        if (usingUFPS)
-            return;
-
-        // Show cursor only while pause menu or save menu is open
-        if (forceCursorOnWhilePause && (isOpen || saveMenu.activeSelf))
+        if (isDeathMenuOpen || isGoingToMainMenu)
         {
-            ShowCursorForMenu();
+            return;
         }
 
-        // If save menu is not opened
-        if (!saveMenu.activeSelf && canOpen())
+        if (usingUFPS)
+        {
+            return;
+        }
+
+        bool saveMenuClosed = saveMenu == null || !saveMenu.activeSelf;
+
+        if (saveMenuClosed && openPMenu)
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 if (!isOpen)
+                {
                     openPauseMenu();
+                }
                 else
+                {
                     closePauseMenu();
+                }
             }
+        }
+
+        if (isOpen && forceCursorOnWhilePause)
+        {
+            ShowCursorForMenu();
         }
     }
 
-    void LateUpdate()
+    private void LateUpdate()
     {
-        // While gameplay is active, keep cursor hidden and locked
-        if (!isOpen && saveMenu != null && !saveMenu.activeSelf)
+        if (isDeathMenuOpen || isGoingToMainMenu)
         {
-            if (Cursor.visible || Cursor.lockState != CursorLockMode.Locked)
+            ShowCursorForMenu();
+            return;
+        }
+
+        if (isOpen)
+        {
+            ShowCursorForMenu();
+
+            if (pauseMenu != null && !pauseMenu.activeSelf)
             {
-                HideCursorForGameplay();
+                ForceShowMenu(pauseMenu, 999);
             }
+
+            return;
+        }
+
+        bool saveMenuClosed = saveMenu == null || !saveMenu.activeSelf;
+
+        if (saveMenuClosed)
+        {
+            HideCursorForGameplay();
         }
     }
 
     public void openPauseMenu()
     {
-        allUI = FindObjectsOfType<Canvas>();
-
-        // Disable all UI
-        for (int i = 0; i < allUI.Length; i++)
+        if (isDeathMenuOpen)
         {
-            if (allUI[i].name != "Fader")
-                allUI[i].gameObject.SetActive(false);
+            return;
         }
-
-        saveMenu.SetActive(false);
-        pauseMenu.SetActive(true);
-
-        // Show mouse in pause menu if enabled
-        if (forceCursorOnWhilePause)
-        {
-            ShowCursorForMenu();
-        }
-
-        // Play sound
-        GetComponent<SaveGameUI>().playClickSound();
-
-        // Play animation
-        GetComponent<Animator>().Play("OpenPauseMenu");
-
-        // Time almost stopped
-        if (!usingUFPS)
-            Time.timeScale = 0.0001f;
 
         isOpen = true;
+        openPMenu = true;
 
-        // Init pause menu options
-        GetComponent<PauseMenuOptions>().Init();
+        if (saveMenu != null)
+        {
+            saveMenu.SetActive(false);
+        }
 
-        // Enable blur
+        if (deathMenu != null)
+        {
+            ForceHideMenu(deathMenu);
+        }
+
+        if (pauseMenu != null)
+        {
+            ForceShowMenu(pauseMenu, 999);
+        }
+
+        ShowCursorForMenu();
+
+        if (!usingUFPS)
+        {
+            Time.timeScale = 0.0001f;
+        }
+
+        PauseMenuOptions options = GetComponent<PauseMenuOptions>();
+
+        if (options != null)
+        {
+            options.Init();
+        }
+
         if (useBlur)
         {
-            if (Camera.main.GetComponent<Animator>())
-                Camera.main.GetComponent<Animator>().Play("BlurOff");
+            if (Camera.main != null && Camera.main.GetComponent<Animation>() != null)
+            {
+                Camera.main.GetComponent<Animation>().Play("BlurOff");
+            }
         }
 
         onPause.Invoke();
@@ -136,57 +191,132 @@ public class UIController : MonoBehaviour
 
     public void closePauseMenu()
     {
-        // Enable all UI
-        for (int i = 0; i < allUI.Length; i++)
+        if (isDeathMenuOpen)
         {
-            allUI[i].gameObject.SetActive(true);
+            return;
         }
 
-        // Time = 1
         if (!usingUFPS)
-            Time.timeScale = 1;
-
-        // Play sound
-        GetComponent<SaveGameUI>().playClickSound();
-
-        // Play animation
-        GetComponent<Animator>().Play("ClosePauseMenu");
-
-        isOpen = false;
-
-        // Hide cursor again when returning to gameplay
-        HideCursorForGameplay();
-
-        // Enable blur
-        if (useBlur)
         {
-            if (Camera.main.GetComponent<Animator>())
-                Camera.main.GetComponent<Animator>().Play("BlurOff");
+            Time.timeScale = 1f;
         }
 
         onUnpause.Invoke();
-    }
 
-    public void hideMenus()
-    {
-        saveMenu.SetActive(false);
-        pauseMenu.SetActive(false);
+        if (pauseMenu != null)
+        {
+            ForceHideMenu(pauseMenu);
+        }
+
+        isOpen = false;
+        openPMenu = true;
 
         HideCursorForGameplay();
+
+        if (useBlur)
+        {
+            if (Camera.main != null && Camera.main.GetComponent<Animation>() != null)
+            {
+                Camera.main.GetComponent<Animation>().Play("BlurOff");
+            }
+        }
+    }
+
+    public void openDeathMenu()
+    {
+        isDeathMenuOpen = true;
+        isGoingToMainMenu = false;
+
+        isOpen = false;
+        openPMenu = false;
+
+        if (saveMenu != null)
+        {
+            saveMenu.SetActive(false);
+        }
+
+        if (pauseMenu != null)
+        {
+            ForceHideMenu(pauseMenu);
+        }
+
+        if (deathMenu != null)
+        {
+            ForceShowMenu(deathMenu, 1000);
+        }
+
+        if (!usingUFPS)
+        {
+            Time.timeScale = 0.0001f;
+        }
+
+        ShowCursorForMenu();
+
+        PauseMenuOptions options = GetComponent<PauseMenuOptions>();
+
+        if (options != null)
+        {
+            options.InitDeathMenu();
+        }
+
+        onPause.Invoke();
+    }
+
+    public void restartLevel()
+    {
+        Time.timeScale = 1f;
+
+        isDeathMenuOpen = false;
+        isGoingToMainMenu = false;
+
+        isOpen = false;
+        openPMenu = true;
+
+        onUnpause.Invoke();
+
+        Scene currentScene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(currentScene.buildIndex);
     }
 
     public void goToMainMenu()
     {
-        // Delete player
+        isGoingToMainMenu = true;
+
+        Time.timeScale = 1f;
+
+        isDeathMenuOpen = false;
+        isOpen = false;
+        openPMenu = false;
+
+        if (pauseMenu != null)
+        {
+            ForceHideMenu(pauseMenu);
+        }
+
+        if (deathMenu != null)
+        {
+            ForceHideMenu(deathMenu);
+        }
+
+        if (saveMenu != null)
+        {
+            saveMenu.SetActive(false);
+        }
+
         GameObject player = GameObject.FindGameObjectWithTag("Player");
 
         if (player != null)
+        {
             Destroy(player);
+        }
 
-        // Restore time scale
-        Time.timeScale = 1f;
+        PlayerScript playerScript = FindObjectOfType<PlayerScript>();
 
-        // Load main menu
+        if (playerScript != null)
+        {
+            Destroy(playerScript.gameObject);
+        }
+
 #if !EMM_ES2
         PlayerPrefs.SetString("sceneToLoad", "");
 #else
@@ -194,58 +324,135 @@ public class UIController : MonoBehaviour
         ES2.Save("", "sceneToLoad");
 #endif
 
-        // Hide all menus
-        hideMenus();
-
-        // Show cursor in main menu
         ShowCursorForMenu();
 
-        // Load level via fader
-        fader.FadeIntoLevel("LoadingScreen");
+        if (fader != null)
+        {
+            fader.FadeIntoLevel("LoadingScreen");
+        }
+        else
+        {
+            SceneManager.LoadScene("MainMenu");
+        }
+    }
+
+    public void quitGame()
+    {
+        Time.timeScale = 1f;
+
+        Application.Quit();
+
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
+    }
+
+    public void hideMenus()
+    {
+        if (saveMenu != null)
+        {
+            saveMenu.SetActive(false);
+        }
+
+        if (pauseMenu != null)
+        {
+            ForceHideMenu(pauseMenu);
+        }
+
+        if (deathMenu != null)
+        {
+            ForceHideMenu(deathMenu);
+        }
+
+        HideCursorForGameplay();
     }
 
     public void openLoadGame()
     {
-        GetComponent<Animator>().Play("loadGameOpen");
         initLoadGameMenu();
-
-        if (forceCursorOnWhilePause)
-        {
-            ShowCursorForMenu();
-        }
+        ShowCursorForMenu();
     }
 
     public void closeLoadGame()
     {
-        GetComponent<Animator>().Play("loadGameClose");
     }
 
-    void initLoadGameMenu()
+    private void initLoadGameMenu()
     {
-        if (loadSlots.Count > 0)
+        if (loadSlots != null && loadSlots.Count > 0)
         {
             foreach (LoadSlotIdentifier lsi in loadSlots)
             {
-                lsi.Init();
+                if (lsi != null)
+                {
+                    lsi.Init();
+                }
             }
         }
     }
-
-    [HideInInspector]
-    public bool openPMenu = true;
 
     public bool canOpen()
     {
         return openPMenu;
     }
 
-    void HideCursorForGameplay()
+    private void ForceShowMenu(GameObject menu, int order)
+    {
+        menu.SetActive(true);
+        menu.transform.SetAsLastSibling();
+
+        CanvasGroup canvasGroup = menu.GetComponent<CanvasGroup>();
+
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = 1f;
+            canvasGroup.interactable = true;
+            canvasGroup.blocksRaycasts = true;
+        }
+
+        Canvas canvas = menu.GetComponent<Canvas>();
+
+        if (canvas != null)
+        {
+            canvas.enabled = true;
+            canvas.overrideSorting = true;
+            canvas.sortingOrder = order;
+        }
+
+        GraphicRaycasterFix(menu);
+    }
+
+    private void ForceHideMenu(GameObject menu)
+    {
+        CanvasGroup canvasGroup = menu.GetComponent<CanvasGroup>();
+
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = 0f;
+            canvasGroup.interactable = false;
+            canvasGroup.blocksRaycasts = false;
+        }
+
+        menu.SetActive(false);
+    }
+
+    private void GraphicRaycasterFix(GameObject menu)
+    {
+        UnityEngine.UI.GraphicRaycaster raycaster = menu.GetComponent<UnityEngine.UI.GraphicRaycaster>();
+
+        if (raycaster != null)
+        {
+            raycaster.enabled = true;
+        }
+    }
+
+    private void HideCursorForGameplay()
     {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    void ShowCursorForMenu()
+    private void ShowCursorForMenu()
     {
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
