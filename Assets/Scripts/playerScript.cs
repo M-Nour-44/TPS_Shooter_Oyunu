@@ -252,6 +252,7 @@ public class PlayerScript : MonoBehaviour
 
         if (presentHealth <= 0)
         {
+            animator.SetBool("Die",true);
             PlayerDie();
         }
     }

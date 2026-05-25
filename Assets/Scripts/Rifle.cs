@@ -1,4 +1,3 @@
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -49,7 +48,7 @@ public class Rifle : MonoBehaviour
             return;
         }
 
-        if (presentAmmunition <= 0)
+        if (presentAmmunition <= 0 && mag > 0)
         {
             StartCoroutine(Reload());
             return;
@@ -96,7 +95,7 @@ public class Rifle : MonoBehaviour
 
     void Shoot()
     {
-        if (mag == 0)
+        if (mag == 0 && presentAmmunition <= 0)
         {
             StartCoroutine(ShowAmmoOut());
             return;
@@ -104,10 +103,6 @@ public class Rifle : MonoBehaviour
 
         presentAmmunition--;
 
-        if (presentAmmunition == 0)
-        {
-            mag--;
-        }
 
         AmmoCount.occurrence.UpdateAmmoText(presentAmmunition);
         AmmoCount.occurrence.UpdateMagText(mag);
@@ -167,7 +162,12 @@ public class Rifle : MonoBehaviour
 
         animator.SetBool("Reloading", false);
 
+        mag--;
+
         presentAmmunition = maximumAmmunition;
+
+        AmmoCount.occurrence.UpdateAmmoText(presentAmmunition);
+        AmmoCount.occurrence.UpdateMagText(mag);
 
         player.playerSpeed = 3f;
         player.playerSprint = 6f;
