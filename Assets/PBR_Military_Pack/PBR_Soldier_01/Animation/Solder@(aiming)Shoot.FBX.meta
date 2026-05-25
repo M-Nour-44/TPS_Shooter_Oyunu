@@ -570,8 +570,8 @@ ModelImporter:
       name: (aiming)Shoot
       takeName: Take 001
       internalID: 7400000
-      firstFrame: 26
-      lastFrame: 33
+      firstFrame: 1
+      lastFrame: 59
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
