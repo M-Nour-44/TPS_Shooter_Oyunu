@@ -10,12 +10,16 @@ public class PlayerInteraction : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E))
         {
             TryInteract();
-        MissionListManager.instance.CompleteMission(1, "1.Door is opened");
         }
     }
 
     void TryInteract()
     {
+        if (playerCamera == null)
+        {
+            return;
+        }
+
         RaycastHit hit;
 
         if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, interactRange))
