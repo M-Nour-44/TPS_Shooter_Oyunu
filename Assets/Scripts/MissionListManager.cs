@@ -126,8 +126,12 @@ public class MissionListManager : MonoBehaviour
 
         if (missionTexts != null && index < missionTexts.Length && missionTexts[index] != null)
         {
+            float oldFontSize = missionTexts[index].fontSize;
+
+            missionTexts[index].enableAutoSizing = false;
             missionTexts[index].color = Color.green;
             missionTexts[index].text = newText;
+            missionTexts[index].fontSize = oldFontSize;
         }
 
         if (missionNumber == 1)

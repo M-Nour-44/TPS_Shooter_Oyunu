@@ -13,6 +13,10 @@ public class GeneratorTurnOff : MonoBehaviour
     public Animator animation;
     public AudioSource audioSource;
 
+    [Header("Generator Stop Target")]
+    public GameObject fanRoot;
+    public bool disableFanRootObject = false;
+
     [Header("Mission")]
     public int requiredPreviousMission = 2;
     public int requiredButtons = 2;
@@ -95,6 +99,8 @@ public class GeneratorTurnOff : MonoBehaviour
             redLight.SetActive(true);
         }
 
+        StopThisGenerator();
+
         if (pressedButtonsCount >= requiredButtons && !missionCompleted)
         {
             bool completed = MissionListManager.instance.CompleteMission(missionNumber, missionCompleteText);
@@ -105,16 +111,73 @@ public class GeneratorTurnOff : MonoBehaviour
             }
 
             missionCompleted = true;
+        }
+    }
 
-            if (animation != null)
+    private void StopThisGenerator()
+    {
+        StopAnimator(animation);
+
+        if (audioSource != null)
+        {
+            audioSource.Stop();
+        }
+
+        if (fanRoot != null)
+        {
+            Animator[] animators = fanRoot.GetComponentsInChildren<Animator>(true);
+
+            for (int i = 0; i < animators.Length; i++)
             {
-                animation.enabled = false;
+                StopAnimator(animators[i]);
             }
 
-            if (audioSource != null)
+            Animation[] animations = fanRoot.GetComponentsInChildren<Animation>(true);
+
+            for (int i = 0; i < animations.Length; i++)
             {
-                audioSource.Stop();
+                if (animations[i] != null)
+                {
+                    animations[i].Stop();
+                    animations[i].enabled = false;
+                }
+            }
+
+            AudioSource[] audioSources = fanRoot.GetComponentsInChildren<AudioSource>(true);
+
+            for (int i = 0; i < audioSources.Length; i++)
+            {
+                if (audioSources[i] != null)
+                {
+                    audioSources[i].Stop();
+                }
+            }
+
+            ParticleSystem[] particles = fanRoot.GetComponentsInChildren<ParticleSystem>(true);
+
+            for (int i = 0; i < particles.Length; i++)
+            {
+                if (particles[i] != null)
+                {
+                    particles[i].Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                }
+            }
+
+            if (disableFanRootObject)
+            {
+                fanRoot.SetActive(false);
             }
         }
+    }
+
+    private void StopAnimator(Animator targetAnimator)
+    {
+        if (targetAnimator == null)
+        {
+            return;
+        }
+
+        targetAnimator.speed = 0f;
+        targetAnimator.enabled = false;
     }
 }

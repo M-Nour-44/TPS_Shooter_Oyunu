@@ -5,15 +5,11 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
-    
-
     [Header("Enemy Health and Damage")]
     private float enemyHealth = 120f;
     private float presentHealth;
     public float giveDamage = 5f;
     public HealthBar healthBar;
-    
-
 
     [Header("Enemy Things")]
     public NavMeshAgent enemyAgent;
@@ -45,19 +41,27 @@ public class Enemy : MonoBehaviour
     public bool playerInVisionRadius;
     public bool playerInShootingRadius;
 
-    
-
+    private bool isDead = false;
 
     private void Awake()
     {
-       
+        if (enemyAgent == null)
+        {
+            enemyAgent = GetComponent<NavMeshAgent>();
+        }
 
-        enemyAgent = GetComponent<NavMeshAgent>();
-        enemyAgent.speed = enemySpeed;
+        if (enemyAgent != null)
+        {
+            enemyAgent.speed = enemySpeed;
+        }
+
         presentHealth = enemyHealth;
-        healthBar.GiveFullHealth(enemyHealth);
 
-        // Eğer inspector'dan verilmemişse otomatik bul
+        if (healthBar != null)
+        {
+            healthBar.GiveFullHealth(enemyHealth);
+        }
+
         if (playerBody == null)
         {
             GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -71,13 +75,22 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
+        if (isDead)
+        {
+            return;
+        }
+
+        if (!AgentReady())
+        {
+            return;
+        }
+
         playerInVisionRadius =
             Physics.CheckSphere(transform.position, visionRadius, PlayerLayer);
 
         playerInShootingRadius =
             Physics.CheckSphere(transform.position, shootingRadius, PlayerLayer);
 
-        // STATE SYSTEM
         if (!playerInVisionRadius && !playerInShootingRadius)
         {
             Guard();
@@ -92,125 +105,187 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    private bool AgentReady()
+    {
+        return enemyAgent != null && enemyAgent.enabled && enemyAgent.isOnNavMesh;
+    }
+
     private void Guard()
     {
-        if (walkPoints.Length == 0) return;
+        if (!AgentReady())
+        {
+            return;
+        }
 
-        // Walkpoint'e ulaştıysa yeni hedef seç
-        if (Vector3.Distance(
-            transform.position,
-            walkPoints[currentEnemyPosition].transform.position)
-            <= walkingPointRadius)
+        if (walkPoints == null || walkPoints.Length == 0)
+        {
+            return;
+        }
+
+        if (walkPoints[currentEnemyPosition] == null)
+        {
+            return;
+        }
+
+        if (Vector3.Distance(transform.position, walkPoints[currentEnemyPosition].transform.position) <= walkingPointRadius)
         {
             currentEnemyPosition = Random.Range(0, walkPoints.Length);
         }
 
-        // NavMeshAgent hareket ettiriyor
-        enemyAgent.SetDestination(
-            walkPoints[currentEnemyPosition].transform.position
-        );
+        if (walkPoints[currentEnemyPosition] != null)
+        {
+            enemyAgent.isStopped = false;
+            enemyAgent.SetDestination(walkPoints[currentEnemyPosition].transform.position);
+        }
     }
 
     private void PursuePlayer()
     {
-        if (playerBody == null) return;
+        if (!AgentReady())
+        {
+            return;
+        }
+
+        if (playerBody == null)
+        {
+            return;
+        }
 
         enemyAgent.isStopped = false;
-
         enemyAgent.SetDestination(playerBody.position);
-        
+
+        if (anim != null)
+        {
             anim.SetBool("Walk", false);
             anim.SetBool("AimRun", true);
             anim.SetBool("Shoot", false);
             anim.SetBool("Die", false);
-        
+        }
     }
 
     private void ShootPlayer()
     {
-        // Şimdilik durdur
-        enemyAgent.SetDestination(transform.position);
-
-        // Oyuncuya bak
-        transform.LookAt(LookPoint);
-
-        if(!previouslyShoot)
+        if (!AgentReady())
         {
+            return;
+        }
 
-            muzzleSpark.Play();
-            enemyWeapon.PlayShootingSound();
-            
+        enemyAgent.isStopped = true;
 
-            RaycastHit hit;
-            if(Physics.Raycast(ShootingRaycastArea.transform.position, ShootingRaycastArea.transform.forward, out hit, shootingRadius))
+        if (LookPoint != null)
+        {
+            transform.LookAt(LookPoint);
+        }
+        else if (playerBody != null)
+        {
+            transform.LookAt(playerBody);
+        }
+
+        if (!previouslyShoot)
+        {
+            if (muzzleSpark != null)
             {
-                Debug.Log("Shooting" + hit.transform.name);
-                // Buraya oyuncuya hasar verme kodunu ekleyebilirsin
-                PlayerScript playerBody = hit.transform.GetComponent<PlayerScript>();
+                muzzleSpark.Play();
+            }
 
-                if(playerBody != null)
+            if (enemyWeapon != null)
+            {
+                enemyWeapon.PlayShootingSound();
+            }
+
+            if (ShootingRaycastArea != null)
+            {
+                RaycastHit hit;
+
+                if (Physics.Raycast(ShootingRaycastArea.transform.position, ShootingRaycastArea.transform.forward, out hit, shootingRadius))
                 {
-                    playerBody.playerHitDamage(giveDamage);
-                }
+                    PlayerScript player = hit.transform.GetComponentInParent<PlayerScript>();
 
+                    if (player != null)
+                    {
+                        player.playerHitDamage(giveDamage);
+                    }
+                }
             }
 
             previouslyShoot = true;
             Invoke(nameof(ActiveShooting), timebtwShoot);
         }
 
-        // Buraya ateş etme animasyonu koyabilirsin
-        anim.SetBool("Shoot", true);
-        anim.SetBool("Walk", false);
-        anim.SetBool("AimRun", false);
-        anim.SetBool("Die", false);
+        if (anim != null)
+        {
+            anim.SetBool("Shoot", true);
+            anim.SetBool("Walk", false);
+            anim.SetBool("AimRun", false);
+            anim.SetBool("Die", false);
+        }
     }
-    
 
-    
-
-    // Vision ve shooting radiusları görmek için
-    /*
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, visionRadius);
-
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, shootingRadius);
-    }
-    */
     private void ActiveShooting()
     {
         previouslyShoot = false;
-        anim.SetBool("Shoot", false);
 
+        if (anim != null && !isDead)
+        {
+            anim.SetBool("Shoot", false);
+        }
     }
 
     public void enemyHitDamage(float takeDamage)
     {
+        if (isDead)
+        {
+            return;
+        }
+
         presentHealth -= takeDamage;
-        healthBar.SetHealth(presentHealth);
+
+        if (healthBar != null)
+        {
+            healthBar.SetHealth(presentHealth);
+        }
 
         if (presentHealth <= 0)
+        {
+            EnemyDie();
+        }
+    }
+
+    private void EnemyDie()
+    {
+        if (isDead)
+        {
+            return;
+        }
+
+        isDead = true;
+
+        CancelInvoke(nameof(ActiveShooting));
+
+        playerInVisionRadius = false;
+        playerInShootingRadius = false;
+        visionRadius = 0f;
+        shootingRadius = 0f;
+
+        if (enemyAgent != null && enemyAgent.enabled)
+        {
+            if (enemyAgent.isOnNavMesh)
+            {
+                enemyAgent.isStopped = true;
+                enemyAgent.ResetPath();
+            }
+
+            enemyAgent.enabled = false;
+        }
+
+        if (anim != null)
         {
             anim.SetBool("Shoot", false);
             anim.SetBool("Walk", false);
             anim.SetBool("AimRun", false);
             anim.SetBool("Die", true);
-            enemyDie();
         }
-    }
 
-    private void enemyDie()
-{
-    enemyAgent.SetDestination(transform.position); 
-    enemyAgent.enabled = false; 
-    
-    shootingRadius = 0f;
-    visionRadius = 0f;
-    playerInVisionRadius = false;
-    playerInShootingRadius = false;
-    Object.Destroy(gameObject, 5.0f);
-}
+        Destroy(gameObject, 5f);
+    }
 }
