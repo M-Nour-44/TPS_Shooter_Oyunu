@@ -10,6 +10,7 @@ public class PlayerInteraction : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E))
         {
             TryInteract();
+        MissionListManager.instance.CompleteMission(1, "1.Door is opened");
         }
     }
 
