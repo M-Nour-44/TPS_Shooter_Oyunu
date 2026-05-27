@@ -32,23 +32,55 @@ public class Rifle : MonoBehaviour
     [SerializeField] private GameObject AmmoOutUI;
     [SerializeField] private int timeToShowUI = 1;
 
+    private float originalPlayerSpeed = 3f;
+    private float originalPlayerSprint = 6f;
+
     private void Awake()
     {
         presentAmmunition = maximumAmmunition;
     }
 
+    private void Start()
+    {
+        if (player != null)
+        {
+            originalPlayerSpeed = player.playerSpeed;
+            originalPlayerSprint = player.playerSprint;
+        }
+
+        if (AmmoCount.occurrence != null)
+        {
+            AmmoCount.occurrence.UpdateAmmoText(presentAmmunition);
+            AmmoCount.occurrence.UpdateMagText(mag);
+        }
+    }
+
     void Update()
     {
         if (setReloading)
+        {
+            SetAnimatorBoolIfExists("Fire", false);
+            SetAnimatorBoolIfExists("FireWalk", false);
             return;
+        }
 
-        if (Input.GetKeyDown(KeyCode.R) && presentAmmunition < maximumAmmunition && mag > 0)
+        if (player != null && !player.IsOnGround())
+        {
+            SetAnimatorBoolIfExists("Fire", false);
+            SetAnimatorBoolIfExists("FireWalk", false);
+            SetAnimatorBoolIfExists("Reloading", false);
+            return;
+        }
+
+        bool playerSitting = player != null && player.IsSitting();
+
+        if (!playerSitting && Input.GetKeyDown(KeyCode.R) && presentAmmunition < maximumAmmunition && mag > 0)
         {
             StartCoroutine(Reload());
             return;
         }
 
-        if (presentAmmunition <= 0 && mag > 0)
+        if (!playerSitting && presentAmmunition <= 0 && mag > 0)
         {
             StartCoroutine(Reload());
             return;
@@ -61,61 +93,69 @@ public class Rifle : MonoBehaviour
 
         bool isMoving = Mathf.Abs(horizontal) > 0.1f || Mathf.Abs(vertical) > 0.1f;
 
-        if (isShooting && Time.time >= nextTimeToShoot)
+        if (isShooting)
         {
-            animator.SetBool("Fire", true);
-            animator.SetBool("Idle", false);
-            animator.SetBool("FireWalk", isMoving);
-            animator.SetBool("Reloading", false);
+            if (isMoving)
+            {
+                SetAnimatorBoolIfExists("Fire", false);
+                SetAnimatorBoolIfExists("FireWalk", true);
+            }
+            else
+            {
+                SetAnimatorBoolIfExists("Fire", true);
+                SetAnimatorBoolIfExists("FireWalk", false);
+            }
 
-            nextTimeToShoot = Time.time + 1f / fireCharge;
+            SetAnimatorBoolIfExists("Reloading", false);
 
-            Shoot();
-        }
-        else if (isShooting && isMoving)
-        {
-            animator.SetBool("Idle", false);
-            animator.SetBool("Fire", false);
-            animator.SetBool("FireWalk", true);
-            animator.SetBool("Reloading", false);
-        }
-        else if (isShooting)
-        {
-            animator.SetBool("Idle", false);
-            animator.SetBool("FireWalk", false);
-            animator.SetBool("Reloading", false);
+            if (Time.time >= nextTimeToShoot)
+            {
+                nextTimeToShoot = Time.time + 1f / fireCharge;
+                Shoot();
+            }
         }
         else
         {
-            animator.SetBool("Fire", false);
-            animator.SetBool("FireWalk", false);
-            animator.SetBool("Reloading", false);
+            SetAnimatorBoolIfExists("Fire", false);
+            SetAnimatorBoolIfExists("FireWalk", false);
+            SetAnimatorBoolIfExists("Reloading", false);
         }
     }
 
     void Shoot()
     {
-        if (mag == 0 && presentAmmunition <= 0)
+        if (presentAmmunition <= 0)
         {
-            StartCoroutine(ShowAmmoOut());
+            if (mag == 0)
+            {
+                StartCoroutine(ShowAmmoOut());
+            }
+
             return;
         }
 
         presentAmmunition--;
 
+        if (AmmoCount.occurrence != null)
+        {
+            AmmoCount.occurrence.UpdateAmmoText(presentAmmunition);
+            AmmoCount.occurrence.UpdateMagText(mag);
+        }
 
-        AmmoCount.occurrence.UpdateAmmoText(presentAmmunition);
-        AmmoCount.occurrence.UpdateMagText(mag);
+        if (muzzleSpark != null)
+        {
+            muzzleSpark.Play();
+        }
 
-        muzzleSpark.Play();
-        audioSource.PlayOneShot(shootingSound);
+        if (audioSource != null && shootingSound != null)
+        {
+            audioSource.PlayOneShot(shootingSound);
+        }
 
         RaycastHit hitInfo;
 
         if (Physics.Raycast(camera.transform.position, camera.transform.forward, out hitInfo, shootingRange))
         {
-            Debug.Log(hitInfo.transform.name);
-
             Objects objects = hitInfo.transform.GetComponent<Objects>();
             Enemy enemy = hitInfo.transform.GetComponent<Enemy>();
 
@@ -123,62 +163,131 @@ public class Rifle : MonoBehaviour
             {
                 objects.objectHitDamage(giveDamageOf);
 
-                GameObject impactGo = Instantiate(
-                    impactEffect,
-                    hitInfo.point,
-                    Quaternion.LookRotation(hitInfo.normal)
-                );
+                if (impactEffect != null)
+                {
+                    GameObject impactGo = Instantiate(
+                        impactEffect,
+                        hitInfo.point,
+                        Quaternion.LookRotation(hitInfo.normal)
+                    );
 
-                Destroy(impactGo, 1f);
+                    Destroy(impactGo, 1f);
+                }
             }
-            else if(enemy != null)
+            else if (enemy != null)
             {
                 enemy.enemyHitDamage(giveDamageOf);
 
-                GameObject impactGo = Instantiate(
-                    goreEffect,
-                    hitInfo.point,
-                    Quaternion.LookRotation(hitInfo.normal)
-                );  
-                Destroy(impactGo, 2f); 
+                if (goreEffect != null)
+                {
+                    GameObject impactGo = Instantiate(
+                        goreEffect,
+                        hitInfo.point,
+                        Quaternion.LookRotation(hitInfo.normal)
+                    );
+
+                    Destroy(impactGo, 2f);
+                }
             }
         }
     }
 
     IEnumerator Reload()
     {
-        player.playerSpeed = 0f;
-        player.playerSprint = 0f;
+        if (setReloading)
+        {
+            yield break;
+        }
+
+        if (mag <= 0)
+        {
+            yield break;
+        }
+
+        if (player != null && !player.IsOnGround())
+        {
+            yield break;
+        }
+
+        if (player != null && player.IsSitting())
+        {
+            yield break;
+        }
 
         setReloading = true;
 
+        SetAnimatorBoolIfExists("Fire", false);
+        SetAnimatorBoolIfExists("FireWalk", false);
+        SetAnimatorBoolIfExists("Reloading", true);
+
+        if (player != null)
+        {
+            player.playerSpeed = 0f;
+            player.playerSprint = 0f;
+        }
+
         Debug.Log("Reloading....");
 
-        animator.SetBool("Reloading", true);
-
-        audioSource.PlayOneShot(reloadingSound);
+        if (audioSource != null && reloadingSound != null)
+        {
+            audioSource.PlayOneShot(reloadingSound);
+        }
 
         yield return new WaitForSeconds(reloadingTime);
 
-        animator.SetBool("Reloading", false);
-
         mag--;
-
         presentAmmunition = maximumAmmunition;
 
-        AmmoCount.occurrence.UpdateAmmoText(presentAmmunition);
-        AmmoCount.occurrence.UpdateMagText(mag);
+        if (AmmoCount.occurrence != null)
+        {
+            AmmoCount.occurrence.UpdateAmmoText(presentAmmunition);
+            AmmoCount.occurrence.UpdateMagText(mag);
+        }
 
-        player.playerSpeed = 3f;
-        player.playerSprint = 6f;
+        if (player != null)
+        {
+            player.playerSpeed = originalPlayerSpeed;
+            player.playerSprint = originalPlayerSprint;
+        }
+
+        SetAnimatorBoolIfExists("Reloading", false);
 
         setReloading = false;
     }
 
     IEnumerator ShowAmmoOut()
     {
-        AmmoOutUI.SetActive(true);
-        yield return new WaitForSeconds(timeToShowUI);
-        AmmoOutUI.SetActive(false);
+        if (AmmoOutUI != null)
+        {
+            AmmoOutUI.SetActive(true);
+            yield return new WaitForSeconds(timeToShowUI);
+            AmmoOutUI.SetActive(false);
+        }
+    }
+
+    private bool HasAnimatorParameter(string parameterName, AnimatorControllerParameterType type)
+    {
+        if (animator == null)
+        {
+            return false;
+        }
+
+        foreach (AnimatorControllerParameter parameter in animator.parameters)
+        {
+            if (parameter.name == parameterName && parameter.type == type)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void SetAnimatorBoolIfExists(string parameterName, bool value)
+    {
+        if (HasAnimatorParameter(parameterName, AnimatorControllerParameterType.Bool))
+        {
+            animator.SetBool(parameterName, value);
+        }
     }
 }

@@ -8,6 +8,11 @@ public class PlayerScript : MonoBehaviour
     public float playerSpeed = 3f;
     public float playerSprint = 6f;
 
+    [Header("Sitting")]
+    public KeyCode sitKey = KeyCode.C;
+    public float sitSpeed = 1.5f;
+    private bool isSitting = false;
+
     [Header("Player Health Things")]
     private float playerHealth = 120f;
     private float presentHealth;
@@ -36,11 +41,11 @@ public class PlayerScript : MonoBehaviour
 
     [Header("Player Jumping and Velocity")]
     public float jumpRange = 1f;
-    Vector3 velocity;
+    private Vector3 velocity;
     public float turnCalmTime = 0.1f;
-    float turnCalmVelocity;
+    private float turnCalmVelocity;
     public Transform surfaceCheck;
-    bool onSurface;
+    private bool onSurface;
     public float surfaceDistance = 0.6f;
     public LayerMask surfaceMask;
 
@@ -79,8 +84,35 @@ public class PlayerScript : MonoBehaviour
             cC.Move(velocity * Time.deltaTime);
         }
 
+        HandleSitting();
         PlayerMove();
         Jump();
+    }
+
+    void HandleSitting()
+    {
+        bool isAiming = Input.GetButton("Fire2");
+        bool isShooting = Input.GetButton("Fire1");
+
+        float horizontal_axis = Input.GetAxisRaw("Horizontal");
+        float vertical_axis = Input.GetAxisRaw("Vertical");
+
+        bool hasMoveInput = Mathf.Abs(horizontal_axis) > 0.1f || Mathf.Abs(vertical_axis) > 0.1f;
+
+        if (isSitting && Input.GetButton("Sprint") && hasMoveInput && !isAiming && !isShooting)
+        {
+            isSitting = false;
+        }
+
+        if (Input.GetKeyDown(sitKey) && onSurface)
+        {
+            isSitting = !isSitting;
+        }
+
+        if (animator != null)
+        {
+            animator.SetBool("IsSitting", isSitting);
+        }
     }
 
     void PlayerMove()
@@ -96,24 +128,52 @@ public class PlayerScript : MonoBehaviour
 
         bool isSprinting =
             Input.GetButton("Sprint") &&
-            (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.DownArrow) ) &&
+            (Input.GetKey(KeyCode.W) ||
+             Input.GetKey(KeyCode.A) ||
+             Input.GetKey(KeyCode.D) ||
+             Input.GetKey(KeyCode.S) ||
+             Input.GetKey(KeyCode.UpArrow) ||
+             Input.GetKey(KeyCode.LeftArrow) ||
+             Input.GetKey(KeyCode.RightArrow) ||
+             Input.GetKey(KeyCode.DownArrow)) &&
             onSurface &&
             !isAiming &&
-            !isShooting;
+            !isShooting &&
+            !isSitting;
 
-        float currentSpeed = isSprinting ? playerSprint : playerSpeed;
+        float currentSpeed = isSitting ? sitSpeed : (isSprinting ? playerSprint : playerSpeed);
+
+        float animSpeed = 0f;
 
         if (direction.magnitude >= 0.1f)
         {
-            if (animator != null)
+            animSpeed = isSprinting ? 1f : 0.5f;
+        }
+
+        if (animator != null)
+        {
+            animator.SetFloat("Speed", animSpeed, 0.1f, Time.deltaTime);
+            animator.SetBool("IsAiming", shouldFaceCamera);
+
+            float aimPitch = 0f;
+
+            if (PlayerCamera != null)
             {
-                animator.SetBool("Idle", false);
-                animator.SetBool("Walk", !isSprinting);
-                animator.SetBool("Running", isSprinting);
-                animator.SetBool("IdleAim", isAiming);
-                animator.SetBool("AimWalk", isAiming);
+                float cameraPitch = PlayerCamera.eulerAngles.x;
+
+                if (cameraPitch > 180f)
+                {
+                    cameraPitch -= 360f;
+                }
+
+                aimPitch = Mathf.Clamp(-cameraPitch / 90f, -1f, 1f);
             }
 
+            animator.SetFloat("AimPitch", aimPitch, 0.2f, Time.deltaTime);
+        }
+
+        if (direction.magnitude >= 0.1f)
+        {
             Vector3 moveDirection;
 
             if (shouldFaceCamera)
@@ -156,30 +216,9 @@ public class PlayerScript : MonoBehaviour
         }
         else
         {
-            if (animator != null)
-            {
-                animator.SetBool("Walk", false);
-                animator.SetBool("Running", false);
-                animator.SetBool("AimWalk", false);
-            }
-
             if (shouldFaceCamera)
             {
                 RotatePlayerWithCamera();
-
-                if (animator != null)
-                {
-                    animator.SetBool("Idle", false);
-                    animator.SetBool("IdleAim", isAiming);
-                }
-            }
-            else
-            {
-                if (animator != null)
-                {
-                    animator.SetBool("Idle", true);
-                    animator.SetBool("IdleAim", false);
-                }
             }
         }
     }
@@ -203,25 +242,25 @@ public class PlayerScript : MonoBehaviour
 
     void Jump()
     {
-        if (Input.GetButtonDown("Jump") && onSurface)
+        if (Input.GetButtonDown("Jump") && onSurface && !isSitting)
         {
             if (animator != null)
             {
-                animator.SetBool("Walk", false);
-                animator.SetBool("Running", false);
-                animator.SetBool("AimWalk", false);
                 animator.SetTrigger("Jump");
             }
 
             velocity.y = Mathf.Sqrt(jumpRange * -2f * gravity);
         }
-        else
-        {
-            if (animator != null)
-            {
-                animator.ResetTrigger("Jump");
-            }
-        }
+    }
+
+    public bool IsOnGround()
+    {
+        return onSurface;
+    }
+
+    public bool IsSitting()
+    {
+        return isSitting;
     }
 
     public void playerHitDamage(float takeDamage)
@@ -256,6 +295,10 @@ public class PlayerScript : MonoBehaviour
         {
             PlayerDie();
         }
+        else
+        {
+            SetAnimatorTriggerIfExists("Hit");
+        }
     }
 
     private void PlayerDie()
@@ -276,12 +319,22 @@ public class PlayerScript : MonoBehaviour
         {
             animator.updateMode = AnimatorUpdateMode.UnscaledTime;
 
+            SetAnimatorFloatIfExists("Speed", 0f);
+            SetAnimatorFloatIfExists("AimPitch", 0f);
+
+            SetAnimatorBoolIfExists("IsAiming", false);
+            SetAnimatorBoolIfExists("IsSitting", false);
             SetAnimatorBoolIfExists("Idle", false);
             SetAnimatorBoolIfExists("Walk", false);
             SetAnimatorBoolIfExists("Running", false);
             SetAnimatorBoolIfExists("AimWalk", false);
             SetAnimatorBoolIfExists("IdleAim", false);
+            SetAnimatorBoolIfExists("Fire", false);
+            SetAnimatorBoolIfExists("FireWalk", false);
+            SetAnimatorBoolIfExists("Reloading", false);
+
             ResetAnimatorTriggerIfExists("Jump");
+            ResetAnimatorTriggerIfExists("Hit");
 
             if (!string.IsNullOrEmpty(deathBoolName))
             {
@@ -336,6 +389,14 @@ public class PlayerScript : MonoBehaviour
         if (HasAnimatorParameter(parameterName, AnimatorControllerParameterType.Bool))
         {
             animator.SetBool(parameterName, value);
+        }
+    }
+
+    private void SetAnimatorFloatIfExists(string parameterName, float value)
+    {
+        if (HasAnimatorParameter(parameterName, AnimatorControllerParameterType.Float))
+        {
+            animator.SetFloat(parameterName, value);
         }
     }
 

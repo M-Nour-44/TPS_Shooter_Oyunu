@@ -570,8 +570,8 @@ ModelImporter:
       name: Jump
       takeName: Take 001
       internalID: 7400000
-      firstFrame: 9
-      lastFrame: 52
+      firstFrame: 15
+      lastFrame: 57
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

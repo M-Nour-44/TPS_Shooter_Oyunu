@@ -72421,6 +72421,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerSpeed: 3
   playerSprint: 6
+  sitKey: 99
+  sitSpeed: 1.5
   healthBar: {fileID: 1959840247}
   PlayerCamera: {fileID: 815234138}
   cC: {fileID: 1523881061}

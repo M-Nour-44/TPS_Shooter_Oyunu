@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 85842f0201dab684d875cadce03ae7d4
+guid: 0bc76e7ad46c87246aa2d3c38f575afb
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable:
@@ -530,7 +530,7 @@ ModelImporter:
     second: Object002
   - first:
       74: 7400000
-    second: (aiming)Walk_Sit
+    second: (aiming)Sit_Ide
   - first:
       95: 9500000
     second: //RootNode
@@ -567,11 +567,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: (aiming)Walk_Sit
+      name: (aiming)Sit_Ide
       takeName: Take 001
       internalID: 7400000
       firstFrame: 1
-      lastFrame: 37
+      lastFrame: 58
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
