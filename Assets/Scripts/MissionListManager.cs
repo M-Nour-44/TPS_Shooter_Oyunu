@@ -9,7 +9,29 @@ public class MissionListManager : MonoBehaviour
 
     [Header("UI Elements")]
     public GameObject taskListPanel;
-    public TextMeshProUGUI[] missionTexts = new TextMeshProUGUI[3];
+    public TextMeshProUGUI[] missionTexts = new TextMeshProUGUI[4];
+
+    [Header("Current Objective UI")]
+    public GameObject currentObjectivePanel;
+    public TextMeshProUGUI currentObjectiveText;
+    public string[] currentObjectiveTexts = new string[4]
+    {
+        "GO to star mark and open the door",
+        "enter the facility and disable the computer",
+        "Turn off both of the generators",
+        "GO to the marked location"
+    };
+
+    [Header("Start Hint UI")]
+    public GameObject startHintUI;
+    public CanvasGroup startHintCanvasGroup;
+    public float startHintDuration = 12f;
+    public float startHintFadeSpeed = 0.6f;
+
+    [Header("Objective Markers")]
+    public GameObject computerMarker;
+    public GameObject generatorMarker;
+    public GameObject finalLocationMarker;
 
     [Header("Level Complete UI")]
     public GameObject levelCompletePanel;
@@ -24,7 +46,11 @@ public class MissionListManager : MonoBehaviour
     private bool mission1Completed = false;
     private bool mission2Completed = false;
     private bool mission3Completed = false;
+    private bool mission4Completed = false;
     private bool levelChanging = false;
+
+    private bool currentObjectiveShown = false;
+    private Coroutine startHintCoroutine;
 
     private void Awake()
     {
@@ -42,21 +68,170 @@ public class MissionListManager : MonoBehaviour
         {
             levelCompletePanel.SetActive(false);
         }
+
+        if (computerMarker != null)
+        {
+            computerMarker.SetActive(false);
+        }
+
+        if (generatorMarker != null)
+        {
+            generatorMarker.SetActive(false);
+        }
+
+        if (finalLocationMarker != null)
+        {
+            finalLocationMarker.SetActive(false);
+        }
+
+        SetupCurrentObjective();
+        SetupStartHint();
     }
 
     private void Update()
     {
+        if (levelChanging)
+        {
+            if (taskListPanel != null)
+            {
+                taskListPanel.SetActive(false);
+            }
+
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.T))
         {
-            ToggleTaskList();
+            ShowCurrentObjectiveFirstTime();
+        }
+
+        if (taskListPanel != null)
+        {
+            if (Input.GetKey(KeyCode.T))
+            {
+                taskListPanel.SetActive(true);
+                HideStartHint();
+            }
+            else
+            {
+                taskListPanel.SetActive(false);
+            }
         }
     }
 
-    private void ToggleTaskList()
+    private void SetupCurrentObjective()
     {
-        if (taskListPanel != null)
+        if (currentObjectivePanel != null)
         {
-            taskListPanel.SetActive(!taskListPanel.activeSelf);
+            currentObjectivePanel.SetActive(false);
+        }
+
+        SetCurrentObjective(1);
+    }
+
+    private void ShowCurrentObjectiveFirstTime()
+    {
+        if (currentObjectiveShown)
+        {
+            return;
+        }
+
+        currentObjectiveShown = true;
+
+        if (currentObjectivePanel != null)
+        {
+            currentObjectivePanel.SetActive(true);
+        }
+    }
+
+    private void SetCurrentObjective(int missionNumber)
+    {
+        if (currentObjectiveText == null)
+        {
+            return;
+        }
+
+        int index = missionNumber - 1;
+
+        if (currentObjectiveTexts != null &&
+            index >= 0 &&
+            index < currentObjectiveTexts.Length &&
+            !string.IsNullOrEmpty(currentObjectiveTexts[index]))
+        {
+            currentObjectiveText.text = currentObjectiveTexts[index];
+        }
+    }
+
+    private void HideCurrentObjective()
+    {
+        if (currentObjectivePanel != null)
+        {
+            currentObjectivePanel.SetActive(false);
+        }
+    }
+
+    private void SetupStartHint()
+    {
+        if (startHintUI == null)
+        {
+            return;
+        }
+
+        startHintUI.SetActive(true);
+
+        if (startHintCanvasGroup == null)
+        {
+            startHintCanvasGroup = startHintUI.GetComponent<CanvasGroup>();
+        }
+
+        if (startHintCanvasGroup == null)
+        {
+            startHintCanvasGroup = startHintUI.AddComponent<CanvasGroup>();
+        }
+
+        startHintCoroutine = StartCoroutine(StartHintRoutine());
+    }
+
+    private IEnumerator StartHintRoutine()
+    {
+        float timer = 0f;
+
+        if (startHintCanvasGroup != null)
+        {
+            startHintCanvasGroup.alpha = 0f;
+        }
+
+        while (timer < startHintDuration)
+        {
+            timer += Time.unscaledDeltaTime;
+
+            if (startHintCanvasGroup != null)
+            {
+                startHintCanvasGroup.alpha = Mathf.PingPong(Time.unscaledTime * startHintFadeSpeed, 1f);
+            }
+
+            yield return null;
+        }
+
+        HideStartHint();
+    }
+
+    private void HideStartHint()
+    {
+        if (startHintCoroutine != null)
+        {
+            StopCoroutine(startHintCoroutine);
+            startHintCoroutine = null;
+        }
+
+        if (startHintCanvasGroup != null)
+        {
+            startHintCanvasGroup.alpha = 0f;
+        }
+
+        if (startHintUI != null)
+        {
+            startHintUI.SetActive(false);
         }
     }
 
@@ -75,6 +250,11 @@ public class MissionListManager : MonoBehaviour
         if (missionNumber == 3)
         {
             return mission3Completed;
+        }
+
+        if (missionNumber == 4)
+        {
+            return mission4Completed;
         }
 
         return false;
@@ -97,6 +277,11 @@ public class MissionListManager : MonoBehaviour
             return mission1Completed && mission2Completed;
         }
 
+        if (missionNumber == 4)
+        {
+            return mission1Completed && mission2Completed && mission3Completed;
+        }
+
         return false;
     }
 
@@ -107,7 +292,7 @@ public class MissionListManager : MonoBehaviour
             return false;
         }
 
-        if (missionNumber < 1 || missionNumber > 3)
+        if (missionNumber < 1 || missionNumber > 4)
         {
             return false;
         }
@@ -137,14 +322,86 @@ public class MissionListManager : MonoBehaviour
         if (missionNumber == 1)
         {
             mission1Completed = true;
+
+            if (computerMarker != null)
+            {
+                computerMarker.SetActive(true);
+            }
+
+            if (generatorMarker != null)
+            {
+                generatorMarker.SetActive(false);
+            }
+
+            if (finalLocationMarker != null)
+            {
+                finalLocationMarker.SetActive(false);
+            }
+
+            SetCurrentObjective(2);
         }
         else if (missionNumber == 2)
         {
             mission2Completed = true;
+
+            if (computerMarker != null)
+            {
+                computerMarker.SetActive(false);
+            }
+
+            if (generatorMarker != null)
+            {
+                generatorMarker.SetActive(true);
+            }
+
+            if (finalLocationMarker != null)
+            {
+                finalLocationMarker.SetActive(false);
+            }
+
+            SetCurrentObjective(3);
         }
         else if (missionNumber == 3)
         {
             mission3Completed = true;
+
+            if (computerMarker != null)
+            {
+                computerMarker.SetActive(false);
+            }
+
+            if (generatorMarker != null)
+            {
+                generatorMarker.SetActive(false);
+            }
+
+            if (finalLocationMarker != null)
+            {
+                finalLocationMarker.SetActive(true);
+            }
+
+            SetCurrentObjective(4);
+        }
+        else if (missionNumber == 4)
+        {
+            mission4Completed = true;
+
+            if (computerMarker != null)
+            {
+                computerMarker.SetActive(false);
+            }
+
+            if (generatorMarker != null)
+            {
+                generatorMarker.SetActive(false);
+            }
+
+            if (finalLocationMarker != null)
+            {
+                finalLocationMarker.SetActive(false);
+            }
+
+            HideCurrentObjective();
         }
 
         CheckAllMissionsCompleted();
@@ -153,7 +410,7 @@ public class MissionListManager : MonoBehaviour
 
     private void CheckAllMissionsCompleted()
     {
-        if (mission1Completed && mission2Completed && mission3Completed)
+        if (mission1Completed && mission2Completed && mission3Completed && mission4Completed)
         {
             if (!levelChanging)
             {
@@ -165,6 +422,9 @@ public class MissionListManager : MonoBehaviour
     private IEnumerator LevelCompleteRoutine()
     {
         levelChanging = true;
+
+        HideStartHint();
+        HideCurrentObjective();
 
         if (taskListPanel != null)
         {

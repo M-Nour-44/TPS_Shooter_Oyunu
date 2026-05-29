@@ -152,12 +152,17 @@ public class Rifle : MonoBehaviour
             audioSource.PlayOneShot(shootingSound);
         }
 
+        if (camera == null)
+        {
+            return;
+        }
+
         RaycastHit hitInfo;
 
         if (Physics.Raycast(camera.transform.position, camera.transform.forward, out hitInfo, shootingRange))
         {
-            Objects objects = hitInfo.transform.GetComponent<Objects>();
-            Enemy enemy = hitInfo.transform.GetComponent<Enemy>();
+            Objects objects = hitInfo.transform.GetComponentInParent<Objects>();
+            Enemy enemy = hitInfo.transform.GetComponentInParent<Enemy>();
 
             if (objects != null)
             {

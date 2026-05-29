@@ -52,6 +52,11 @@ public class PlayerScript : MonoBehaviour
     [Header("Aim / Shooting Rotation")]
     public float aimTurnSpeed = 15f;
 
+    [Header("Enemy Collision Fix")]
+    public float enemyTopNormalLimit = 0.25f;
+    public float enemyPushForce = 5f;
+    public float enemyDownForce = -8f;
+
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -250,6 +255,46 @@ public class PlayerScript : MonoBehaviour
             }
 
             velocity.y = Mathf.Sqrt(jumpRange * -2f * gravity);
+        }
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (isDead)
+        {
+            return;
+        }
+
+        if (hit.collider == null)
+        {
+            return;
+        }
+
+        Enemy enemy = hit.collider.GetComponentInParent<Enemy>();
+
+        if (enemy == null && !hit.collider.CompareTag("Enemy"))
+        {
+            return;
+        }
+
+        if (hit.normal.y > enemyTopNormalLimit)
+        {
+            Vector3 pushDirection = transform.position - hit.collider.bounds.center;
+            pushDirection.y = 0f;
+
+            if (pushDirection.sqrMagnitude < 0.01f)
+            {
+                pushDirection = -transform.forward;
+            }
+
+            pushDirection.Normalize();
+
+            if (cC != null && cC.enabled)
+            {
+                cC.Move(pushDirection * enemyPushForce * Time.deltaTime);
+            }
+
+            velocity.y = enemyDownForce;
         }
     }
 
