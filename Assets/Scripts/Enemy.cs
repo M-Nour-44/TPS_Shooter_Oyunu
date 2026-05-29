@@ -76,6 +76,11 @@ public class Enemy : MonoBehaviour
                 playerBody = player.transform;
             }
         }
+
+        if (stationaryGuard)
+        {
+            StopStationaryAnimation();
+        }
     }
 
     private void Update()
@@ -132,13 +137,10 @@ public class Enemy : MonoBehaviour
             enemyAgent.ResetPath();
         }
 
-        bool playerInsideVision =
-            Physics.CheckSphere(transform.position, visionRadius, PlayerLayer);
-
         bool playerInsideShooting =
             Physics.CheckSphere(transform.position, shootingRadius, PlayerLayer);
 
-        playerInVisionRadius = playerInsideVision || isAlerted;
+        playerInVisionRadius = false;
         playerInShootingRadius = playerInsideShooting;
 
         if (playerInShootingRadius && stationaryCanShoot)
@@ -188,22 +190,34 @@ public class Enemy : MonoBehaviour
 
         if (anim != null)
         {
-            anim.SetBool("Shoot", true);
-            anim.SetBool("Walk", false);
-            anim.SetBool("AimRun", false);
-            anim.SetBool("Die", false);
+            SetAnimatorBoolIfExists("Shoot", true);
+            SetAnimatorBoolIfExists("Walk", false);
+            SetAnimatorBoolIfExists("AimRun", false);
+            SetAnimatorBoolIfExists("Die", false);
+            SetAnimatorBoolIfExists("Running", false);
+            SetAnimatorBoolIfExists("IsAiming", true);
+
+            SetAnimatorFloatIfExists("Speed", 0f);
+            SetAnimatorFloatIfExists("AimPitch", 0f);
         }
     }
 
     private void StopStationaryAnimation()
     {
-        if (anim != null)
+        if (anim == null)
         {
-            anim.SetBool("Shoot", false);
-            anim.SetBool("Walk", false);
-            anim.SetBool("AimRun", false);
-            anim.SetBool("Die", false);
+            return;
         }
+
+        SetAnimatorBoolIfExists("Shoot", false);
+        SetAnimatorBoolIfExists("Walk", false);
+        SetAnimatorBoolIfExists("AimRun", false);
+        SetAnimatorBoolIfExists("Die", false);
+        SetAnimatorBoolIfExists("Running", false);
+        SetAnimatorBoolIfExists("IsAiming", false);
+
+        SetAnimatorFloatIfExists("Speed", 0f);
+        SetAnimatorFloatIfExists("AimPitch", 0f);
     }
 
     private void Guard()
@@ -237,10 +251,11 @@ public class Enemy : MonoBehaviour
 
         if (anim != null)
         {
-            anim.SetBool("Walk", true);
-            anim.SetBool("AimRun", false);
-            anim.SetBool("Shoot", false);
-            anim.SetBool("Die", false);
+            SetAnimatorBoolIfExists("Walk", true);
+            SetAnimatorBoolIfExists("AimRun", false);
+            SetAnimatorBoolIfExists("Shoot", false);
+            SetAnimatorBoolIfExists("Die", false);
+            SetAnimatorFloatIfExists("Speed", 0.5f);
         }
     }
 
@@ -266,10 +281,11 @@ public class Enemy : MonoBehaviour
 
         if (anim != null)
         {
-            anim.SetBool("Walk", false);
-            anim.SetBool("AimRun", true);
-            anim.SetBool("Shoot", false);
-            anim.SetBool("Die", false);
+            SetAnimatorBoolIfExists("Walk", false);
+            SetAnimatorBoolIfExists("AimRun", true);
+            SetAnimatorBoolIfExists("Shoot", false);
+            SetAnimatorBoolIfExists("Die", false);
+            SetAnimatorFloatIfExists("Speed", 1f);
         }
     }
 
@@ -317,10 +333,11 @@ public class Enemy : MonoBehaviour
 
         if (anim != null)
         {
-            anim.SetBool("Shoot", true);
-            anim.SetBool("Walk", false);
-            anim.SetBool("AimRun", false);
-            anim.SetBool("Die", false);
+            SetAnimatorBoolIfExists("Shoot", true);
+            SetAnimatorBoolIfExists("Walk", false);
+            SetAnimatorBoolIfExists("AimRun", false);
+            SetAnimatorBoolIfExists("Die", false);
+            SetAnimatorFloatIfExists("Speed", 0f);
         }
     }
 
@@ -360,7 +377,7 @@ public class Enemy : MonoBehaviour
 
         if (anim != null && !isDead)
         {
-            anim.SetBool("Shoot", false);
+            SetAnimatorBoolIfExists("Shoot", false);
         }
     }
 
@@ -440,12 +457,58 @@ public class Enemy : MonoBehaviour
 
         if (anim != null)
         {
-            anim.SetBool("Shoot", false);
-            anim.SetBool("Walk", false);
-            anim.SetBool("AimRun", false);
-            anim.SetBool("Die", true);
+            SetAnimatorBoolIfExists("Shoot", false);
+            SetAnimatorBoolIfExists("Walk", false);
+            SetAnimatorBoolIfExists("AimRun", false);
+            SetAnimatorBoolIfExists("Die", true);
+            SetAnimatorBoolIfExists("Running", false);
+            SetAnimatorBoolIfExists("IsAiming", false);
+
+            SetAnimatorFloatIfExists("Speed", 0f);
+            SetAnimatorFloatIfExists("AimPitch", 0f);
+        }
+
+        BossMissionTarget bossMissionTarget = GetComponent<BossMissionTarget>();
+
+        if (bossMissionTarget != null)
+        {
+            bossMissionTarget.CompleteBossMission();
         }
 
         Destroy(gameObject, 5f);
+    }
+
+    private bool HasAnimatorParameter(string parameterName, AnimatorControllerParameterType type)
+    {
+        if (anim == null)
+        {
+            return false;
+        }
+
+        foreach (AnimatorControllerParameter parameter in anim.parameters)
+        {
+            if (parameter.name == parameterName && parameter.type == type)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void SetAnimatorBoolIfExists(string parameterName, bool value)
+    {
+        if (HasAnimatorParameter(parameterName, AnimatorControllerParameterType.Bool))
+        {
+            anim.SetBool(parameterName, value);
+        }
+    }
+
+    private void SetAnimatorFloatIfExists(string parameterName, float value)
+    {
+        if (HasAnimatorParameter(parameterName, AnimatorControllerParameterType.Float))
+        {
+            anim.SetFloat(parameterName, value);
+        }
     }
 }
