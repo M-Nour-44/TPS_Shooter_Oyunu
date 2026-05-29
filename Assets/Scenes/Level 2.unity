@@ -239501,8 +239501,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactRange: 3
-  bombTotalTime: 10
-  phase2StartTime: 5
+  bombTotalTime: 300
+  phase2StartTime: 30
   bombTimerText: {fileID: 1030236881}
   player: {fileID: 788695261}
   killPlayerOnExplosion: 1
