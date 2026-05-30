@@ -990,7 +990,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 107}
+  m_AnchoredPosition: {x: 0, y: 87}
   m_SizeDelta: {x: 0, y: 4}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1012017833
@@ -1128,10 +1128,9 @@ MonoBehaviour:
   showImageTransition: 1
   showRandomImageTransition: 1
   LoadingScreenImages:
-  - {fileID: 21300000, guid: e61266b9360984f4e97281466f4957d4, type: 3}
-  - {fileID: 21300000, guid: e85a4a4bf4123034c8fb3532ada1cc1f, type: 3}
-  - {fileID: 21300000, guid: 77f4e7ba69bf1344eb5e53f53e72ce1f, type: 3}
-  - {fileID: 21300000, guid: dea2f32ebf1c0aa4194b6ce88f11bd9a, type: 3}
+  - {fileID: 21300000, guid: efb1879767d7ec94f8eb56a20cee8a37, type: 3}
+  - {fileID: 21300000, guid: 44a5fbb45c1c47e4b802e14f44d9cfcb, type: 3}
+  - {fileID: 21300000, guid: be4771f30df3b3344a536203af464d65, type: 3}
   transitionDuration: 3
   transitionFader: {fileID: 538715408}
   showContinueText: 1
@@ -1141,9 +1140,9 @@ MonoBehaviour:
   - sceneName: Maze
     loadingImage: {fileID: 21300000, guid: 35a291d75efefbb4a86688dac8db89f0, type: 3}
   selectedTab1: 555
-  selectedTab2: 555
-  selectedTab3: 0
-  currentTab: Scene Specific Loading Image
+  selectedTab2: 0
+  selectedTab3: 555
+  currentTab: Image Transition
 --- !u!114 &1294310037
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -5261,13 +5261,13 @@ MonoBehaviour:
     LevelDescription: 'Infiltrate the target facility. Your mission: breach the building,
       disable the mainframe, and shut down the power generators then exit immediately.'
     SceneToLoad: Level 1
-    LevelSprite: {fileID: 21300000, guid: 7acafec47cb280145b7cc0d49fbe7cba, type: 3}
+    LevelSprite: {fileID: 21300000, guid: 0597740ed9f115e49bbd39c75476565a, type: 3}
   - LevelTitle: Level 2
     LevelDescription: Infiltrate the abandoned factory and eliminate the enemy leader.
       You must defuse the  bomb before time runs out to rescue the hostages. Complete
       both objectives to secure the area.
     SceneToLoad: Level 2
-    LevelSprite: {fileID: 21300000, guid: 35a291d75efefbb4a86688dac8db89f0, type: 3}
+    LevelSprite: {fileID: 21300000, guid: d9823e141a47a3f48ac8869e1110f151, type: 3}
 --- !u!4 &602996944
 Transform:
   m_ObjectHideFlags: 0
