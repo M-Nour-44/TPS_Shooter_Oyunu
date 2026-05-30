@@ -152,17 +152,12 @@ public class Rifle : MonoBehaviour
             audioSource.PlayOneShot(shootingSound);
         }
 
-        if (camera == null)
-        {
-            return;
-        }
-
         RaycastHit hitInfo;
 
         if (Physics.Raycast(camera.transform.position, camera.transform.forward, out hitInfo, shootingRange))
         {
-            Objects objects = hitInfo.transform.GetComponentInParent<Objects>();
-            Enemy enemy = hitInfo.transform.GetComponentInParent<Enemy>();
+            Objects objects = hitInfo.transform.GetComponent<Objects>();
+            Enemy enemy = hitInfo.transform.GetComponent<Enemy>();
 
             if (objects != null)
             {
@@ -267,6 +262,17 @@ public class Rifle : MonoBehaviour
             AmmoOutUI.SetActive(true);
             yield return new WaitForSeconds(timeToShowUI);
             AmmoOutUI.SetActive(false);
+        }
+    }
+
+    public void AddMagazine(int amount)
+    {
+        mag += amount;
+
+        if (AmmoCount.occurrence != null)
+        {
+            AmmoCount.occurrence.UpdateAmmoText(presentAmmunition);
+            AmmoCount.occurrence.UpdateMagText(mag);
         }
     }
 

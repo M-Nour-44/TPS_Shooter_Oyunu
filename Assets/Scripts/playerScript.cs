@@ -13,6 +13,12 @@ public class PlayerScript : MonoBehaviour
     public float sitSpeed = 1.5f;
     private bool isSitting = false;
 
+    [Header("Player Noise")]
+    public float walkNoiseRadius = 5f;
+    public float runNoiseRadius = 18f;
+    private bool hasMovementInput = false;
+    private bool isCurrentlySprinting = false;
+
     [Header("Player Health Things")]
     private float playerHealth = 120f;
     private float presentHealth;
@@ -51,11 +57,6 @@ public class PlayerScript : MonoBehaviour
 
     [Header("Aim / Shooting Rotation")]
     public float aimTurnSpeed = 15f;
-
-    [Header("Enemy Collision Fix")]
-    public float enemyTopNormalLimit = 0.25f;
-    public float enemyPushForce = 5f;
-    public float enemyDownForce = -8f;
 
     void Start()
     {
@@ -145,6 +146,9 @@ public class PlayerScript : MonoBehaviour
             !isAiming &&
             !isShooting &&
             !isSitting;
+
+        hasMovementInput = direction.magnitude >= 0.1f;
+        isCurrentlySprinting = isSprinting;
 
         float currentSpeed = isSitting ? sitSpeed : (isSprinting ? playerSprint : playerSpeed);
 
@@ -258,46 +262,6 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    private void OnControllerColliderHit(ControllerColliderHit hit)
-    {
-        if (isDead)
-        {
-            return;
-        }
-
-        if (hit.collider == null)
-        {
-            return;
-        }
-
-        Enemy enemy = hit.collider.GetComponentInParent<Enemy>();
-
-        if (enemy == null && !hit.collider.CompareTag("Enemy"))
-        {
-            return;
-        }
-
-        if (hit.normal.y > enemyTopNormalLimit)
-        {
-            Vector3 pushDirection = transform.position - hit.collider.bounds.center;
-            pushDirection.y = 0f;
-
-            if (pushDirection.sqrMagnitude < 0.01f)
-            {
-                pushDirection = -transform.forward;
-            }
-
-            pushDirection.Normalize();
-
-            if (cC != null && cC.enabled)
-            {
-                cC.Move(pushDirection * enemyPushForce * Time.deltaTime);
-            }
-
-            velocity.y = enemyDownForce;
-        }
-    }
-
     public bool IsOnGround()
     {
         return onSurface;
@@ -306,6 +270,31 @@ public class PlayerScript : MonoBehaviour
     public bool IsSitting()
     {
         return isSitting;
+    }
+
+    public float GetCurrentNoiseRadius()
+    {
+        if (isDead)
+        {
+            return 0f;
+        }
+
+        if (!hasMovementInput)
+        {
+            return 0f;
+        }
+
+        if (isSitting)
+        {
+            return 0f;
+        }
+
+        if (isCurrentlySprinting)
+        {
+            return runNoiseRadius;
+        }
+
+        return walkNoiseRadius;
     }
 
     public void playerHitDamage(float takeDamage)
@@ -402,7 +391,7 @@ public class PlayerScript : MonoBehaviour
         {
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
-          //  Time.timeScale = 0.0001f;
+            Time.timeScale = 0.0001f;
         }
 
         if (destroyPlayerAfterDeath)
