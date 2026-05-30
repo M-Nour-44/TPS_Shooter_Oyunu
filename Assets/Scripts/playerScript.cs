@@ -402,7 +402,7 @@ public class PlayerScript : MonoBehaviour
         {
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
-            Time.timeScale = 0.0001f;
+          //  Time.timeScale = 0.0001f;
         }
 
         if (destroyPlayerAfterDeath)

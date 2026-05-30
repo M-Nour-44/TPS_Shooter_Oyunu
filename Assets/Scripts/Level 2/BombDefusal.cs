@@ -13,9 +13,11 @@ public class BombDefusal : MonoBehaviour
     [Header("Bomb Countdown Timer")]
     public float bombTotalTime = 300f;
     public float phase2StartTime = 30f;
+    public float phase3StartTime = 2f; // 👈 تمت إضافة وقت المرحلة الثالثة هنا
     public TextMeshProUGUI bombTimerText;
     private float bombCountdown;
     private bool switchedToPhase2 = false;
+    private bool switchedToPhase3 = false; // 👈 تمت إضافة هذا المتغير لضمان عدم تكرار التشغيل
 
     [Header("References")]
     public Transform player;
@@ -24,11 +26,15 @@ public class BombDefusal : MonoBehaviour
     public bool killPlayerOnExplosion = true;
     public float explosionDamage = 9999f;
 
+    [Header("Cinematic Link")]
+    public CinematicManager cinematicManager; // لربط سكريبت المشهد السينمائي
+
     [Header("Audio Settings")]
     public AudioSource bombAudioSource;
     public AudioSource explosionAudioSource;
     public AudioClip phase1Clip;
     public AudioClip phase2Clip;
+    public AudioClip phase3Clip; // 👈 تمت إضافة مقطع الصوت الثالث هنا
     public AudioClip explosionClip;
     public AudioClip defuseSuccessClip;
 
@@ -151,6 +157,13 @@ public class BombDefusal : MonoBehaviour
             switchedToPhase2 = true;
             PlayNewPhaseSound(phase2Clip, true);
             blinkInterval = 0.25f;
+        }
+
+        // 👈 هذا هو كود تشغيل الطنين المستمر في آخر ثانيتين
+        if (bombCountdown <= phase3StartTime && !switchedToPhase3)
+        {
+            switchedToPhase3 = true;
+            PlayNewPhaseSound(phase3Clip, true); // true لكي يستمر الطنين بالعمل (Loop)
         }
 
         if (bombCountdown <= 0f)
@@ -462,7 +475,11 @@ public class BombDefusal : MonoBehaviour
         {
             failedText.SetActive(true);
         }
-
+        // في اللحظة التي ينتهي فيها العداد أو تنفجر القنبلة، أضف هذا الشرط:
+        if (cinematicManager != null)
+        {
+            cinematicManager.StartExplosionCinematic(); // إعطاء إشارة البدء للمخرج
+        }
         KillPlayerAfterExplosion();
 
         Debug.Log("Bomb exploded! Player died.");

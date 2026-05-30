@@ -245,10 +245,10 @@ public class UIController : MonoBehaviour
             ForceShowMenu(deathMenu, 1000);
         }
 
-        if (!usingUFPS)
-        {
-            Time.timeScale = 0.0001f;
-        }
+        // if (!usingUFPS)
+        // {
+        //     Time.timeScale = 0.0001f;
+        // }
 
         ShowCursorForMenu();
 
