@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GeneratorTurnOff : MonoBehaviour
 {
@@ -27,21 +28,31 @@ public class GeneratorTurnOff : MonoBehaviour
 
     private static int pressedButtonsCount = 0;
     private static bool missionCompleted = false;
+    private static int currentSceneHandle = -1;
 
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-    private static void ResetGeneratorMissionState()
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void ResetGeneratorMissionStateOnGameStart()
     {
         pressedButtonsCount = 0;
         missionCompleted = false;
+        currentSceneHandle = -1;
     }
 
     private void Awake()
     {
+        ResetStaticStateIfSceneChanged();
+
+        thisButtonPressed = false;
         button = false;
 
         if (audioSource == null)
         {
             audioSource = GetComponent<AudioSource>();
+        }
+
+        if (player == null)
+        {
+            FindPlayer();
         }
 
         if (greenLight != null)
@@ -55,6 +66,28 @@ public class GeneratorTurnOff : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        ResetStaticStateIfSceneChanged();
+
+        if (player == null)
+        {
+            FindPlayer();
+        }
+    }
+
+    private static void ResetStaticStateIfSceneChanged()
+    {
+        Scene activeScene = SceneManager.GetActiveScene();
+
+        if (currentSceneHandle != activeScene.handle)
+        {
+            currentSceneHandle = activeScene.handle;
+            pressedButtonsCount = 0;
+            missionCompleted = false;
+        }
+    }
+
     private void Update()
     {
         if (thisButtonPressed || missionCompleted)
@@ -64,7 +97,12 @@ public class GeneratorTurnOff : MonoBehaviour
 
         if (player == null)
         {
-            return;
+            FindPlayer();
+
+            if (player == null)
+            {
+                return;
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.E) && Vector3.Distance(transform.position, player.transform.position) < radius)
@@ -105,12 +143,10 @@ public class GeneratorTurnOff : MonoBehaviour
         {
             bool completed = MissionListManager.instance.CompleteMission(missionNumber, missionCompleteText);
 
-            if (!completed)
+            if (completed)
             {
-                return;
+                missionCompleted = true;
             }
-
-            missionCompleted = true;
         }
     }
 
@@ -179,5 +215,25 @@ public class GeneratorTurnOff : MonoBehaviour
 
         targetAnimator.speed = 0f;
         targetAnimator.enabled = false;
+    }
+
+    private void FindPlayer()
+    {
+        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+
+        if (playerObject != null)
+        {
+            player = playerObject.GetComponent<PlayerScript>();
+
+            if (player == null)
+            {
+                player = playerObject.GetComponentInParent<PlayerScript>();
+            }
+
+            if (player == null)
+            {
+                player = playerObject.GetComponentInChildren<PlayerScript>();
+            }
+        }
     }
 }

@@ -201,6 +201,8 @@ public class UIController : MonoBehaviour
             Time.timeScale = 1f;
         }
 
+        AudioListener.pause = false;
+
         onUnpause.Invoke();
 
         if (pauseMenu != null)
@@ -245,11 +247,6 @@ public class UIController : MonoBehaviour
             ForceShowMenu(deathMenu, 1000);
         }
 
-        // if (!usingUFPS)
-        // {
-        //     Time.timeScale = 0.0001f;
-        // }
-
         ShowCursorForMenu();
 
         PauseMenuOptions options = GetComponent<PauseMenuOptions>();
@@ -265,14 +262,32 @@ public class UIController : MonoBehaviour
     public void restartLevel()
     {
         Time.timeScale = 1f;
+        AudioListener.pause = false;
 
         isDeathMenuOpen = false;
         isGoingToMainMenu = false;
-
         isOpen = false;
         openPMenu = true;
 
+        if (pauseMenu != null)
+        {
+            ForceHideMenu(pauseMenu);
+        }
+
+        if (deathMenu != null)
+        {
+            ForceHideMenu(deathMenu);
+        }
+
+        if (saveMenu != null)
+        {
+            saveMenu.SetActive(false);
+        }
+
         onUnpause.Invoke();
+
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
 
         Scene currentScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(currentScene.buildIndex);
@@ -283,6 +298,7 @@ public class UIController : MonoBehaviour
         isGoingToMainMenu = true;
 
         Time.timeScale = 1f;
+        AudioListener.pause = false;
 
         isDeathMenuOpen = false;
         isOpen = false;
@@ -339,6 +355,7 @@ public class UIController : MonoBehaviour
     public void quitGame()
     {
         Time.timeScale = 1f;
+        AudioListener.pause = false;
 
         Application.Quit();
 
