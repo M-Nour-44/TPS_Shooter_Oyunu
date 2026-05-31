@@ -35680,6 +35680,9 @@ MonoBehaviour:
   playerHeard: 0
   searchPointRadius: 1.5
   searchWaitTime: 3
+  alertNearbyEnemiesWhenHit: 1
+  hitAlertRadius: 25
+  hitAlertMakesEnemiesChasePlayer: 1
   stationaryGuard: 0
   stationaryCanShoot: 1
 --- !u!1 &193893429
@@ -54509,6 +54512,9 @@ MonoBehaviour:
   playerHeard: 0
   searchPointRadius: 1.5
   searchWaitTime: 3
+  alertNearbyEnemiesWhenHit: 1
+  hitAlertRadius: 25
+  hitAlertMakesEnemiesChasePlayer: 1
   stationaryGuard: 0
   stationaryCanShoot: 1
 --- !u!4 &320227568
@@ -80599,7 +80605,7 @@ Transform:
   m_GameObject: {fileID: 383970752}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0020943934, y: 0, z: 0, w: 0.9999978}
-  m_LocalPosition: {x: -9.5899315, y: 0.90507454, z: -50.13429}
+  m_LocalPosition: {x: -9.378174, y: 0.90507454, z: -50.13429}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -102544,6 +102550,9 @@ MonoBehaviour:
   playerHeard: 0
   searchPointRadius: 1.5
   searchWaitTime: 3
+  alertNearbyEnemiesWhenHit: 1
+  hitAlertRadius: 25
+  hitAlertMakesEnemiesChasePlayer: 1
   stationaryGuard: 0
   stationaryCanShoot: 1
 --- !u!1 &484436070
@@ -163696,6 +163705,8 @@ MonoBehaviour:
   sitSpeed: 1.5
   walkNoiseRadius: 5
   runNoiseRadius: 18
+  defaultGunShotAlertRadius: 35
+  gunShotMakesEnemiesChasePlayer: 1
   healthBar: {fileID: 1945436247}
   PlayerCamera: {fileID: 383970755}
   cC: {fileID: 788695263}
@@ -191174,7 +191185,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 5, y: 0.4, z: 5}
-  m_Center: {x: -0.5, y: 0, z: -0.7}
+  m_Center: {x: -0.5, y: 0.35, z: -0.7}
 --- !u!4 &914219380
 Transform:
   m_ObjectHideFlags: 0
@@ -196167,6 +196178,9 @@ MonoBehaviour:
   playerHeard: 0
   searchPointRadius: 1.5
   searchWaitTime: 3
+  alertNearbyEnemiesWhenHit: 1
+  hitAlertRadius: 25
+  hitAlertMakesEnemiesChasePlayer: 1
   stationaryGuard: 0
   stationaryCanShoot: 1
 --- !u!1 &917247446
@@ -279116,6 +279130,9 @@ MonoBehaviour:
   playerHeard: 0
   searchPointRadius: 1.5
   searchWaitTime: 3
+  alertNearbyEnemiesWhenHit: 1
+  hitAlertRadius: 25
+  hitAlertMakesEnemiesChasePlayer: 1
   stationaryGuard: 0
   stationaryCanShoot: 1
 --- !u!4 &1123637788
@@ -529641,6 +529658,9 @@ MonoBehaviour:
   playerHeard: 0
   searchPointRadius: 1.5
   searchWaitTime: 3
+  alertNearbyEnemiesWhenHit: 1
+  hitAlertRadius: 25
+  hitAlertMakesEnemiesChasePlayer: 1
   stationaryGuard: 0
   stationaryCanShoot: 1
 --- !u!1 &1678437947
@@ -571637,6 +571657,9 @@ MonoBehaviour:
   playerHeard: 0
   searchPointRadius: 1.5
   searchWaitTime: 3
+  alertNearbyEnemiesWhenHit: 1
+  hitAlertRadius: 25
+  hitAlertMakesEnemiesChasePlayer: 1
   stationaryGuard: 0
   stationaryCanShoot: 1
 --- !u!1 &1815831394
@@ -577142,6 +577165,9 @@ MonoBehaviour:
   playerHeard: 0
   searchPointRadius: 1.5
   searchWaitTime: 3
+  alertNearbyEnemiesWhenHit: 1
+  hitAlertRadius: 25
+  hitAlertMakesEnemiesChasePlayer: 1
   stationaryGuard: 0
   stationaryCanShoot: 1
 --- !u!4 &1826905520
@@ -650561,7 +650587,7 @@ GameObject:
   m_Name: Factory1Wall01Glass
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &166030293422307492
@@ -650577,7 +650603,7 @@ GameObject:
   m_Name: Factory1Wall01 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &166587195951326340
@@ -650596,7 +650622,7 @@ GameObject:
   m_Name: Factory1Wall01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &167194274130691606
@@ -654884,7 +654910,7 @@ GameObject:
   m_Name: Factory1Wall05 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &1043482162038478254
@@ -654903,7 +654929,7 @@ GameObject:
   m_Name: Factory1Wall05Glass
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &1043496668886481700
@@ -654922,7 +654948,7 @@ GameObject:
   m_Name: Factory1Wall05
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!64 &1049920290173114299
@@ -683147,21 +683173,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_CollideAgainst:
     serializedVersion: 2
-    m_Bits: 1
-  m_IgnoreTag: 
+    m_Bits: 129
+  m_IgnoreTag: Player
   m_TransparentLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_MinimumDistanceFromTarget: 0.1
+  m_MinimumDistanceFromTarget: 0.01
   m_AvoidObstacles: 1
   m_DistanceLimit: 0
   m_MinimumOcclusionTime: 0
-  m_CameraRadius: 0.1
-  m_Strategy: 0
-  m_MaximumEffort: 4
-  m_SmoothingTime: 0
-  m_Damping: 0
-  m_DampingWhenOccluded: 0
+  m_CameraRadius: 0
+  m_Strategy: 1
+  m_MaximumEffort: 1
+  m_SmoothingTime: 0.1
+  m_Damping: 0.2
+  m_DampingWhenOccluded: 0.1
   m_OptimalTargetDistance: 0
 --- !u!1 &2183799305911783272
 GameObject:
@@ -688789,7 +688815,7 @@ Transform:
   m_GameObject: {fileID: 2671857128727565850}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0020943934, y: 0, z: 0, w: 0.9999978}
-  m_LocalPosition: {x: -9.5899315, y: 0.90507454, z: -50.13429}
+  m_LocalPosition: {x: -9.378174, y: 0.90507454, z: -50.13429}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -688867,21 +688893,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_CollideAgainst:
     serializedVersion: 2
-    m_Bits: 1
-  m_IgnoreTag: 
+    m_Bits: 129
+  m_IgnoreTag: Player
   m_TransparentLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_MinimumDistanceFromTarget: 0.1
+  m_MinimumDistanceFromTarget: 0.01
   m_AvoidObstacles: 1
   m_DistanceLimit: 0
   m_MinimumOcclusionTime: 0
-  m_CameraRadius: 0.1
-  m_Strategy: 0
-  m_MaximumEffort: 4
-  m_SmoothingTime: 0
-  m_Damping: 0
-  m_DampingWhenOccluded: 0
+  m_CameraRadius: 0
+  m_Strategy: 1
+  m_MaximumEffort: 1
+  m_SmoothingTime: 0.1
+  m_Damping: 0.2
+  m_DampingWhenOccluded: 0.1
   m_OptimalTargetDistance: 0
 --- !u!4 &2671857129067818928
 Transform:
@@ -695184,7 +695210,7 @@ GameObject:
   m_Name: Factory1Wall05
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &3126378271711920741
@@ -695203,7 +695229,7 @@ GameObject:
   m_Name: Factory1Wall05Glass
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &3126395030196530415
@@ -695222,7 +695248,7 @@ GameObject:
   m_Name: Factory1Wall05
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!65 &3128362781647572267
@@ -702805,7 +702831,7 @@ GameObject:
   m_Name: Factory1Wall05
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &3724444654082699524
@@ -702824,7 +702850,7 @@ GameObject:
   m_Name: Factory1Wall05
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &3724456415255404430
@@ -702843,7 +702869,7 @@ GameObject:
   m_Name: Factory1Wall05Glass
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!23 &3725048724631978911
@@ -712121,7 +712147,7 @@ GameObject:
   m_Name: Factory1Wall05
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &4691834730979947463
@@ -712140,7 +712166,7 @@ GameObject:
   m_Name: Factory1Wall05Glass
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &4692738369857020313
@@ -712156,7 +712182,7 @@ GameObject:
   m_Name: Factory1Wall05 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!33 &4694286305436372764
@@ -721158,7 +721184,7 @@ GameObject:
   m_Name: Factory1Wall05 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &6029958457409547035
@@ -721177,7 +721203,7 @@ GameObject:
   m_Name: Factory1Wall05Glass
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &6029959856705275281
@@ -721196,7 +721222,7 @@ GameObject:
   m_Name: Factory1Wall05
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!23 &6030220033540361394
@@ -725838,6 +725864,8 @@ MonoBehaviour:
   fireCharge: 15
   animator: {fileID: 788695262}
   player: {fileID: 788695269}
+  alertEnemiesWhenShooting: 1
+  gunShotAlertRadius: 35
   reloadingTime: 1.3
   muzzleSpark: {fileID: 7299676136197299002}
   impactEffect: {fileID: 2867618450376107503, guid: b701310e0dd0c8344ad5b811baa215b5, type: 3}
@@ -745595,7 +745623,7 @@ GameObject:
   m_Name: Factory1Wall05 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &7665045162832570166
@@ -745614,7 +745642,7 @@ GameObject:
   m_Name: Factory1Wall05Glass
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &7665049843063884220
@@ -745633,7 +745661,7 @@ GameObject:
   m_Name: Factory1Wall05
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!23 &7665155211010807013
@@ -745802,7 +745830,7 @@ GameObject:
   m_Name: Factory1Wall01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &7683863692160609204
@@ -745818,7 +745846,7 @@ GameObject:
   m_Name: Factory1Wall01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &7684226932620708766
@@ -745837,7 +745865,7 @@ GameObject:
   m_Name: Factory1Wall01Glass
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &7685720289327805650
@@ -753950,7 +753978,7 @@ GameObject:
   m_Name: Factory1Wall05 (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &8722950924310400079
@@ -753969,7 +753997,7 @@ GameObject:
   m_Name: Factory1Wall05Glass
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &8722956155370169029
@@ -753988,7 +754016,7 @@ GameObject:
   m_Name: Factory1Wall05
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &8725940041488329083
@@ -793743,7 +793771,7 @@ GameObject:
   m_Name: Factory1Wall05 (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &8929039086424374106
@@ -793762,7 +793790,7 @@ GameObject:
   m_Name: Factory1Wall05Glass
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &8929053062709745104
@@ -793781,7 +793809,7 @@ GameObject:
   m_Name: Factory1Wall05
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &8934200644916523970

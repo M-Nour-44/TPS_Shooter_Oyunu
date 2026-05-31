@@ -6633,6 +6633,9 @@ MonoBehaviour:
   playerHeard: 0
   searchPointRadius: 1.5
   searchWaitTime: 3
+  alertNearbyEnemiesWhenHit: 1
+  hitAlertRadius: 25
+  hitAlertMakesEnemiesChasePlayer: 1
   stationaryGuard: 0
   stationaryCanShoot: 1
 --- !u!1 &37327901
@@ -15574,7 +15577,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -29.4, y: 0.0000023246}
+  m_AnchoredPosition: {x: -29.400024, y: 0.0000023246}
   m_SizeDelta: {x: 179.1772, y: 20.6705}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &198945907
@@ -44569,7 +44572,7 @@ Transform:
   m_GameObject: {fileID: 815234135}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0020943934, y: -0, z: -0, w: 0.9999978}
-  m_LocalPosition: {x: -3.6038747, y: 1.7460247, z: -12.895425}
+  m_LocalPosition: {x: -3.4403133, y: 1.7460247, z: -12.895425}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -63312,6 +63315,9 @@ MonoBehaviour:
   playerHeard: 0
   searchPointRadius: 1.5
   searchWaitTime: 3
+  alertNearbyEnemiesWhenHit: 1
+  hitAlertRadius: 25
+  hitAlertMakesEnemiesChasePlayer: 1
   stationaryGuard: 0
   stationaryCanShoot: 1
 --- !u!1 &1244817399
@@ -128048,6 +128054,9 @@ MonoBehaviour:
   playerHeard: 0
   searchPointRadius: 1.5
   searchWaitTime: 3
+  alertNearbyEnemiesWhenHit: 1
+  hitAlertRadius: 25
+  hitAlertMakesEnemiesChasePlayer: 1
   stationaryGuard: 0
   stationaryCanShoot: 1
 --- !u!1 &1503529566
@@ -128498,6 +128507,9 @@ MonoBehaviour:
   playerHeard: 0
   searchPointRadius: 1.5
   searchWaitTime: 3
+  alertNearbyEnemiesWhenHit: 1
+  hitAlertRadius: 25
+  hitAlertMakesEnemiesChasePlayer: 1
   stationaryGuard: 0
   stationaryCanShoot: 1
 --- !u!1 &1516693972
@@ -128671,6 +128683,8 @@ MonoBehaviour:
   sitSpeed: 1.5
   walkNoiseRadius: 5
   runNoiseRadius: 18
+  defaultGunShotAlertRadius: 35
+  gunShotMakesEnemiesChasePlayer: 1
   healthBar: {fileID: 1959840247}
   PlayerCamera: {fileID: 815234138}
   cC: {fileID: 1523881061}
@@ -148025,7 +148039,7 @@ MonoBehaviour:
   muzzleSpark: {fileID: 762552161}
   enemyWeapon: {fileID: 173109215}
   visionRadius: 20
-  shootingRadius: 10
+  shootingRadius: 20
   fieldOfViewAngle: 180
   useFieldOfView: 1
   playerInVisionRadius: 0
@@ -148034,7 +148048,10 @@ MonoBehaviour:
   playerHeard: 0
   searchPointRadius: 1.5
   searchWaitTime: 3
-  stationaryGuard: 0
+  alertNearbyEnemiesWhenHit: 1
+  hitAlertRadius: 25
+  hitAlertMakesEnemiesChasePlayer: 1
+  stationaryGuard: 1
   stationaryCanShoot: 1
 --- !u!1 &1703096650
 GameObject:
@@ -154149,7 +154166,7 @@ MonoBehaviour:
   muzzleSpark: {fileID: 1548540117}
   enemyWeapon: {fileID: 2060607200}
   visionRadius: 20
-  shootingRadius: 10
+  shootingRadius: 20
   fieldOfViewAngle: 180
   useFieldOfView: 1
   playerInVisionRadius: 0
@@ -154158,7 +154175,10 @@ MonoBehaviour:
   playerHeard: 0
   searchPointRadius: 1.5
   searchWaitTime: 3
-  stationaryGuard: 0
+  alertNearbyEnemiesWhenHit: 1
+  hitAlertRadius: 25
+  hitAlertMakesEnemiesChasePlayer: 1
+  stationaryGuard: 1
   stationaryCanShoot: 1
 --- !u!1 &1979227799
 GameObject:
@@ -159890,6 +159910,9 @@ MonoBehaviour:
   playerHeard: 0
   searchPointRadius: 1.5
   searchWaitTime: 3
+  alertNearbyEnemiesWhenHit: 1
+  hitAlertRadius: 25
+  hitAlertMakesEnemiesChasePlayer: 1
   stationaryGuard: 0
   stationaryCanShoot: 1
 --- !u!1 &2025146222
@@ -160762,6 +160785,9 @@ MonoBehaviour:
   playerHeard: 0
   searchPointRadius: 1.5
   searchWaitTime: 3
+  alertNearbyEnemiesWhenHit: 1
+  hitAlertRadius: 25
+  hitAlertMakesEnemiesChasePlayer: 1
   stationaryGuard: 0
   stationaryCanShoot: 1
 --- !u!95 &2057548722
@@ -162856,8 +162882,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2, y: 0.4, z: 2}
-  m_Center: {x: -0.5, y: 0, z: -0.7}
+  m_Size: {x: 4, y: 0.4, z: 4}
+  m_Center: {x: -0.5, y: 0.3, z: -0.7}
 --- !u!82 &654391302517436979
 AudioSource:
   m_ObjectHideFlags: 0
@@ -166230,6 +166256,8 @@ MonoBehaviour:
   fireCharge: 15
   animator: {fileID: 1523881060}
   player: {fileID: 1523881062}
+  alertEnemiesWhenShooting: 1
+  gunShotAlertRadius: 35
   reloadingTime: 1.3
   muzzleSpark: {fileID: 3626855276161675021}
   impactEffect: {fileID: 2867618450376107503, guid: b701310e0dd0c8344ad5b811baa215b5, type: 3}
@@ -166536,8 +166564,8 @@ GameObject:
   m_Name: Cube.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_NavMeshLayer: 1
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!65 &2908091668031210942
 BoxCollider:
@@ -173385,8 +173413,8 @@ GameObject:
   m_Name: Cube.006
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_NavMeshLayer: 1
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!1 &5157071428353781848
 GameObject:
@@ -173605,7 +173633,7 @@ Transform:
   m_GameObject: {fileID: 5157071428694018547}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0020943934, y: -0, z: -0, w: 0.9999978}
-  m_LocalPosition: {x: -3.6038747, y: 1.7460248, z: -12.895425}
+  m_LocalPosition: {x: -3.4403133, y: 1.7460248, z: -12.895425}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -173676,8 +173704,8 @@ GameObject:
   m_Name: Cube.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_NavMeshLayer: 1
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!114 &5214694674779094182
 MonoBehaviour:
@@ -179013,8 +179041,8 @@ GameObject:
   m_Name: Cube.005
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_NavMeshLayer: 1
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!23 &6476695292438611357
 MeshRenderer:

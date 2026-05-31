@@ -12,6 +12,10 @@ public class Rifle : MonoBehaviour
     public Animator animator;
     public PlayerScript player;
 
+    [Header("Gunshot Alert")]
+    public bool alertEnemiesWhenShooting = true;
+    public float gunShotAlertRadius = 35f;
+
     [Header("Rifle Ammunition and shooting")]
     private int maximumAmmunition = 20;
     private int mag = 15;
@@ -42,6 +46,16 @@ public class Rifle : MonoBehaviour
 
     private void Start()
     {
+        if (player == null)
+        {
+            player = GetComponentInParent<PlayerScript>();
+        }
+
+        if (player == null)
+        {
+            player = FindObjectOfType<PlayerScript>();
+        }
+
         if (player != null)
         {
             originalPlayerSpeed = player.playerSpeed;
@@ -147,17 +161,27 @@ public class Rifle : MonoBehaviour
             muzzleSpark.Play();
         }
 
-        if (audioSource != null && shootingSound != null)
+        if (audioSource != null && audioSource.enabled && audioSource.gameObject.activeInHierarchy && shootingSound != null)
         {
             audioSource.PlayOneShot(shootingSound);
+        }
+
+        if (alertEnemiesWhenShooting && player != null)
+        {
+            player.MakeGunShotNoise(gunShotAlertRadius);
+        }
+
+        if (camera == null)
+        {
+            return;
         }
 
         RaycastHit hitInfo;
 
         if (Physics.Raycast(camera.transform.position, camera.transform.forward, out hitInfo, shootingRange))
         {
-            Objects objects = hitInfo.transform.GetComponent<Objects>();
-            Enemy enemy = hitInfo.transform.GetComponent<Enemy>();
+            Objects objects = hitInfo.transform.GetComponentInParent<Objects>();
+            Enemy enemy = hitInfo.transform.GetComponentInParent<Enemy>();
 
             if (objects != null)
             {
@@ -228,7 +252,7 @@ public class Rifle : MonoBehaviour
 
         Debug.Log("Reloading....");
 
-        if (audioSource != null && reloadingSound != null)
+        if (audioSource != null && audioSource.enabled && audioSource.gameObject.activeInHierarchy && reloadingSound != null)
         {
             audioSource.PlayOneShot(reloadingSound);
         }

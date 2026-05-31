@@ -19,6 +19,10 @@ public class PlayerScript : MonoBehaviour
     private bool hasMovementInput = false;
     private bool isCurrentlySprinting = false;
 
+    [Header("Gunshot Noise")]
+    public float defaultGunShotAlertRadius = 35f;
+    public bool gunShotMakesEnemiesChasePlayer = true;
+
     [Header("Player Health Things")]
     private float playerHealth = 120f;
     private float presentHealth;
@@ -295,6 +299,16 @@ public class PlayerScript : MonoBehaviour
         }
 
         return walkNoiseRadius;
+    }
+
+    public void MakeGunShotNoise(float radius)
+    {
+        if (isDead)
+        {
+            return;
+        }
+
+        Enemy.AlertEnemiesAround(transform.position, radius, gunShotMakesEnemiesChasePlayer);
     }
 
     public void playerHitDamage(float takeDamage)

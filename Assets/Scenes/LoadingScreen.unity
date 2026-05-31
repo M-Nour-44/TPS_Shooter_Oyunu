@@ -1131,6 +1131,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: efb1879767d7ec94f8eb56a20cee8a37, type: 3}
   - {fileID: 21300000, guid: 44a5fbb45c1c47e4b802e14f44d9cfcb, type: 3}
   - {fileID: 21300000, guid: be4771f30df3b3344a536203af464d65, type: 3}
+  - {fileID: 21300000, guid: 0b138612ef015a44abe0916133578443, type: 3}
   transitionDuration: 3
   transitionFader: {fileID: 538715408}
   showContinueText: 1

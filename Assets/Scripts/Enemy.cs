@@ -74,6 +74,11 @@ public class Enemy : MonoBehaviour
     private bool isWaitingAtSearchPoint = false;
     private Coroutine searchCoroutine;
 
+    [Header("Gunshot Alert")]
+    public bool alertNearbyEnemiesWhenHit = true;
+    public float hitAlertRadius = 25f;
+    public bool hitAlertMakesEnemiesChasePlayer = true;
+
     [Header("Stationary Guard")]
     public bool stationaryGuard = false;
     public bool stationaryCanShoot = true;
@@ -182,7 +187,7 @@ public class Enemy : MonoBehaviour
         {
             StationaryShootPlayer();
         }
-        else if (playerHeard && hasLastHeardPosition)
+        else if (hasLastHeardPosition)
         {
             LookAtPositionYOnly(lastHeardPosition);
             SetEnemyAnimation(0f, true, false);
@@ -341,7 +346,9 @@ public class Enemy : MonoBehaviour
         CancelPatrolWait();
 
         enemyAgent.isStopped = true;
+        enemyAgent.velocity = Vector3.zero;
         enemyAgent.ResetPath();
+        enemyAgent.speed = 0f;
 
         LookAtPlayerYOnly();
 
@@ -597,6 +604,11 @@ public class Enemy : MonoBehaviour
 
         AlertEnemy();
 
+        if (alertNearbyEnemiesWhenHit)
+        {
+            AlertEnemiesAround(transform.position, hitAlertRadius, hitAlertMakesEnemiesChasePlayer);
+        }
+
         if (healthBar != null)
         {
             healthBar.SetHealth(presentHealth);
@@ -612,6 +624,53 @@ public class Enemy : MonoBehaviour
             {
                 SetAnimatorTriggerIfExists("Hit");
                 nextHitAnimationTime = Time.time + hitAnimationCooldown;
+            }
+        }
+    }
+
+    public void ReceiveGunshotAlert(Vector3 noisePosition, bool chasePlayer)
+    {
+        if (isDead)
+        {
+            return;
+        }
+
+        lastHeardPosition = noisePosition;
+        hasLastHeardPosition = true;
+
+        if (chasePlayer)
+        {
+            isAlerted = true;
+        }
+
+        CancelPatrolWait();
+        CancelSearch();
+
+        lastHeardPosition = noisePosition;
+        hasLastHeardPosition = true;
+
+        if (playerBody == null)
+        {
+            FindPlayer();
+        }
+    }
+
+    public static void AlertEnemiesAround(Vector3 position, float radius, bool chasePlayer)
+    {
+        Enemy[] enemies = FindObjectsOfType<Enemy>();
+
+        for (int i = 0; i < enemies.Length; i++)
+        {
+            if (enemies[i] == null)
+            {
+                continue;
+            }
+
+            float distance = Vector3.Distance(enemies[i].transform.position, position);
+
+            if (distance <= radius)
+            {
+                enemies[i].ReceiveGunshotAlert(position, chasePlayer);
             }
         }
     }
