@@ -25,7 +25,7 @@ public class Ally : MonoBehaviour
 
     [Header("Savaş Ayarları (Algılama)")]
     public float detectionRadius = 15f;
-    public float combatStopDistance = 8f; // Düşmana ateş etmek için ne kadar yaklaşacağı
+    public float combatStopDistance = 8f; 
     public LayerMask enemyLayer;
 
     [Header("Savaş Ayarları (Ateş Etme)")]
@@ -38,6 +38,11 @@ public class Ally : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip shootingSound;
 
+    [Header("Ally Can Ayarları")]
+    public float allyHealth = 120f;
+    private float presentHealth;
+    [HideInInspector] public bool isDead = false; // Düşmanların bu değişkeni okuyabilmesi için public yaptık
+
     private Transform currentTarget;
     private NavMeshAgent agent;
     private Animator animator;
@@ -48,31 +53,35 @@ public class Ally : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         agent.stoppingDistance = followDistance;
+        
+        presentHealth = allyHealth; // Canı doldurarak başlıyoruz
     }
 
     void Update()
     {
+        // Eğer Ally öldüyse hiçbir mantık arama, çalışmayı durdur
+        if (isDead) return;
+
         // 1. Düşman Kontrolü (Sensör)
         FindNearestEnemy();
 
-        // 2. Durum Geçişleri (State Transitions)
+        // 2. Durum Geçişleri
         if (currentTarget != null)
         {
             float distanceToEnemy = Vector3.Distance(transform.position, currentTarget.position);
-            
             if (distanceToEnemy <= detectionRadius)
             {
-                currentState = AllyState.Combat; // Menzilde düşman var, SAVAŞA GEÇ
+                currentState = AllyState.Combat;
             }
             else
             {
-                currentState = AllyState.FollowPlayer; // Düşman uzaklaştı, TAKİBE DÖN
+                currentState = AllyState.FollowPlayer;
                 currentTarget = null;
             }
         }
         else
         {
-            currentState = AllyState.FollowPlayer; // Düşman yok, TAKİPTE KAL
+            currentState = AllyState.FollowPlayer;
         }
 
         // 3. Mevcut Durumu Çalıştır
@@ -86,28 +95,21 @@ public class Ally : MonoBehaviour
                 break;
         }
 
-        // NavMeshAgent'ın anlık hızını Animator'a aktar
         animator.SetFloat("Speed", agent.velocity.magnitude);
     }
 
-    // ================= FSM DURUM FONKSİYONLARI =================
-
     void UpdateFollowState()
     {
-        // Takip durumunda normal hareket etsin, yönünü kendi bulsun
         agent.updateRotation = true; 
         agent.isStopped = false; 
 
-        // Savaş animasyonlarını kapat
         SetAnimatorBoolIfExists("IsAiming", false);
         SetAnimatorBoolIfExists("Shoot", false);
 
         if (player != null)
         {
-            // Oyuncuya olan mesafeye göre hızını ayarla (Yürü veya Koş)
             float distanceToPlayer = Vector3.Distance(transform.position, player.position);
             agent.speed = (distanceToPlayer > runDistanceThreshold) ? runSpeed : walkSpeed;
-            
             agent.stoppingDistance = followDistance;
             agent.SetDestination(player.position);
         }
@@ -115,49 +117,86 @@ public class Ally : MonoBehaviour
 
     void UpdateCombatState()
     {
-        // Savaştayız, nişan alma animasyonunu başlat
         SetAnimatorBoolIfExists("IsAiming", true);
 
-        // --- 1. MESAFE KONTROLÜ (Aiming Run mu, Sabit Shoot mu?) ---
         float distanceToEnemy = Vector3.Distance(transform.position, currentTarget.position);
         
         if (distanceToEnemy > combatStopDistance) 
         {
-            // Düşman uzaktaysa, nişan alarak üstüne yürü (Aiming Run)
             agent.isStopped = false;
             agent.speed = walkSpeed; 
-            agent.stoppingDistance = combatStopDistance; // Düşmanın dibine girmesin
+            agent.stoppingDistance = combatStopDistance; 
             agent.SetDestination(currentTarget.position);
         }
         else
         {
-            // Düşman atış menzilindeyse dur ve pozisyonunu koru (Aiming Shoot)
             agent.isStopped = true;
             agent.velocity = Vector3.zero; 
         }
 
-        // --- 2. YÖN KONTROLÜ (Gövdeyi her zaman düşmana dön) ---
-        agent.updateRotation = false; // NavMesh'in otomatik dönüşünü yasakla
+        agent.updateRotation = false; 
         Vector3 direction = (currentTarget.position - transform.position).normalized;
-        
-        // Karakterin yukarı/aşağı eğilmemesi için Y eksenini sıfırla
         Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 15f);
 
-        // --- 3. ATEŞ ETME ---
         if (Time.time >= nextTimeToShoot)
         {
-            SetAnimatorBoolIfExists("Shoot", true); // Kısa ateş animasyonunu tetikle
+            SetAnimatorBoolIfExists("Shoot", true); 
             ShootAtEnemy();
             nextTimeToShoot = Time.time + timeBetweenShots;
         }
         else
         {
-            SetAnimatorBoolIfExists("Shoot", false); // Bekleme süresindeyken tetiği bırak
+            SetAnimatorBoolIfExists("Shoot", false); 
         }
     }
 
-    // ================= YARDIMCI FONKSİYONLAR =================
+    // Düşmanların Ally'a hasar verebilmesi için çağıracağı fonksiyon
+    public void allyHitDamage(float takeDamage)
+    {
+        if (isDead) return;
+
+        presentHealth -= takeDamage;
+        
+        // Hasar alma animasyon tetikleyicisi
+        SetAnimatorTriggerIfExists("Hit");
+
+        if (presentHealth <= 0)
+        {
+            AllyDie();
+        }
+    }
+
+    void AllyDie()
+    {
+        isDead = true;
+        
+        // Hareket sistemlerini kapat
+        if (agent != null && agent.enabled)
+        {
+            if (agent.isOnNavMesh)
+            {
+                agent.isStopped = true;
+                agent.ResetPath();
+            }
+            agent.enabled = false;
+        }
+
+        // Animasyonları sıfırla ve ölümü tetikle
+        SetAnimatorBoolIfExists("IsAiming", false);
+        SetAnimatorBoolIfExists("Shoot", false);
+        SetAnimatorBoolIfExists("Die", true);
+
+        // Çarpışma kutularını kapat ki ölü beden mermileri engellemesin
+        Collider[] colliders = GetComponentsInChildren<Collider>();
+        foreach (Collider col in colliders)
+        {
+            col.enabled = false;
+        }
+
+        // 5 saniye sonra cesedi sahneden temizle (isteğe bağlı)
+        Destroy(gameObject, 5f);
+    }
 
     void FindNearestEnemy()
     {
@@ -168,8 +207,6 @@ public class Ally : MonoBehaviour
         foreach (Collider enemyCollider in enemiesInRange)
         {
             Enemy enemyScript = enemyCollider.GetComponentInParent<Enemy>();
-            
-            // Eğer düşman scripti varsa ve obje sahnede aktifse (ölmemişse)
             if (enemyScript != null && enemyScript.gameObject.activeInHierarchy)
             {
                  float distanceToEnemy = Vector3.Distance(transform.position, enemyCollider.transform.position);
@@ -205,7 +242,6 @@ public class Ally : MonoBehaviour
     private void SetAnimatorBoolIfExists(string parameterName, bool value)
     {
         if (animator == null) return;
-        
         foreach (AnimatorControllerParameter parameter in animator.parameters)
         {
             if (parameter.name == parameterName && parameter.type == AnimatorControllerParameterType.Bool)
@@ -216,12 +252,22 @@ public class Ally : MonoBehaviour
         }
     }
 
+    private void SetAnimatorTriggerIfExists(string parameterName)
+    {
+        if (animator == null) return;
+        foreach (AnimatorControllerParameter parameter in animator.parameters)
+        {
+            if (parameter.name == parameterName && parameter.type == AnimatorControllerParameterType.Trigger)
+            {
+                animator.SetTrigger(parameterName);
+                return;
+            }
+        }
+    }
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
-        
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position, combatStopDistance);
     }
 }

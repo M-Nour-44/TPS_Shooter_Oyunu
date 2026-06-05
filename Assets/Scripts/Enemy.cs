@@ -125,6 +125,8 @@ public class Enemy : MonoBehaviour
             return;
         }
 
+        SelectClosestTarget();
+
         if (stationaryGuard)
         {
             StationaryGuardUpdate();
@@ -168,6 +170,28 @@ public class Enemy : MonoBehaviour
     {
         return enemyAgent != null && enemyAgent.enabled && enemyAgent.isOnNavMesh;
     }
+
+    private void SelectClosestTarget()
+{
+    GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+    Ally allyObj = FindObjectOfType<Ally>();
+
+    // Oyuncuya olan mesafeyi hesapla
+    float distToPlayer = playerObj != null ? Vector3.Distance(transform.position, playerObj.transform.position) : Mathf.Infinity;
+    
+    // Ally sahnede varsa ve hayattaysa mesafesini al, ölüyse mesafesini sonsuz say
+    float distToAlly = (allyObj != null && !allyObj.isDead) ? Vector3.Distance(transform.position, allyObj.transform.position) : Mathf.Infinity;
+
+    // Hangisi daha yakınsa hedefimiz (playerBody) o olsun
+    if (distToPlayer < distToAlly)
+    {
+        if (playerObj != null) playerBody = playerObj.transform;
+    }
+    else
+    {
+        if (allyObj != null) playerBody = allyObj.transform;
+    }
+}
 
     private void StationaryGuardUpdate()
     {
@@ -465,13 +489,20 @@ public class Enemy : MonoBehaviour
 
             if (Physics.Raycast(ShootingRaycastArea.transform.position, shootDirection, out hit, shootingRadius))
             {
-                PlayerScript player = hit.transform.GetComponentInParent<PlayerScript>();
 
-                if (player != null)
-                {
-                    player.playerHitDamage(giveDamage);
-                }
-            }
+                PlayerScript player = hit.transform.GetComponentInParent<PlayerScript>();
+                Ally ally = hit.transform.GetComponentInParent<Ally>(); 
+
+        if (player != null)
+        {
+            player.playerHitDamage(giveDamage);
+        }
+        else if (ally != null)
+        { 
+            ally.allyHitDamage(giveDamage);
+        }
+    
+}
         }
 
         previouslyShoot = true;
@@ -555,23 +586,12 @@ public class Enemy : MonoBehaviour
 
     private void LookAtPlayerYOnly()
     {
-        Transform target = null;
-
-        if (LookPoint != null)
+        // Artık Inspector'daki sabit LookPoint'i değil, 
+        // SelectClosestTarget() ile belirlediğimiz aktif hedefi (Ally veya Sen) baz alacak.
+        if (playerBody != null)
         {
-            target = LookPoint;
+            LookAtPositionYOnly(playerBody.position);
         }
-        else if (playerBody != null)
-        {
-            target = playerBody;
-        }
-
-        if (target == null)
-        {
-            return;
-        }
-
-        LookAtPositionYOnly(target.position);
     }
 
     private void LookAtPositionYOnly(Vector3 targetPosition)
