@@ -2,15 +2,20 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
-[RequireComponent(typeof(Animator))] // Ana objede Animator olmasını zorunlu kılar
+[RequireComponent(typeof(Animator))]
 public class Ally : MonoBehaviour
 {
     [Header("Hedef Ayarları")]
     public Transform player; 
-    public float followDistance = 3f; 
+    public float followDistance = 3f; // Durma mesafesi
+
+    [Header("Hız Ayarları")]
+    public float walkSpeed = 2f; // Yürüme hızı
+    public float runSpeed = 5f;  // Koşma hızı
+    public float runDistanceThreshold = 6f; // Oyuncu bu mesafeden fazla uzaklaşırsa koş
 
     private NavMeshAgent agent;
-    private Animator animator; // Animator referansımız
+    private Animator animator;
 
     void Start()
     {
@@ -24,15 +29,25 @@ public class Ally : MonoBehaviour
     {
         if (player != null)
         {
+            // Oyuncu ile Ally arasındaki mesafeyi hesapla
+            float distance = Vector3.Distance(transform.position, player.position);
+
+            // Mesafeye göre hızı dinamik olarak değiştir
+            if (distance > runDistanceThreshold)
+            {
+                agent.speed = runSpeed; // Oyuncu uzaklaştı, koşarak yetiş!
+            }
+            else
+            {
+                agent.speed = walkSpeed; // Oyuncu yakın, sakin yürü.
+            }
+
             // Hedefi güncelle
             agent.SetDestination(player.position);
         }
 
-        // --- ANİMASYON KISMI ---
-        // NavMeshAgent'ın mevcut hız vektörünün büyüklüğünü (skaler hızını) al
+        // Mevcut hızı Animator'a gönder
         float currentSpeed = agent.velocity.magnitude;
-
-        // Animator'daki "Speed" isimli float parametresine bu hızı gönder
         animator.SetFloat("Speed", currentSpeed);
     }
 }
