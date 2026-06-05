@@ -39,7 +39,7 @@ public class Ally : MonoBehaviour
     public AudioClip shootingSound;
 
     [Header("Ally Can Ayarları")]
-    public float allyHealth = 120f;
+    public float allyHealth = 10;
     private float presentHealth;
     [HideInInspector] public bool isDead = false; // Düşmanların bu değişkeni okuyabilmesi için public yaptık
 
@@ -181,6 +181,8 @@ public class Ally : MonoBehaviour
             }
             agent.enabled = false;
         }
+
+        transform.position += Vector3.up * 0.15f;
 
         // Animasyonları sıfırla ve ölümü tetikle
         SetAnimatorBoolIfExists("IsAiming", false);
