@@ -118072,6 +118072,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1523881059}
   followDistance: 3
+  walkSpeed: 2
+  runSpeed: 5
+  runDistanceThreshold: 6
+  detectionRadius: 15
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  giveDamage: 10
+  timeBetweenShots: 0.5
+  shootingPoint: {fileID: 0}
+  muzzleSpark: {fileID: 0}
+  audioSource: {fileID: 0}
+  shootingSound: {fileID: 0}
 --- !u!195 &1279228356
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -183332,7 +183345,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6632612995020394055}
   - component: {fileID: 6772811485688523135}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bodyl_mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
