@@ -49355,7 +49355,7 @@ Transform:
   m_GameObject: {fileID: 815234135}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0020943934, y: -0, z: -0, w: 0.9999978}
-  m_LocalPosition: {x: -5.104988, y: 1.7460247, z: -14.651424}
+  m_LocalPosition: {x: -5.107149, y: 1.7460246, z: -14.651424}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -122870,7 +122870,7 @@ MonoBehaviour:
   muzzleSpark: {fileID: 759599639}
   audioSource: {fileID: 0}
   shootingSound: {fileID: 0}
-  allyHealth: 120
+  allyHealth: 10
   isDead: 0
 --- !u!195 &1279228356
 NavMeshAgent:
@@ -178549,7 +178549,7 @@ Transform:
   m_GameObject: {fileID: 5157071428694018547}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0020943934, y: -0, z: -0, w: 0.9999978}
-  m_LocalPosition: {x: -5.104988, y: 1.7460247, z: -14.651423}
+  m_LocalPosition: {x: -5.107149, y: 1.7460247, z: -14.651424}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
