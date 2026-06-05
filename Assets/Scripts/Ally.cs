@@ -1,32 +1,38 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(Animator))] // Ana objede Animator olmasını zorunlu kılar
 public class Ally : MonoBehaviour
 {
     [Header("Hedef Ayarları")]
-    public Transform player; // Inspector'dan kendi (Player) karakterini buraya sürükle
-    public float followDistance = 3f; // Oyuncuya ne kadar yaklaşacağı
+    public Transform player; 
+    public float followDistance = 3f; 
 
     private NavMeshAgent agent;
+    private Animator animator; // Animator referansımız
 
     void Start()
     {
-        // Bileşeni otomatik olarak çekiyoruz
         agent = GetComponent<NavMeshAgent>();
+        animator = GetComponent<Animator>(); 
         
-        // Karakterin seni ittirmemesi için NavMesh üzerinde bir durma mesafesi belirliyoruz
         agent.stoppingDistance = followDistance;
     }
 
     void Update()
     {
-        // Eğer oyuncu sahnedeyse, NavMesh hedefini sürekli oyuncunun pozisyonu olarak güncelle
         if (player != null)
         {
+            // Hedefi güncelle
             agent.SetDestination(player.position);
         }
+
+        // --- ANİMASYON KISMI ---
+        // NavMeshAgent'ın mevcut hız vektörünün büyüklüğünü (skaler hızını) al
+        float currentSpeed = agent.velocity.magnitude;
+
+        // Animator'daki "Speed" isimli float parametresine bu hızı gönder
+        animator.SetFloat("Speed", currentSpeed);
     }
 }
