@@ -3,34 +3,59 @@ using UnityEngine;
 public class TacticalCommander : MonoBehaviour
 {
     [Header("Komut Ayarları")]
-    public Camera mainCamera;       // Ekranın ortasını (nişangahı) bulmak için
-    public Ally allyScript;         // Komut vereceğimiz askerimiz
-    public float commandRange = 100f; // Lazerin (emrin) ulaşacağı maksimum menzil
+    public Camera mainCamera;       
+    public Ally allyScript;         
+    public float commandRange = 100f; 
 
     void Update()
     {
-        // F tuşuna basıldığında komut lazerini ateşle
+        // F TUŞU: Bağlamsal Eylem (Git veya Saldır)
         if (Input.GetKeyDown(KeyCode.F))
         {
-            GiveCommand();
+            GiveTacticalCommand();
+        }
+
+        // E TUŞU: Yanıma Dön / Serbest Otomatik Mod
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            RegroupCommand();
         }
     }
 
-    void GiveCommand()
+    void GiveTacticalCommand()
     {
-        // Kameranın/Ekranın tam ortasından ileriye sanal bir lazer gönder
         Ray ray = mainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, commandRange))
         {
-            Debug.Log("Komut verildi. Hedef koordinat: " + hit.point);
-            
-            // Lazerin çarptığı noktayı (x,y,z) Ally'a gönder ve gitmesini emret
-            if (allyScript != null)
+            Enemy enemyHit = hit.transform.GetComponentInParent<Enemy>();
+
+            if (enemyHit != null && enemyHit.gameObject.activeInHierarchy)
             {
-                allyScript.CommandMoveToLocation(hit.point);
+                // Düşmana çarptıysa: Saldır
+                if (allyScript != null)
+                {
+                    allyScript.CommandAttackTarget(enemyHit.transform);
+                }
             }
+            else
+            {
+                // Zemine çarptıysa: Oraya git ve bekle
+                if (allyScript != null)
+                {
+                    allyScript.CommandMoveToLocation(hit.point);
+                }
+            }
+        }
+    }
+
+    void RegroupCommand()
+    {
+        Debug.Log("KOMUT: Yanıma Dön / Takip Et!");
+        if (allyScript != null)
+        {
+            allyScript.CommandRegroup(); // Ally'ı normal FSM takip moduna döndürür
         }
     }
 }

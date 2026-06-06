@@ -122860,11 +122860,7 @@ MonoBehaviour:
   walkSpeed: 2
   runSpeed: 5
   runDistanceThreshold: 6
-  detectionRadius: 15
   combatStopDistance: 15
-  enemyLayer:
-    serializedVersion: 2
-    m_Bits: 256
   giveDamage: 10
   timeBetweenShots: 0.5
   shootingPoint: {fileID: 0}
