@@ -43,6 +43,8 @@ public class Ally : MonoBehaviour
     private float presentHealth;
     [HideInInspector] public bool isDead = false; // Düşmanların bu değişkeni okuyabilmesi için public yaptık
 
+    public HealthBar healthBar; // Can barı scriptimizi buraya bağlayacağız
+
     private Transform currentTarget;
     private NavMeshAgent agent;
     private Animator animator;
@@ -55,6 +57,11 @@ public class Ally : MonoBehaviour
         agent.stoppingDistance = followDistance;
         
         presentHealth = allyHealth; // Canı doldurarak başlıyoruz
+
+        if (healthBar != null)
+        {
+            healthBar.GiveFullHealth(allyHealth);
+        }
     }
 
     void Update()
@@ -100,18 +107,38 @@ public class Ally : MonoBehaviour
 
     void UpdateFollowState()
     {
-        agent.updateRotation = true; 
-        agent.isStopped = false; 
-
         SetAnimatorBoolIfExists("IsAiming", false);
         SetAnimatorBoolIfExists("Shoot", false);
 
         if (player != null)
         {
             float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-            agent.speed = (distanceToPlayer > runDistanceThreshold) ? runSpeed : walkSpeed;
-            agent.stoppingDistance = followDistance;
-            agent.SetDestination(player.position);
+
+            // --- YENİ EKLENEN TİTREME KORUMASI (BUFFER ZONE) ---
+            // Eğer Ally zaten durmuşsa ve sen ondan sadece 1 metre uzaklaştıysan (mesafe 3 ile 4 arasındaysa)
+            // kılını kıpırdatma, yerinde durmaya devam et.
+            if (agent.isStopped && distanceToPlayer <= followDistance + 1f)
+            {
+                return; // Aşağıdaki yürütme kodlarını okuma, beklemede kal
+            }
+            // ----------------------------------------------------
+
+            if (distanceToPlayer > followDistance)
+            {
+                // Artık yeterince uzaklaştıysak takibe başla
+                agent.isStopped = false;
+                agent.updateRotation = true; 
+                
+                agent.speed = (distanceToPlayer > runDistanceThreshold) ? runSpeed : walkSpeed;
+                agent.stoppingDistance = followDistance;
+                agent.SetDestination(player.position);
+            }
+            else
+            {
+                // Hedefe vardık, tam duruş
+                agent.isStopped = true;
+                agent.velocity = Vector3.zero; 
+            }
         }
     }
 
@@ -121,33 +148,40 @@ public class Ally : MonoBehaviour
 
         float distanceToEnemy = Vector3.Distance(transform.position, currentTarget.position);
         
-        if (distanceToEnemy > combatStopDistance) 
-        {
-            agent.isStopped = false;
-            agent.speed = walkSpeed; 
-            agent.stoppingDistance = combatStopDistance; 
-            agent.SetDestination(currentTarget.position);
-        }
-        else
-        {
-            agent.isStopped = true;
-            agent.velocity = Vector3.zero; 
-        }
-
+        // --- 1. YÖNÜNÜ DÜŞMANA DÖN (Gövdesi her zaman hedefe baksın) ---
         agent.updateRotation = false; 
         Vector3 direction = (currentTarget.position - transform.position).normalized;
         Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 15f);
 
-        if (Time.time >= nextTimeToShoot)
+        // --- 2. MESAFE VE ATEŞ KONTROLÜ ---
+        if (distanceToEnemy > combatStopDistance) 
         {
-            SetAnimatorBoolIfExists("Shoot", true); 
-            ShootAtEnemy();
-            nextTimeToShoot = Time.time + timeBetweenShots;
+            // Düşman atış menzilinden uzakta: Sadece üstüne yürü, ateş etme!
+            agent.isStopped = false;
+            agent.speed = walkSpeed; // Koşarak gitmesini istersen bunu runSpeed yapabilirsin
+            agent.stoppingDistance = combatStopDistance; 
+            agent.SetDestination(currentTarget.position);
+
+            SetAnimatorBoolIfExists("Shoot", false); // Yürürken tetiği kesinlikle bırak
         }
         else
         {
-            SetAnimatorBoolIfExists("Shoot", false); 
+            // Düşman menzile girdi: Tamamen DUR ve ATEŞ ET!
+            agent.isStopped = true;
+            agent.velocity = Vector3.zero; // Kaymayı önlemek için NavMesh hızını sıfırla
+
+            // Sadece durduğu zamanlarda ateş etme mantığını çalıştır
+            if (Time.time >= nextTimeToShoot)
+            {
+                SetAnimatorBoolIfExists("Shoot", true); 
+                ShootAtEnemy();
+                nextTimeToShoot = Time.time + timeBetweenShots;
+            }
+            else
+            {
+                SetAnimatorBoolIfExists("Shoot", false); 
+            }
         }
     }
 
@@ -157,14 +191,22 @@ public class Ally : MonoBehaviour
         if (isDead) return;
 
         presentHealth -= takeDamage;
+
+        Debug.Log("Ally hasar yedi! Kalan Can: " + presentHealth);
         
         // Hasar alma animasyon tetikleyicisi
         SetAnimatorTriggerIfExists("Hit");
+
 
         if (presentHealth <= 0)
         {
             AllyDie();
         }
+    }
+
+    public void step()
+    {
+        // Boş kalacak
     }
 
     void AllyDie()
@@ -273,3 +315,5 @@ public class Ally : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
     }
 }
+
+    
