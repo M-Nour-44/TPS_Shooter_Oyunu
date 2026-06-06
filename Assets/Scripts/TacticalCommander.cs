@@ -8,8 +8,7 @@ public class TacticalCommander : MonoBehaviour
     public float commandRange = 100f; 
 
     [Header("Hedef Algılama")]
-    [Tooltip("Hangi katmanların 'Yürünebilir Zemin' olduğunu buradan seçin")]
-    public LayerMask groundLayer; // --- YENİ: Zemin Filtresi ---
+    public LayerMask groundLayer; 
 
     [Header("Görsel İşaretçiler")]
     public GameObject moveMarkerPrefab;   
@@ -21,6 +20,9 @@ public class TacticalCommander : MonoBehaviour
 
     private GameObject activeMoveMarker;
     private GameObject activeAttackMarker;
+
+    // --- YENİ EKLENDİ: İşaretlenen düşmanı aklımızda tutuyoruz ---
+    private Enemy currentTargetEnemy;
 
     void Start()
     {
@@ -49,11 +51,32 @@ public class TacticalCommander : MonoBehaviour
             RegroupCommand();
         }
         
+        // ================= MARKER BUG ÇÖZÜMÜ =================
         if (activeAttackMarker != null && activeAttackMarker.activeSelf)
         {
-            if (activeAttackMarker.transform.parent == null || !activeAttackMarker.transform.parent.gameObject.activeInHierarchy)
+            bool hideMarker = false;
+
+            // Düşman tamamen yok olduysa
+            if (currentTargetEnemy == null || !currentTargetEnemy.gameObject.activeInHierarchy)
             {
+                hideMarker = true;
+            }
+            else
+            {
+                // Düşman henüz silinmedi ama ÖLDÜYSE (Çarpışma kutusu kapandıysa)
+                Collider enemyCol = currentTargetEnemy.GetComponentInChildren<Collider>();
+                if (enemyCol != null && !enemyCol.enabled)
+                {
+                    hideMarker = true;
+                }
+            }
+
+            if (hideMarker)
+            {
+                // ÇOK ÖNEMLİ: İşaretçiyi cesedin içinden koparıyoruz ki cesetle birlikte yok olmasın!
+                activeAttackMarker.transform.SetParent(null); 
                 activeAttackMarker.SetActive(false);
+                currentTargetEnemy = null; // Hafızayı temizle
             }
         }
     }
@@ -69,35 +92,36 @@ public class TacticalCommander : MonoBehaviour
 
             if (enemyHit != null && enemyHit.gameObject.activeInHierarchy)
             {
-                // ================= DÜŞMANA SALDIRI EMRİ =================
                 if (allyScript != null) allyScript.CommandAttackTarget(enemyHit.transform);
                 
                 if (activeMoveMarker != null) activeMoveMarker.SetActive(false);
                 if (activeAttackMarker != null)
                 {
+                    currentTargetEnemy = enemyHit; // Düşmanı hafızaya al
+
                     activeAttackMarker.SetActive(true);
                     activeAttackMarker.transform.SetParent(enemyHit.transform);
                     activeAttackMarker.transform.localPosition = new Vector3(0, attackMarkerYOffset, 0); 
                 }
             }
-            // --- YENİ EKLENDİ: Çarpan nesne 'Zemin' katmanında mı? ---
             else if ((groundLayer.value & (1 << hit.transform.gameObject.layer)) > 0)
             {
-                // ================= ZEMİNE GİTME EMRİ =================
                 if (allyScript != null) allyScript.CommandMoveToLocation(hit.point);
 
-                if (activeAttackMarker != null) activeAttackMarker.SetActive(false);
+                if (activeAttackMarker != null) 
+                {
+                    activeAttackMarker.transform.SetParent(null); // Zaten açıksa serbest bırak
+                    activeAttackMarker.SetActive(false);
+                }
+                
                 if (activeMoveMarker != null)
                 {
                     activeMoveMarker.SetActive(true);
                     activeMoveMarker.transform.SetParent(null); 
                     activeMoveMarker.transform.position = hit.point + new Vector3(0, moveMarkerYOffset, 0); 
                 }
-            }
-            else
-            {
-                // Duvara, arabaya veya alakasız bir cisme tıklandı. Harekete geçme!
-                Debug.Log("Geçersiz komut noktası! Sadece zemine veya düşmana emir verilebilir.");
+
+                currentTargetEnemy = null; 
             }
         }
     }
@@ -107,6 +131,12 @@ public class TacticalCommander : MonoBehaviour
         if (allyScript != null) allyScript.CommandRegroup(); 
 
         if (activeMoveMarker != null) activeMoveMarker.SetActive(false);
-        if (activeAttackMarker != null) activeAttackMarker.SetActive(false);
+        if (activeAttackMarker != null) 
+        {
+            activeAttackMarker.transform.SetParent(null);
+            activeAttackMarker.SetActive(false);
+        }
+        
+        currentTargetEnemy = null;
     }
 }
