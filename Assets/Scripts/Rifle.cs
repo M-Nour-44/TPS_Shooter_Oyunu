@@ -7,7 +7,8 @@ public class Rifle : MonoBehaviour
     [Header("Rifle Things")]
     public Camera camera;
     public float giveDamageOf = 10f;
-    public float shootingRange = 100f;
+    [Tooltip("Tüfeğin maksimum etkili ateş menzili (Mesafe)")]
+    public float shootingRange = 15f;
     public float fireCharge = 15f;
     public Animator animator;
     public PlayerScript player;
@@ -191,6 +192,21 @@ public class Rifle : MonoBehaviour
 
         if (Physics.Raycast(camera.transform.position, camera.transform.forward, out hitInfo, shootingRange))
         {
+            // BUG DÜZELTMESİ: Kamera veya silah duvarın içine girdiğinde duvarın arkasını vurmayı engelle
+            Vector3 chestOrigin = player.transform.position + Vector3.up * 1.4f;
+            Vector3 dirToTarget = hitInfo.point - chestOrigin;
+            int ignorePlayerMask = ~LayerMask.GetMask("Player", "Ignore Raycast");
+
+            // Oyuncunun göğsünden hedefe doğru ikinci bir ışın at
+            if (Physics.Raycast(chestOrigin, dirToTarget.normalized, out RaycastHit chestHit, dirToTarget.magnitude, ignorePlayerMask))
+            {
+                // Eğer göğüsten giden ışın, kameranın vurduğu hedefe varmadan bir duvara vs. çarpıyorsa
+                if (chestHit.transform != hitInfo.transform && Vector3.Distance(chestHit.point, hitInfo.point) > 0.3f)
+                {
+                    // Vuruş hedefini duvar olarak değiştir (Mermiler duvarın arkasına geçmesin, duvarda patlasın)
+                    hitInfo = chestHit;
+                }
+            }
             Objects objects = hitInfo.transform.GetComponentInParent<Objects>();
             Enemy enemy = hitInfo.transform.GetComponentInParent<Enemy>();
 

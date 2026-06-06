@@ -58,7 +58,6 @@ public class Enemy : MonoBehaviour
 
     [Header("Enemy Mood/Situation")]
     public float visionRadius = 20f;
-    public float shootingRadius = 10f;
     public float fieldOfViewAngle = 180f;
     public bool useFieldOfView = true;
 
@@ -66,6 +65,8 @@ public class Enemy : MonoBehaviour
     public bool useLineOfSight = true;
     [Tooltip("Düşmanın göz yüksekliği (yerel Y offset)")]
     public float eyeHeight = 1.5f;
+    [Tooltip("Düşmanın silahla ateş edebileceği maksimum mesafe")]
+    public float shootingRadius = 20f;
     [Tooltip("Hedefin göz yüksekliği (yerel Y offset)")]
     public float targetEyeHeight = 1.3f;
     [Tooltip("Görüşü engelleyen katmanlar (Walls, Environment vb.) — Inspector'dan atayın")]
@@ -95,6 +96,10 @@ public class Enemy : MonoBehaviour
 
     private bool isDead = false;
     private bool isAlerted = false;
+    
+    // Nöbet yerine geri dönmek için
+    private Vector3 initialPosition;
+    private Quaternion initialRotation;
 
     // --- PERFORMANS: Cache alanları (her frame Find çağrısından kaçınmak için) ---
     private static readonly List<Enemy> allEnemies = new List<Enemy>();
@@ -104,6 +109,9 @@ public class Enemy : MonoBehaviour
 
     private void Awake()
     {
+        initialPosition = transform.position;
+        initialRotation = transform.rotation;
+
         if (enemyAgent == null)
         {
             enemyAgent = GetComponent<NavMeshAgent>();
@@ -179,21 +187,20 @@ public class Enemy : MonoBehaviour
             return;
         }
 
-        // --- HIT STUN CHECK ---
-        // Vurulduğunda animasyon süresince karakterin kaymasını/hareketini durdur
-        if (Time.time < hitStunEndTime)
-        {
-            enemyAgent.isStopped = true;
-            enemyAgent.velocity = Vector3.zero;
-            return; 
-        }
-
         bool playerInsideVision = IsPlayerInsideRadiusAndFOV(visionRadius);
         bool playerInsideShooting = IsPlayerInsideRadiusAndFOV(shootingRadius);
 
+        // KULLANICI ISTEGI: Eger oyunucuyu gorurse, son gordugu konumu hafizaya kazisin.
+        if (playerInsideVision && playerBody != null)
+        {
+            lastHeardPosition = playerBody.position;
+            hasLastHeardPosition = true;
+        }
+
         playerHeard = useHearing && CanHearPlayer();
 
-        playerInVisionRadius = playerInsideVision || isAlerted;
+        // X-Ray hilesi veren isAlerted silindi, artik sadece gercekten gorurse takip edecek
+        playerInVisionRadius = playerInsideVision;
         playerInShootingRadius = playerInsideShooting;
 
         if (playerInShootingRadius)
@@ -235,26 +242,10 @@ public class Enemy : MonoBehaviour
             }
         }
 
-        if (cachedAlly == null)
+        // KULLANICI ISTEGI: Düşmanlar asla Ally'a odaklanmayacak, sadece oyuncuya odaklanacak
+        if (cachedPlayerTransform != null) 
         {
-            cachedAlly = FindObjectOfType<Ally>();
-        }
-
-        float distToPlayer = cachedPlayerTransform != null
-            ? Vector3.Distance(transform.position, cachedPlayerTransform.position)
-            : Mathf.Infinity;
-
-        float distToAlly = (cachedAlly != null && !cachedAlly.isDead)
-            ? Vector3.Distance(transform.position, cachedAlly.transform.position)
-            : Mathf.Infinity;
-
-        if (distToPlayer < distToAlly)
-        {
-            if (cachedPlayerTransform != null) playerBody = cachedPlayerTransform;
-        }
-        else
-        {
-            if (cachedAlly != null) playerBody = cachedAlly.transform;
+            playerBody = cachedPlayerTransform;
         }
     }
 
@@ -264,6 +255,13 @@ public class Enemy : MonoBehaviour
         {
             enemyAgent.isStopped = true;
             enemyAgent.ResetPath();
+        }
+
+        bool playerInsideVision = IsPlayerInsideRadiusAndFOV(visionRadius);
+        if (playerInsideVision && playerBody != null)
+        {
+            lastHeardPosition = playerBody.position;
+            hasLastHeardPosition = true;
         }
 
         bool playerInsideShooting = IsPlayerInsideRadiusAndFOV(shootingRadius);
@@ -308,9 +306,21 @@ public class Enemy : MonoBehaviour
 
         if (walkPoints == null || walkPoints.Length == 0)
         {
-            enemyAgent.isStopped = true;
-            enemyAgent.ResetPath();
-            SetEnemyAnimation(0f, false, false);
+            float distanceToInit = Vector3.Distance(transform.position, initialPosition);
+            if (distanceToInit > 0.5f)
+            {
+                enemyAgent.speed = walkSpeed;
+                enemyAgent.isStopped = false;
+                enemyAgent.SetDestination(initialPosition);
+                SetEnemyAnimation(0.5f, false, false); // Yürüme animasyonu
+            }
+            else
+            {
+                enemyAgent.isStopped = true;
+                enemyAgent.ResetPath();
+                transform.rotation = Quaternion.Slerp(transform.rotation, initialRotation, Time.deltaTime * 5f);
+                SetEnemyAnimation(0f, false, false);
+            }
             return;
         }
 
@@ -516,7 +526,8 @@ public class Enemy : MonoBehaviour
         }
 
         isWaitingAtSearchPoint = false;
-        hasLastHeardPosition = false;
+        // KULLANICI ISTEGI: Hafiza kaybina sebep olan satiri kaldirdik.
+        // Artik arama iptal edilse bile son gorulen konum hafizada kalacak.
     }
 
     private void FireAtPlayer()
@@ -736,16 +747,6 @@ public class Enemy : MonoBehaviour
         {
             EnemyDie();
         }
-        else
-        {
-            if (Time.time >= nextHitAnimationTime)
-            {
-                SetAnimatorTriggerIfExists("Hit");
-                nextHitAnimationTime = Time.time + hitAnimationCooldown;
-                // Vurulma animasyonu süresince hareket etmesini (kaymasını) engelle
-                hitStunEndTime = Time.time + hitAnimationCooldown; 
-            }
-        }
     }
 
     public void ReceiveGunshotAlert(Vector3 noisePosition, bool chasePlayer)
@@ -809,6 +810,12 @@ public class Enemy : MonoBehaviour
         if (playerBody == null)
         {
             FindPlayer();
+        }
+
+        if (playerBody != null)
+        {
+            lastHeardPosition = playerBody.position;
+            hasLastHeardPosition = true;
         }
     }
 
