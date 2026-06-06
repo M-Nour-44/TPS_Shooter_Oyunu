@@ -120,6 +120,7 @@ public class Ally : MonoBehaviour
     }
 
     // F TUŞU ZEMİNE BASINCA: Oraya gider ve bekler
+    // F TUŞU ZEMİNE BASINCA: Oraya gider ve bekler
     public void CommandMoveToLocation(Vector3 targetPos)
     {
         if (isDead) return;
@@ -133,7 +134,26 @@ public class Ally : MonoBehaviour
             agent.isStopped = false;
             agent.updateRotation = true; 
             agent.speed = runSpeed;
+            
+            // --- BUG ÇÖZÜMÜ: Hedefin tam ortasına gitmesi için durma mesafesini küçültüyoruz ---
+            agent.stoppingDistance = 0.2f; 
+            
             agent.SetDestination(commandTargetPosition);
+        }
+    }
+
+    void UpdateCommandMoveToState()
+    {
+        agent.updateRotation = true; 
+
+        SetAnimatorBoolIfExists("IsAiming", false);
+        SetAnimatorBoolIfExists("Shoot", false);
+
+        // --- DÜZELTİLDİ: 1.5f yerine belirlediğimiz o küçük mesafeye gelene kadar bekle ---
+        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+        {
+            agent.isStopped = true;
+            agent.velocity = Vector3.zero;
         }
     }
 
@@ -159,19 +179,7 @@ public class Ally : MonoBehaviour
         UpdateCombatState(); 
     }
 
-    void UpdateCommandMoveToState()
-    {
-        agent.updateRotation = true; 
-
-        SetAnimatorBoolIfExists("IsAiming", false);
-        SetAnimatorBoolIfExists("Shoot", false);
-
-        if (!agent.pathPending && agent.remainingDistance <= 1.5f)
-        {
-            agent.isStopped = true;
-            agent.velocity = Vector3.zero;
-        }
-    }
+    
 
     void UpdateFollowState()
     {
