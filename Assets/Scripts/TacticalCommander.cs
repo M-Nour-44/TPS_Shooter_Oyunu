@@ -46,7 +46,7 @@ public class TacticalCommander : MonoBehaviour
             GiveTacticalCommand();
         }
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.G))
         {
             RegroupCommand();
         }
