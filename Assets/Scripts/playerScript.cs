@@ -276,6 +276,11 @@ public class PlayerScript : MonoBehaviour
         return isSitting;
     }
 
+    public bool IsDead()
+    {
+        return isDead;
+    }
+
     public float GetCurrentNoiseRadius()
     {
         if (isDead)

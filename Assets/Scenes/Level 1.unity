@@ -6627,6 +6627,12 @@ MonoBehaviour:
   shootingRadius: 10
   fieldOfViewAngle: 180
   useFieldOfView: 1
+  useLineOfSight: 1
+  eyeHeight: 1.5
+  targetEyeHeight: 1.3
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 129
   playerInVisionRadius: 0
   playerInShootingRadius: 0
   useHearing: 1
@@ -49355,7 +49361,7 @@ Transform:
   m_GameObject: {fileID: 815234135}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0020943934, y: -0, z: -0, w: 0.9999978}
-  m_LocalPosition: {x: -5.165485, y: 1.7460246, z: -14.651423}
+  m_LocalPosition: {x: -5.066761, y: 1.7460246, z: -14.651423}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -68092,6 +68098,12 @@ MonoBehaviour:
   shootingRadius: 10
   fieldOfViewAngle: 180
   useFieldOfView: 1
+  useLineOfSight: 1
+  eyeHeight: 1.5
+  targetEyeHeight: 1.3
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 129
   playerInVisionRadius: 0
   playerInShootingRadius: 0
   useHearing: 1
@@ -68205,6 +68217,54 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!1 &1247150378
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1247150379}
+  - component: {fileID: 1247150380}
+  m_Layer: 0
+  m_Name: CameraTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1247150379
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1247150378}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1523881059}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1247150380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1247150378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 383e28fb346ca1040b961e189639cde6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerScript: {fileID: 1523881062}
+  standCameraHeight: 0
+  crouchCameraHeight: -0.8
+  transitionSpeed: 10
 --- !u!1 &1249088451
 GameObject:
   m_ObjectHideFlags: 0
@@ -132963,6 +133023,12 @@ MonoBehaviour:
   shootingRadius: 10
   fieldOfViewAngle: 180
   useFieldOfView: 1
+  useLineOfSight: 1
+  eyeHeight: 1.5
+  targetEyeHeight: 1.3
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 129
   playerInVisionRadius: 0
   playerInShootingRadius: 0
   useHearing: 1
@@ -133416,6 +133482,12 @@ MonoBehaviour:
   shootingRadius: 10
   fieldOfViewAngle: 180
   useFieldOfView: 1
+  useLineOfSight: 1
+  eyeHeight: 1.5
+  targetEyeHeight: 1.3
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 129
   playerInVisionRadius: 0
   playerInShootingRadius: 0
   useHearing: 1
@@ -133532,6 +133604,7 @@ Transform:
   - {fileID: 50100307}
   - {fileID: 1008141932}
   - {fileID: 945378403}
+  - {fileID: 1247150379}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &1523881060
@@ -152980,6 +153053,12 @@ MonoBehaviour:
   shootingRadius: 20
   fieldOfViewAngle: 180
   useFieldOfView: 1
+  useLineOfSight: 1
+  eyeHeight: 1.5
+  targetEyeHeight: 1.3
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 129
   playerInVisionRadius: 0
   playerInShootingRadius: 0
   useHearing: 1
@@ -159107,6 +159186,12 @@ MonoBehaviour:
   shootingRadius: 20
   fieldOfViewAngle: 180
   useFieldOfView: 1
+  useLineOfSight: 1
+  eyeHeight: 1.5
+  targetEyeHeight: 1.3
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 129
   playerInVisionRadius: 0
   playerInShootingRadius: 0
   useHearing: 1
@@ -164842,6 +164927,12 @@ MonoBehaviour:
   shootingRadius: 10
   fieldOfViewAngle: 180
   useFieldOfView: 1
+  useLineOfSight: 1
+  eyeHeight: 1.5
+  targetEyeHeight: 1.3
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 129
   playerInVisionRadius: 0
   playerInShootingRadius: 0
   useHearing: 1
@@ -165717,6 +165808,12 @@ MonoBehaviour:
   shootingRadius: 10
   fieldOfViewAngle: 180
   useFieldOfView: 1
+  useLineOfSight: 1
+  eyeHeight: 1.5
+  targetEyeHeight: 1.3
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 129
   playerInVisionRadius: 0
   playerInShootingRadius: 0
   useHearing: 1
@@ -167635,8 +167732,8 @@ MonoBehaviour:
   m_StreamingVersion: 20170927
   m_Priority: 9
   m_StandbyUpdate: 2
-  m_LookAt: {fileID: 1523881059}
-  m_Follow: {fileID: 1523881059}
+  m_LookAt: {fileID: 1247150379}
+  m_Follow: {fileID: 1247150379}
   m_Lens:
     FieldOfView: 50
     OrthographicSize: 10
@@ -178541,8 +178638,8 @@ MonoBehaviour:
   m_StreamingVersion: 20170927
   m_Priority: 10
   m_StandbyUpdate: 2
-  m_LookAt: {fileID: 1523881059}
-  m_Follow: {fileID: 1523881059}
+  m_LookAt: {fileID: 1247150379}
+  m_Follow: {fileID: 1247150379}
   m_Lens:
     FieldOfView: 50
     OrthographicSize: 10
@@ -178571,7 +178668,7 @@ Transform:
   m_GameObject: {fileID: 5157071428694018547}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0020943934, y: -0, z: -0, w: 0.9999978}
-  m_LocalPosition: {x: -5.165485, y: 1.7460246, z: -14.651424}
+  m_LocalPosition: {x: -5.066761, y: 1.7460246, z: -14.651424}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

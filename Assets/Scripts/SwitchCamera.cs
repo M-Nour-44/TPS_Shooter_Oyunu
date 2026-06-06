@@ -12,26 +12,23 @@ public class SwitchCamera : MonoBehaviour
 
     void Update()
     {
-        // قراءة زر التصويب فقط
         bool isAiming = Input.GetButton("Fire2");
 
         if (isAiming)
         {
-            // تفعيل منظور التصويب
-            ThirdPersonCam.SetActive(false);
-            ThirdPersonCanvas.SetActive(false);
+            if (ThirdPersonCam != null) ThirdPersonCam.SetActive(false);
+            if (ThirdPersonCanvas != null) ThirdPersonCanvas.SetActive(false);
 
-            AimCam.SetActive(true);
-            AimCanvas.SetActive(true);
+            if (AimCam != null) AimCam.SetActive(true);
+            if (AimCanvas != null) AimCanvas.SetActive(true);
         }
         else
         {
-            // العودة للمنظور العادي
-            ThirdPersonCam.SetActive(true);
-            ThirdPersonCanvas.SetActive(true);
+            if (ThirdPersonCam != null) ThirdPersonCam.SetActive(true);
+            if (ThirdPersonCanvas != null) ThirdPersonCanvas.SetActive(true);
 
-            AimCam.SetActive(false);
-            AimCanvas.SetActive(false);
+            if (AimCam != null) AimCam.SetActive(false);
+            if (AimCanvas != null) AimCanvas.SetActive(false);
         }
     }
 }

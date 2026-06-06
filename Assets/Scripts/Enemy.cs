@@ -61,6 +61,15 @@ public class Enemy : MonoBehaviour
     public float fieldOfViewAngle = 180f;
     public bool useFieldOfView = true;
 
+    [Header("Line of Sight (Duvar Tespiti)")]
+    public bool useLineOfSight = true;
+    [Tooltip("Düşmanın göz yüksekliği (yerel Y offset)")]
+    public float eyeHeight = 1.5f;
+    [Tooltip("Hedefin göz yüksekliği (yerel Y offset)")]
+    public float targetEyeHeight = 1.3f;
+    [Tooltip("Görüşü engelleyen katmanlar (Walls, Environment vb.) — Inspector'dan atayın")]
+    public LayerMask obstacleMask;
+
     public bool playerInVisionRadius;
     public bool playerInShootingRadius;
 
@@ -85,6 +94,12 @@ public class Enemy : MonoBehaviour
 
     private bool isDead = false;
     private bool isAlerted = false;
+
+    // --- PERFORMANS: Cache alanları (her frame Find çağrısından kaçınmak için) ---
+    private static readonly List<Enemy> allEnemies = new List<Enemy>();
+    private Ally cachedAlly;
+    private PlayerScript cachedPlayerScript;
+    private Transform cachedPlayerTransform;
 
     private void Awake()
     {
@@ -115,7 +130,32 @@ public class Enemy : MonoBehaviour
             }
         }
 
+        // Cache başlatma — Awake'de tek sefer çalışır
+        cachedPlayerTransform = playerBody;
+        if (cachedPlayerTransform != null)
+        {
+            cachedPlayerScript = cachedPlayerTransform.GetComponentInParent<PlayerScript>();
+            if (cachedPlayerScript == null)
+                cachedPlayerScript = cachedPlayerTransform.GetComponent<PlayerScript>();
+        }
+        cachedAlly = FindObjectOfType<Ally>(); // Awake'de bir kez bulmak kabul edilebilir
+
         SetEnemyAnimation(0f, false, false);
+    }
+
+    private void OnEnable()
+    {
+        // Bu düşmanı global listeye ekle (AlertEnemiesAround için)
+        if (!allEnemies.Contains(this))
+        {
+            allEnemies.Add(this);
+        }
+    }
+
+    private void OnDisable()
+    {
+        // Bu düşmanı listeden çıkar
+        allEnemies.Remove(this);
     }
 
     private void Update()
@@ -172,26 +212,41 @@ public class Enemy : MonoBehaviour
     }
 
     private void SelectClosestTarget()
-{
-    GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-    Ally allyObj = FindObjectOfType<Ally>();
-
-    // Oyuncuya olan mesafeyi hesapla
-    float distToPlayer = playerObj != null ? Vector3.Distance(transform.position, playerObj.transform.position) : Mathf.Infinity;
-    
-    // Ally sahnede varsa ve hayattaysa mesafesini al, ölüyse mesafesini sonsuz say
-    float distToAlly = (allyObj != null && !allyObj.isDead) ? Vector3.Distance(transform.position, allyObj.transform.position) : Mathf.Infinity;
-
-    // Hangisi daha yakınsa hedefimiz (playerBody) o olsun
-    if (distToPlayer < distToAlly)
     {
-        if (playerObj != null) playerBody = playerObj.transform;
+        // Cache kaybolduysa yeniden bul (yalnızca gerektiğinde)
+        if (cachedPlayerTransform == null)
+        {
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null)
+            {
+                cachedPlayerTransform = playerObj.transform;
+                cachedPlayerScript = playerObj.GetComponentInParent<PlayerScript>()
+                    ?? playerObj.GetComponent<PlayerScript>();
+            }
+        }
+
+        if (cachedAlly == null)
+        {
+            cachedAlly = FindObjectOfType<Ally>();
+        }
+
+        float distToPlayer = cachedPlayerTransform != null
+            ? Vector3.Distance(transform.position, cachedPlayerTransform.position)
+            : Mathf.Infinity;
+
+        float distToAlly = (cachedAlly != null && !cachedAlly.isDead)
+            ? Vector3.Distance(transform.position, cachedAlly.transform.position)
+            : Mathf.Infinity;
+
+        if (distToPlayer < distToAlly)
+        {
+            if (cachedPlayerTransform != null) playerBody = cachedPlayerTransform;
+        }
+        else
+        {
+            if (cachedAlly != null) playerBody = cachedAlly.transform;
+        }
     }
-    else
-    {
-        if (allyObj != null) playerBody = allyObj.transform;
-    }
-}
 
     private void StationaryGuardUpdate()
     {
@@ -511,35 +566,30 @@ public class Enemy : MonoBehaviour
 
     private bool CanHearPlayer()
     {
-        if (playerBody == null)
-        {
-            FindPlayer();
-
-            if (playerBody == null)
-            {
-                return false;
-            }
-        }
-
-        PlayerScript player = playerBody.GetComponentInParent<PlayerScript>();
-
-        if (player == null)
+        // Cache'lenmiş oyuncu referansını kullan (her frame GetComponent çağrısından kaçın)
+        if (cachedPlayerTransform == null)
         {
             return false;
         }
 
-        float noiseRadius = player.GetCurrentNoiseRadius();
+        if (cachedPlayerScript == null)
+        {
+            cachedPlayerScript = cachedPlayerTransform.GetComponentInParent<PlayerScript>();
+            if (cachedPlayerScript == null) return false;
+        }
+
+        float noiseRadius = cachedPlayerScript.GetCurrentNoiseRadius();
 
         if (noiseRadius <= 0f)
         {
             return false;
         }
 
-        float distanceToPlayer = Vector3.Distance(transform.position, playerBody.position);
+        float distanceToPlayer = Vector3.Distance(transform.position, cachedPlayerTransform.position);
 
         if (distanceToPlayer <= noiseRadius)
         {
-            lastHeardPosition = playerBody.position;
+            lastHeardPosition = cachedPlayerTransform.position;
             hasLastHeardPosition = true;
             return true;
         }
@@ -566,22 +616,60 @@ public class Enemy : MonoBehaviour
             return false;
         }
 
-        if (!useFieldOfView)
+        // --- Görüş Açısı (FOV) Kontrolü ---
+        if (useFieldOfView)
+        {
+            Vector3 directionToPlayer = playerBody.position - transform.position;
+            directionToPlayer.y = 0f;
+
+            if (directionToPlayer.sqrMagnitude > 0.001f)
+            {
+                float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer.normalized);
+
+                if (angleToPlayer > fieldOfViewAngle * 0.5f)
+                {
+                    return false; // FOV dışında
+                }
+            }
+        }
+
+        // --- Görüş Hattı (LOS) Kontrolü — Duvar Tespiti ---
+        if (useLineOfSight)
+        {
+            return HasLineOfSight();
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Düşman ile playerBody arasında temiz bir görüş hattı var mı kontrol eder.
+    /// obstacleMask katmanlarına çarpan bir şey varsa false döner (duvar var).
+    /// </summary>
+    private bool HasLineOfSight()
+    {
+        if (playerBody == null)
+        {
+            return false;
+        }
+
+        Vector3 origin = transform.position + Vector3.up * eyeHeight;
+        Vector3 target = playerBody.position + Vector3.up * targetEyeHeight;
+        Vector3 direction = target - origin;
+        float distance = direction.magnitude;
+
+        if (distance <= 0f)
         {
             return true;
         }
 
-        Vector3 directionToPlayer = playerBody.position - transform.position;
-        directionToPlayer.y = 0f;
-
-        if (directionToPlayer.sqrMagnitude <= 0.001f)
+        // obstacleMask katmanlarında çarpışan bir nesne varsa görüş hattı kesilir
+        if (Physics.Raycast(origin, direction.normalized, distance, obstacleMask))
         {
-            return true;
+            return false; // Duvar / engel tespit edildi
         }
 
-        float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer.normalized);
-
-        return angleToPlayer <= fieldOfViewAngle * 0.5f;
+        return true; // Temiz görüş hattı
     }
 
     private void LookAtPlayerYOnly()
@@ -666,9 +754,6 @@ public class Enemy : MonoBehaviour
         CancelPatrolWait();
         CancelSearch();
 
-        lastHeardPosition = noisePosition;
-        hasLastHeardPosition = true;
-
         if (playerBody == null)
         {
             FindPlayer();
@@ -677,20 +762,22 @@ public class Enemy : MonoBehaviour
 
     public static void AlertEnemiesAround(Vector3 position, float radius, bool chasePlayer)
     {
-        Enemy[] enemies = FindObjectsOfType<Enemy>();
-
-        for (int i = 0; i < enemies.Length; i++)
+        // FindObjectsOfType yerine cache'lenmiş listeyi kullan (çok daha hızlı)
+        for (int i = allEnemies.Count - 1; i >= 0; i--)
         {
-            if (enemies[i] == null)
+            Enemy enemy = allEnemies[i];
+
+            if (enemy == null)
             {
+                allEnemies.RemoveAt(i);
                 continue;
             }
 
-            float distance = Vector3.Distance(enemies[i].transform.position, position);
+            float distance = Vector3.Distance(enemy.transform.position, position);
 
             if (distance <= radius)
             {
-                enemies[i].ReceiveGunshotAlert(position, chasePlayer);
+                enemy.ReceiveGunshotAlert(position, chasePlayer);
             }
         }
     }
@@ -720,6 +807,13 @@ public class Enemy : MonoBehaviour
         if (player != null)
         {
             playerBody = player.transform;
+            // Cache'i de güncelle
+            cachedPlayerTransform = playerBody;
+            if (cachedPlayerScript == null)
+            {
+                cachedPlayerScript = player.GetComponentInParent<PlayerScript>()
+                    ?? player.GetComponent<PlayerScript>();
+            }
         }
     }
 

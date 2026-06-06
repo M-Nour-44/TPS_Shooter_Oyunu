@@ -208,9 +208,10 @@ public class BombDefusal : MonoBehaviour
 
     private void HandleDefuseInput()
     {
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+        // sqrMagnitude kullan: kare kök hesabından kaçınır, her frame çalıştığı için daha performanslı
+        float sqrDist = (transform.position - player.position).sqrMagnitude;
 
-        if (distanceToPlayer > interactRange)
+        if (sqrDist > interactRange * interactRange)
         {
             ResetDefuseProgress();
             return;

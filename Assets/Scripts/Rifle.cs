@@ -71,6 +71,17 @@ public class Rifle : MonoBehaviour
 
     void Update()
     {
+        // BUG DÜZELTMESİ: Oyuncu reload sırasında ölürse hızı sıfırda kalmasın
+        if (setReloading && player != null && player.IsDead())
+        {
+            StopAllCoroutines();
+            setReloading = false;
+            player.playerSpeed = originalPlayerSpeed;
+            player.playerSprint = originalPlayerSprint;
+            SetAnimatorBoolIfExists("Reloading", false);
+            return;
+        }
+
         if (setReloading)
         {
             SetAnimatorBoolIfExists("Fire", false);
