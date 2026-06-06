@@ -43,6 +43,7 @@ public class Enemy : MonoBehaviour
     [Header("Enemy Hit Animation")]
     public float hitAnimationCooldown = 0.35f;
     private float nextHitAnimationTime = 0f;
+    private float hitStunEndTime = 0f;
 
     [Header("Loot Drop")]
     public GameObject ammoDropPrefab;
@@ -176,6 +177,15 @@ public class Enemy : MonoBehaviour
         if (!AgentReady())
         {
             return;
+        }
+
+        // --- HIT STUN CHECK ---
+        // Vurulduğunda animasyon süresince karakterin kaymasını/hareketini durdur
+        if (Time.time < hitStunEndTime)
+        {
+            enemyAgent.isStopped = true;
+            enemyAgent.velocity = Vector3.zero;
+            return; 
         }
 
         bool playerInsideVision = IsPlayerInsideRadiusAndFOV(visionRadius);
@@ -732,6 +742,8 @@ public class Enemy : MonoBehaviour
             {
                 SetAnimatorTriggerIfExists("Hit");
                 nextHitAnimationTime = Time.time + hitAnimationCooldown;
+                // Vurulma animasyonu süresince hareket etmesini (kaymasını) engelle
+                hitStunEndTime = Time.time + hitAnimationCooldown; 
             }
         }
     }
