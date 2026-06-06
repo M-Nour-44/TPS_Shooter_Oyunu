@@ -86,8 +86,17 @@ public class Ally : MonoBehaviour
                 break;
         }
 
-        if (agent.isStopped) animator.SetFloat("Speed", 0f);
-        else animator.SetFloat("Speed", agent.velocity.magnitude);
+        // ================= YUMUŞAK HIZ AKTARIMI =================
+        if (agent.isStopped || (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance))
+        {
+            animator.SetFloat("Speed", 0f, 0.1f, Time.deltaTime);
+        }
+        else
+        {
+            // Gerçek hızı 0.1 saniyelik süspansiyonla (Damp) gönder
+            animator.SetFloat("Speed", agent.velocity.magnitude, 0.1f, Time.deltaTime);
+        }
+        // ==========================================================
     }
 
     // ================= SADELEŞTİRİLMİŞ TAKTİKSEL EMİRLER =================
@@ -210,31 +219,45 @@ public class Ally : MonoBehaviour
     {
         if (currentTarget == null) return;
 
-        SetAnimatorBoolIfExists("IsAiming", true);
-
         float distanceToEnemy = Vector3.Distance(transform.position, currentTarget.position);
         
-        agent.updateRotation = false; 
-        Vector3 direction = (currentTarget.position - transform.position).normalized;
-        
-        if (direction != Vector3.zero) 
-        {
-            Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 15f);
-        }
-
         if (distanceToEnemy > combatStopDistance) 
         {
+            // ================= 1. AŞAMA: HEDEFE İNTİKAL (NİŞAN ALMAK YOK) =================
             agent.isStopped = false;
-            agent.speed = walkSpeed; 
+            
+            // Düşmanın üstüne taktiksel bir hızla gitsin istersen burayı runSpeed yapabilirsin
+            agent.speed = runSpeed; 
             agent.stoppingDistance = combatStopDistance; 
-            agent.SetDestination(currentTarget.position);
+            agent.updateRotation = true; 
+            
+            // --- SENİN FİKRİN: Yürürken/Koşarken nişan almayı KESİNLİKLE KAPAT ---
+            // Böylece normal, pürüzsüz yürüme/koşma animasyonu devreye girer, bacak titremez!
+            SetAnimatorBoolIfExists("IsAiming", false); 
             SetAnimatorBoolIfExists("Shoot", false); 
+
+            if (!agent.hasPath || Vector3.Distance(agent.destination, currentTarget.position) > 1.5f)
+            {
+                agent.SetDestination(currentTarget.position);
+            }
         }
         else
         {
+            // ================= 2. AŞAMA: DUR VE SAVAŞ (NİŞAN AL VE ATEŞ ET) =================
             agent.isStopped = true;
             agent.velocity = Vector3.zero; 
+            agent.updateRotation = false; 
+            
+            // --- HEDEFE VARINCA NİŞAN AL ---
+            // Karakter durduğu saniye silahını kaldırıp aim animasyonuna pürüzsüzce geçer
+            SetAnimatorBoolIfExists("IsAiming", true); 
+
+            Vector3 direction = (currentTarget.position - transform.position).normalized;
+            if (direction != Vector3.zero) 
+            {
+                Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10f); 
+            }
 
             if (Time.time >= nextTimeToShoot)
             {

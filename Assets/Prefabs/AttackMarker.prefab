@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7482508287021504105}
   - component: {fileID: 4337691261430618907}
   - component: {fileID: 56083297319995161}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: AttackMarker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
