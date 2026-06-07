@@ -6596,8 +6596,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee25fb535f644aa4fb10393a1292feb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyHealth: 120
-  giveDamage: 5
+  enemyHealth: 90
+  giveDamage: 10
   healthBar: {fileID: 718766009}
   enemyAgent: {fileID: 36933279}
   LookPoint: {fileID: 945378403}
@@ -6613,7 +6613,7 @@ MonoBehaviour:
   waitAtPointTime: 2
   timebtwShoot: 0.5
   closeAccuracySpread: 0.01
-  farAccuracySpread: 0.12
+  farAccuracySpread: 0.05
   accuracyCloseDistance: 4
   hitAnimationCooldown: 0.35
   ammoDropPrefab: {fileID: 1235563326024084, guid: 22d0da43b4e0b3b408983f83a5444fb4, type: 3}
@@ -6628,7 +6628,7 @@ MonoBehaviour:
   useFieldOfView: 1
   useLineOfSight: 1
   eyeHeight: 1.5
-  shootingRadius: 20
+  shootingRadius: 18
   targetEyeHeight: 1.3
   obstacleMask:
     serializedVersion: 2
@@ -49467,7 +49467,7 @@ Transform:
   m_GameObject: {fileID: 815234135}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0020943934, y: -0, z: -0, w: 0.9999978}
-  m_LocalPosition: {x: -5.066761, y: 1.7460246, z: -14.651423}
+  m_LocalPosition: {x: -4.9368396, y: 1.7460247, z: -14.651423}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -68279,8 +68279,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee25fb535f644aa4fb10393a1292feb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyHealth: 120
-  giveDamage: 5
+  enemyHealth: 90
+  giveDamage: 10
   healthBar: {fileID: 1189251068}
   enemyAgent: {fileID: 1239665427}
   LookPoint: {fileID: 945378403}
@@ -68296,7 +68296,7 @@ MonoBehaviour:
   waitAtPointTime: 2
   timebtwShoot: 0.5
   closeAccuracySpread: 0.01
-  farAccuracySpread: 0.12
+  farAccuracySpread: 0.05
   accuracyCloseDistance: 4
   hitAnimationCooldown: 0.35
   ammoDropPrefab: {fileID: 1235563326024084, guid: 22d0da43b4e0b3b408983f83a5444fb4, type: 3}
@@ -68311,7 +68311,7 @@ MonoBehaviour:
   useFieldOfView: 1
   useLineOfSight: 1
   eyeHeight: 1.5
-  shootingRadius: 20
+  shootingRadius: 18
   targetEyeHeight: 1.3
   obstacleMask:
     serializedVersion: 2
@@ -68323,7 +68323,7 @@ MonoBehaviour:
   searchPointRadius: 1.5
   searchWaitTime: 3
   alertNearbyEnemiesWhenHit: 1
-  hitAlertRadius: 25
+  hitAlertRadius: 20
   hitAlertMakesEnemiesChasePlayer: 1
   stationaryGuard: 0
   stationaryCanShoot: 1
@@ -133197,8 +133197,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee25fb535f644aa4fb10393a1292feb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyHealth: 120
-  giveDamage: 5
+  enemyHealth: 90
+  giveDamage: 10
   healthBar: {fileID: 1424716990}
   enemyAgent: {fileID: 1502668185}
   LookPoint: {fileID: 945378403}
@@ -133216,7 +133216,7 @@ MonoBehaviour:
   waitAtPointTime: 2
   timebtwShoot: 0.5
   closeAccuracySpread: 0.01
-  farAccuracySpread: 0.12
+  farAccuracySpread: 0.05
   accuracyCloseDistance: 4
   hitAnimationCooldown: 0.35
   ammoDropPrefab: {fileID: 1235563326024084, guid: 22d0da43b4e0b3b408983f83a5444fb4, type: 3}
@@ -133231,7 +133231,7 @@ MonoBehaviour:
   useFieldOfView: 1
   useLineOfSight: 1
   eyeHeight: 1.5
-  shootingRadius: 20
+  shootingRadius: 18
   targetEyeHeight: 1.3
   obstacleMask:
     serializedVersion: 2
@@ -133658,8 +133658,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee25fb535f644aa4fb10393a1292feb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyHealth: 120
-  giveDamage: 5
+  enemyHealth: 90
+  giveDamage: 10
   healthBar: {fileID: 1503529568}
   enemyAgent: {fileID: 1509198948}
   LookPoint: {fileID: 945378403}
@@ -133675,7 +133675,7 @@ MonoBehaviour:
   waitAtPointTime: 2
   timebtwShoot: 0.5
   closeAccuracySpread: 0.01
-  farAccuracySpread: 0.12
+  farAccuracySpread: 0.05
   accuracyCloseDistance: 4
   hitAnimationCooldown: 0.35
   ammoDropPrefab: {fileID: 1235563326024084, guid: 22d0da43b4e0b3b408983f83a5444fb4, type: 3}
@@ -133690,7 +133690,7 @@ MonoBehaviour:
   useFieldOfView: 1
   useLineOfSight: 1
   eyeHeight: 1.5
-  shootingRadius: 20
+  shootingRadius: 18
   targetEyeHeight: 1.3
   obstacleMask:
     serializedVersion: 2
@@ -153335,8 +153335,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee25fb535f644aa4fb10393a1292feb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyHealth: 120
-  giveDamage: 5
+  enemyHealth: 90
+  giveDamage: 10
   healthBar: {fileID: 990085326}
   enemyAgent: {fileID: 1701892910}
   LookPoint: {fileID: 945378403}
@@ -153352,7 +153352,7 @@ MonoBehaviour:
   waitAtPointTime: 2
   timebtwShoot: 0.5
   closeAccuracySpread: 0.01
-  farAccuracySpread: 0.12
+  farAccuracySpread: 0.05
   accuracyCloseDistance: 4
   hitAnimationCooldown: 0.35
   ammoDropPrefab: {fileID: 1235563326024084, guid: 22d0da43b4e0b3b408983f83a5444fb4, type: 3}
@@ -153367,7 +153367,7 @@ MonoBehaviour:
   useFieldOfView: 1
   useLineOfSight: 1
   eyeHeight: 1.5
-  shootingRadius: 20
+  shootingRadius: 18
   targetEyeHeight: 1.3
   obstacleMask:
     serializedVersion: 2
@@ -159595,8 +159595,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee25fb535f644aa4fb10393a1292feb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyHealth: 120
-  giveDamage: 5
+  enemyHealth: 90
+  giveDamage: 10
   healthBar: {fileID: 735165733}
   enemyAgent: {fileID: 1968896119}
   LookPoint: {fileID: 945378403}
@@ -159612,7 +159612,7 @@ MonoBehaviour:
   waitAtPointTime: 2
   timebtwShoot: 0.5
   closeAccuracySpread: 0.01
-  farAccuracySpread: 0.12
+  farAccuracySpread: 0.05
   accuracyCloseDistance: 4
   hitAnimationCooldown: 0.35
   ammoDropPrefab: {fileID: 1235563326024084, guid: 22d0da43b4e0b3b408983f83a5444fb4, type: 3}
@@ -159627,7 +159627,7 @@ MonoBehaviour:
   useFieldOfView: 1
   useLineOfSight: 1
   eyeHeight: 1.5
-  shootingRadius: 20
+  shootingRadius: 18
   targetEyeHeight: 1.3
   obstacleMask:
     serializedVersion: 2
@@ -165336,8 +165336,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee25fb535f644aa4fb10393a1292feb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyHealth: 120
-  giveDamage: 5
+  enemyHealth: 90
+  giveDamage: 10
   healthBar: {fileID: 1183493538}
   enemyAgent: {fileID: 2023650231}
   LookPoint: {fileID: 945378403}
@@ -165353,7 +165353,7 @@ MonoBehaviour:
   waitAtPointTime: 2
   timebtwShoot: 0.5
   closeAccuracySpread: 0.01
-  farAccuracySpread: 0.12
+  farAccuracySpread: 0.05
   accuracyCloseDistance: 4
   hitAnimationCooldown: 0.35
   ammoDropPrefab: {fileID: 1235563326024084, guid: 22d0da43b4e0b3b408983f83a5444fb4, type: 3}
@@ -165368,7 +165368,7 @@ MonoBehaviour:
   useFieldOfView: 1
   useLineOfSight: 1
   eyeHeight: 1.5
-  shootingRadius: 20
+  shootingRadius: 18
   targetEyeHeight: 1.3
   obstacleMask:
     serializedVersion: 2
@@ -165380,7 +165380,7 @@ MonoBehaviour:
   searchPointRadius: 1.5
   searchWaitTime: 3
   alertNearbyEnemiesWhenHit: 1
-  hitAlertRadius: 25
+  hitAlertRadius: 20
   hitAlertMakesEnemiesChasePlayer: 1
   stationaryGuard: 0
   stationaryCanShoot: 1
@@ -166215,8 +166215,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee25fb535f644aa4fb10393a1292feb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyHealth: 120
-  giveDamage: 5
+  enemyHealth: 90
+  giveDamage: 10
   healthBar: {fileID: 1988495872}
   enemyAgent: {fileID: 2057548719}
   LookPoint: {fileID: 945378403}
@@ -166234,7 +166234,7 @@ MonoBehaviour:
   waitAtPointTime: 2
   timebtwShoot: 0.5
   closeAccuracySpread: 0.01
-  farAccuracySpread: 0.12
+  farAccuracySpread: 0.05
   accuracyCloseDistance: 4
   hitAnimationCooldown: 0.35
   ammoDropPrefab: {fileID: 1235563326024084, guid: 22d0da43b4e0b3b408983f83a5444fb4, type: 3}
@@ -171726,15 +171726,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   camera: {fileID: 815234137}
-  giveDamageOf: 10
-  shootingRange: 15
-  fireCharge: 15
+  giveDamageOf: 6
+  shootingRange: 32
+  fireCharge: 32
   animator: {fileID: 1523881060}
   player: {fileID: 1523881062}
   alertEnemiesWhenShooting: 1
   gunShotAlertRadius: 35
   reloadingTime: 1.3
-  muzzleSpark: {fileID: 3626855276161675021}
+  muzzleSpark: {fileID: 5872626693823753313, guid: 5e07ec67fdaf14b479a0c227d855d467, type: 3}
   impactEffect: {fileID: 2867618450376107503, guid: b701310e0dd0c8344ad5b811baa215b5, type: 3}
   goreEffect: {fileID: 3198374318725026878, guid: ab0938c756984b7489487ba64c3e321d, type: 3}
   shootingSound: {fileID: 8300000, guid: b70164d279b029543897e94cca86cfc7, type: 3}
@@ -179108,7 +179108,7 @@ Transform:
   m_GameObject: {fileID: 5157071428694018547}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0020943934, y: -0, z: -0, w: 0.9999978}
-  m_LocalPosition: {x: -5.066761, y: 1.7460246, z: -14.651424}
+  m_LocalPosition: {x: -4.9368396, y: 1.7460246, z: -14.651423}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -189680,7 +189680,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   camera: {fileID: 0}
   giveDamageOf: 10
-  shootingRange: 15
+  shootingRange: 22
   fireCharge: 15
   animator: {fileID: 0}
   player: {fileID: 0}

@@ -7,9 +7,8 @@ public class Rifle : MonoBehaviour
     [Header("Rifle Things")]
     public Camera camera;
     public float giveDamageOf = 10f;
-    [Tooltip("Tüfeğin maksimum etkili ateş menzili (Mesafe)")]
-    public float shootingRange = 15f;
-    public float fireCharge = 15f;
+    public float shootingRange = 32f;
+    public float fireCharge = 32f;
     public Animator animator;
     public PlayerScript player;
 
@@ -48,14 +47,10 @@ public class Rifle : MonoBehaviour
     private void Start()
     {
         if (player == null)
-        {
             player = GetComponentInParent<PlayerScript>();
-        }
 
         if (player == null)
-        {
             player = FindObjectOfType<PlayerScript>();
-        }
 
         if (player != null)
         {
@@ -72,90 +67,98 @@ public class Rifle : MonoBehaviour
 
     void Update()
     {
-        // BUG DÜZELTMESİ: Oyuncu reload sırasında ölürse hızı sıfırda kalmasın
-        if (setReloading && player != null && player.IsDead())
-        {
-            StopAllCoroutines();
-            setReloading = false;
-            player.playerSpeed = originalPlayerSpeed;
-            player.playerSprint = originalPlayerSprint;
-            SetAnimatorBoolIfExists("Reloading", false);
+        if (player == null || player.IsDead())
             return;
-        }
 
-        if (setReloading)
-        {
-            SetAnimatorBoolIfExists("Fire", false);
-            SetAnimatorBoolIfExists("FireWalk", false);
-            return;
-        }
+        HandleReloadStateLock();
+        HandleReloadInput();
+        HandleAutoReload();
 
-        if (player != null && !player.IsOnGround())
-        {
-            SetAnimatorBoolIfExists("Fire", false);
-            SetAnimatorBoolIfExists("FireWalk", false);
-            SetAnimatorBoolIfExists("Reloading", false);
-            return;
-        }
+        HandleShooting();
+    }
 
-        bool playerSitting = player != null && player.IsSitting();
+    // ---------------- CORE STATES ----------------
 
-        if (!playerSitting && Input.GetKeyDown(KeyCode.R) && presentAmmunition < maximumAmmunition && mag > 0)
+    void HandleReloadStateLock()
+    {
+        if (!setReloading) return;
+
+        SetAnimatorBoolIfExists("Fire", false);
+        SetAnimatorBoolIfExists("FireWalk", false);
+    }
+
+    void HandleReloadInput()
+    {
+        if (setReloading) return;
+        if (player != null && !player.IsOnGround()) return;
+        if (player != null && player.IsSitting()) return;
+
+        if (Input.GetKeyDown(KeyCode.R) && mag > 0 && presentAmmunition < maximumAmmunition)
         {
             StartCoroutine(Reload());
-            return;
         }
+    }
 
-        if (!playerSitting && presentAmmunition <= 0 && mag > 0)
+    void HandleAutoReload()
+    {
+        if (setReloading) return;
+        if (mag <= 0) return;
+
+        if (presentAmmunition <= 0)
         {
             StartCoroutine(Reload());
-            return;
         }
+    }
+
+    // ---------------- SHOOTING ----------------
+
+    void HandleShooting()
+    {
+        if (setReloading) return;
+        if (player != null && !player.IsOnGround()) return;
 
         bool isShooting = Input.GetButton("Fire1");
 
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
+        bool isMoving = Mathf.Abs(h) > 0.1f || Mathf.Abs(v) > 0.1f;
 
-        bool isMoving = Mathf.Abs(horizontal) > 0.1f || Mathf.Abs(vertical) > 0.1f;
-
-        if (isShooting)
-        {
-            if (isMoving)
-            {
-                SetAnimatorBoolIfExists("Fire", false);
-                SetAnimatorBoolIfExists("FireWalk", true);
-            }
-            else
-            {
-                SetAnimatorBoolIfExists("Fire", true);
-                SetAnimatorBoolIfExists("FireWalk", false);
-            }
-
-            SetAnimatorBoolIfExists("Reloading", false);
-
-            if (Time.time >= nextTimeToShoot)
-            {
-                nextTimeToShoot = Time.time + 1f / fireCharge;
-                Shoot();
-            }
-        }
-        else
+        if (!isShooting)
         {
             SetAnimatorBoolIfExists("Fire", false);
             SetAnimatorBoolIfExists("FireWalk", false);
             SetAnimatorBoolIfExists("Reloading", false);
+            return;
+        }
+
+        SetAnimatorBoolIfExists("Reloading", false);
+
+        if (isMoving)
+        {
+            SetAnimatorBoolIfExists("Fire", false);
+            SetAnimatorBoolIfExists("FireWalk", true);
+        }
+        else
+        {
+            SetAnimatorBoolIfExists("Fire", true);
+            SetAnimatorBoolIfExists("FireWalk", false);
+        }
+
+        if (Time.time >= nextTimeToShoot)
+        {
+            nextTimeToShoot = Time.time + 1f / fireCharge;
+            Shoot();
         }
     }
+
+    // ---------------- SHOOT ----------------
 
     void Shoot()
     {
         if (presentAmmunition <= 0)
         {
             if (mag == 0)
-            {
                 StartCoroutine(ShowAmmoOut());
-            }
 
             return;
         }
@@ -168,102 +171,63 @@ public class Rifle : MonoBehaviour
             AmmoCount.occurrence.UpdateMagText(mag);
         }
 
-        if (muzzleSpark != null)
-        {
-            muzzleSpark.Play();
-        }
+        muzzleSpark.Play();
 
-        if (audioSource != null && audioSource.enabled && audioSource.gameObject.activeInHierarchy && shootingSound != null)
-        {
+        if (audioSource != null && shootingSound != null)
             audioSource.PlayOneShot(shootingSound);
-        }
 
         if (alertEnemiesWhenShooting && player != null)
-        {
             player.MakeGunShotNoise(gunShotAlertRadius);
-        }
 
-        if (camera == null)
+        if (camera == null) return;
+
+        if (Physics.Raycast(camera.transform.position, camera.transform.forward, out RaycastHit hitInfo, shootingRange))
         {
-            return;
-        }
-
-        RaycastHit hitInfo;
-
-        if (Physics.Raycast(camera.transform.position, camera.transform.forward, out hitInfo, shootingRange))
-        {
-            // BUG DÜZELTMESİ: Kamera veya silah duvarın içine girdiğinde duvarın arkasını vurmayı engelle
             Vector3 chestOrigin = player.transform.position + Vector3.up * 1.4f;
             Vector3 dirToTarget = hitInfo.point - chestOrigin;
-            int ignorePlayerMask = ~LayerMask.GetMask("Player", "Ignore Raycast");
 
-            // Oyuncunun göğsünden hedefe doğru ikinci bir ışın at
-            if (Physics.Raycast(chestOrigin, dirToTarget.normalized, out RaycastHit chestHit, dirToTarget.magnitude, ignorePlayerMask))
+            int mask = ~LayerMask.GetMask("Player", "Ignore Raycast");
+
+            if (Physics.Raycast(chestOrigin, dirToTarget.normalized, out RaycastHit chestHit, dirToTarget.magnitude, mask))
             {
-                // Eğer göğüsten giden ışın, kameranın vurduğu hedefe varmadan bir duvara vs. çarpıyorsa
-                if (chestHit.transform != hitInfo.transform && Vector3.Distance(chestHit.point, hitInfo.point) > 0.3f)
+                if (chestHit.transform != hitInfo.transform &&
+                    Vector3.Distance(chestHit.point, hitInfo.point) > 0.3f)
                 {
-                    // Vuruş hedefini duvar olarak değiştir (Mermiler duvarın arkasına geçmesin, duvarda patlasın)
                     hitInfo = chestHit;
                 }
             }
-            Objects objects = hitInfo.transform.GetComponentInParent<Objects>();
+
+            Objects obj = hitInfo.transform.GetComponentInParent<Objects>();
             Enemy enemy = hitInfo.transform.GetComponentInParent<Enemy>();
 
-            if (objects != null)
+            if (obj != null)
             {
-                objects.objectHitDamage(giveDamageOf);
-
-                if (impactEffect != null)
-                {
-                    GameObject impactGo = Instantiate(
-                        impactEffect,
-                        hitInfo.point,
-                        Quaternion.LookRotation(hitInfo.normal)
-                    );
-
-                    Destroy(impactGo, 1f);
-                }
+                obj.objectHitDamage(giveDamageOf);
+                SpawnImpact(hitInfo, impactEffect);
             }
             else if (enemy != null)
             {
                 enemy.enemyHitDamage(giveDamageOf);
-
-                if (goreEffect != null)
-                {
-                    GameObject impactGo = Instantiate(
-                        goreEffect,
-                        hitInfo.point,
-                        Quaternion.LookRotation(hitInfo.normal)
-                    );
-
-                    Destroy(impactGo, 2f);
-                }
+                SpawnImpact(hitInfo, goreEffect);
             }
         }
     }
 
+    void SpawnImpact(RaycastHit hit, GameObject fx)
+    {
+        if (fx == null) return;
+
+        GameObject go = Instantiate(fx, hit.point, Quaternion.LookRotation(hit.normal));
+        Destroy(go, 1.5f);
+    }
+
+    // ---------------- RELOAD ----------------
+
     IEnumerator Reload()
     {
-        if (setReloading)
-        {
-            yield break;
-        }
-
-        if (mag <= 0)
-        {
-            yield break;
-        }
-
-        if (player != null && !player.IsOnGround())
-        {
-            yield break;
-        }
-
-        if (player != null && player.IsSitting())
-        {
-            yield break;
-        }
+        if (setReloading) yield break;
+        if (mag <= 0) yield break;
+        if (player != null && player.IsSitting()) yield break;
 
         setReloading = true;
 
@@ -277,12 +241,8 @@ public class Rifle : MonoBehaviour
             player.playerSprint = 0f;
         }
 
-        Debug.Log("Reloading....");
-
-        if (audioSource != null && audioSource.enabled && audioSource.gameObject.activeInHierarchy && reloadingSound != null)
-        {
+        if (audioSource != null && reloadingSound != null)
             audioSource.PlayOneShot(reloadingSound);
-        }
 
         yield return new WaitForSeconds(reloadingTime);
 
@@ -302,19 +262,19 @@ public class Rifle : MonoBehaviour
         }
 
         SetAnimatorBoolIfExists("Reloading", false);
-
         setReloading = false;
     }
 
     IEnumerator ShowAmmoOut()
     {
-        if (AmmoOutUI != null)
-        {
-            AmmoOutUI.SetActive(true);
-            yield return new WaitForSeconds(timeToShowUI);
-            AmmoOutUI.SetActive(false);
-        }
+        if (AmmoOutUI == null) yield break;
+
+        AmmoOutUI.SetActive(true);
+        yield return new WaitForSeconds(timeToShowUI);
+        AmmoOutUI.SetActive(false);
     }
+
+    // ---------------- UTIL ----------------
 
     public void AddMagazine(int amount)
     {
@@ -327,29 +287,20 @@ public class Rifle : MonoBehaviour
         }
     }
 
-    private bool HasAnimatorParameter(string parameterName, AnimatorControllerParameterType type)
+    private bool HasAnimatorParameter(string name, AnimatorControllerParameterType type)
     {
-        if (animator == null)
-        {
-            return false;
-        }
+        if (animator == null) return false;
 
-        foreach (AnimatorControllerParameter parameter in animator.parameters)
-        {
-            if (parameter.name == parameterName && parameter.type == type)
-            {
+        foreach (var p in animator.parameters)
+            if (p.name == name && p.type == type)
                 return true;
-            }
-        }
 
         return false;
     }
 
-    private void SetAnimatorBoolIfExists(string parameterName, bool value)
+    private void SetAnimatorBoolIfExists(string name, bool value)
     {
-        if (HasAnimatorParameter(parameterName, AnimatorControllerParameterType.Bool))
-        {
-            animator.SetBool(parameterName, value);
-        }
+        if (HasAnimatorParameter(name, AnimatorControllerParameterType.Bool))
+            animator.SetBool(name, value);
     }
 }
