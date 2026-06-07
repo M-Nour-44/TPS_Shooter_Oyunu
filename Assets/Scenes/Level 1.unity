@@ -6704,7 +6704,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyHealth: 90
-  giveDamage: 10
+  giveDamage: 8
   healthBar: {fileID: 718766009}
   enemyAgent: {fileID: 36933279}
   LookPoint: {fileID: 945378403}
@@ -23147,7 +23147,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyHealth: 90
-  giveDamage: 10
+  giveDamage: 8
   healthBar: {fileID: 210817469}
   enemyAgent: {fileID: 259682147}
   LookPoint: {fileID: 945378403}
@@ -76928,7 +76928,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyHealth: 90
-  giveDamage: 10
+  giveDamage: 8
   healthBar: {fileID: 1189251068}
   enemyAgent: {fileID: 1239665427}
   LookPoint: {fileID: 945378403}
@@ -131810,8 +131810,8 @@ MonoBehaviour:
   walkSpeed: 2
   runSpeed: 5
   runDistanceThreshold: 6
-  combatStopDistance: 15
-  giveDamage: 10
+  combatStopDistance: 24
+  giveDamage: 9
   timeBetweenShots: 0.5
   shootingPoint: {fileID: 0}
   muzzleSpark: {fileID: 759599639}
@@ -145116,11 +145116,11 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2057548718}
+  - {fileID: 1502668179}
   - {fileID: 2023650225}
   - {fileID: 1239665421}
   - {fileID: 1727409516}
   - {fileID: 259682151}
-  - {fileID: 1502668179}
   - {fileID: 36933273}
   - {fileID: 1968896113}
   - {fileID: 1509198942}
@@ -147362,7 +147362,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyHealth: 90
-  giveDamage: 10
+  giveDamage: 8
   healthBar: {fileID: 1424716990}
   enemyAgent: {fileID: 1502668185}
   LookPoint: {fileID: 945378403}
@@ -147823,7 +147823,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyHealth: 90
-  giveDamage: 10
+  giveDamage: 8
   healthBar: {fileID: 1503529568}
   enemyAgent: {fileID: 1509198948}
   LookPoint: {fileID: 945378403}
@@ -167880,7 +167880,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyHealth: 90
-  giveDamage: 10
+  giveDamage: 8
   healthBar: {fileID: 990085326}
   enemyAgent: {fileID: 1701892910}
   LookPoint: {fileID: 945378403}
@@ -169314,7 +169314,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyHealth: 90
-  giveDamage: 10
+  giveDamage: 8
   healthBar: {fileID: 58209850}
   enemyAgent: {fileID: 1727409512}
   LookPoint: {fileID: 945378403}
@@ -175322,7 +175322,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyHealth: 90
-  giveDamage: 10
+  giveDamage: 8
   healthBar: {fileID: 735165733}
   enemyAgent: {fileID: 1968896119}
   LookPoint: {fileID: 945378403}
@@ -181127,7 +181127,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyHealth: 90
-  giveDamage: 10
+  giveDamage: 8
   healthBar: {fileID: 1183493538}
   enemyAgent: {fileID: 2023650231}
   LookPoint: {fileID: 945378403}
@@ -182070,7 +182070,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyHealth: 90
-  giveDamage: 10
+  giveDamage: 8
   healthBar: {fileID: 1988495872}
   enemyAgent: {fileID: 2057548719}
   LookPoint: {fileID: 945378403}
@@ -204223,7 +204223,6 @@ GameObject:
   - component: {fileID: 6632200178443253173}
   - component: {fileID: 6659920897757726245}
   - component: {fileID: 6651338723201226807}
-  - component: {fileID: 6659920897757726246}
   m_Layer: 6
   m_Name: Tommy_gun_mesh
   m_TagString: Untagged
@@ -205738,35 +205737,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6636525230149133591}
   m_Mesh: {fileID: 4300000, guid: b4efb30ec2fc46e4b99a156356acaf49, type: 3}
---- !u!114 &6659920897757726246
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6636525230149133591}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2fe346b800afe21499ae9688cc748730, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  camera: {fileID: 0}
-  giveDamageOf: 10
-  shootingRange: 22
-  fireCharge: 15
-  animator: {fileID: 0}
-  player: {fileID: 0}
-  alertEnemiesWhenShooting: 1
-  gunShotAlertRadius: 35
-  reloadingTime: 1.3
-  muzzleSpark: {fileID: 759599639}
-  impactEffect: {fileID: 0}
-  goreEffect: {fileID: 0}
-  shootingSound: {fileID: 0}
-  reloadingSound: {fileID: 0}
-  audioSource: {fileID: 0}
-  AmmoOutUI: {fileID: 0}
-  timeToShowUI: 1
 --- !u!33 &6660004019837855823
 MeshFilter:
   m_ObjectHideFlags: 0

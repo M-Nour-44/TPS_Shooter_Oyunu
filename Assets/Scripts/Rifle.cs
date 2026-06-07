@@ -171,7 +171,11 @@ public class Rifle : MonoBehaviour
             AmmoCount.occurrence.UpdateMagText(mag);
         }
 
-        muzzleSpark.Play();
+        // --- GÜVENLİK KONTROLÜ EKLENDİ ---
+        if (muzzleSpark != null && muzzleSpark.gameObject.activeInHierarchy)
+        {
+            muzzleSpark.Play();
+        }
 
         if (audioSource != null && shootingSound != null)
             audioSource.PlayOneShot(shootingSound);
