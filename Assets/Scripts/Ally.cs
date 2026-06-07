@@ -38,6 +38,11 @@ public class Ally : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip shootingSound;
 
+    [Header("Telsiz Sesleri (Voice Lines)")]
+    public AudioClip[] acknowledgeMoveSounds;    // F ile zemine tıklayınca (Örn: "Moving out", "Copy that")
+    public AudioClip[] acknowledgeAttackSounds;  // F ile düşmana tıklayınca (Örn: "Engaging target", "I have the shot")
+    public AudioClip[] acknowledgeRegroupSounds; // G tuşuna basınca (Örn: "Falling back", "On my way")
+
     [Header("Ally Can Ayarları")]
     public float allyHealth = 120f;
     private float presentHealth;
@@ -49,6 +54,7 @@ public class Ally : MonoBehaviour
     private NavMeshAgent agent;
     private Animator animator;
     private float nextTimeToShoot = 0f;
+    private float nextVoiceTime = 0f;
 
     [HideInInspector] public Vector3 commandTargetPosition; 
 
@@ -66,8 +72,6 @@ public class Ally : MonoBehaviour
     {
         if (isDead) return;
 
-        // ARTIK OTOMATİK DÜŞMAN ARAMA (FindNearestEnemy) BURADAN KALDIRILDI!
-        // Ally sadece ve sadece emir aktif değilse oyuncuyu takip edecek.
         if (!isCommandActive)
         {
             currentState = AllyState.FollowPlayer;
@@ -86,25 +90,25 @@ public class Ally : MonoBehaviour
                 break;
         }
 
-        // ================= YUMUŞAK HIZ AKTARIMI =================
         if (agent.isStopped || (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance))
         {
             animator.SetFloat("Speed", 0f, 0.1f, Time.deltaTime);
         }
         else
         {
-            // Gerçek hızı 0.1 saniyelik süspansiyonla (Damp) gönder
             animator.SetFloat("Speed", agent.velocity.magnitude, 0.1f, Time.deltaTime);
         }
-        // ==========================================================
     }
 
     // ================= SADELEŞTİRİLMİŞ TAKTİKSEL EMİRLER =================
 
-    // E TUŞUNA BASILDIĞINDA ÇALIŞIR: Tüm emirleri iptal eder ve oyuncuya döner
+    // G TUŞUNA BASILDIĞINDA ÇALIŞIR: Tüm emirleri iptal eder ve oyuncuya döner
     public void CommandRegroup()
     {
         if (isDead) return;
+
+        // --- YENİ: Regroup sesi çal ---
+        PlayVoiceLine(acknowledgeRegroupSounds);
 
         isCommandActive = false;
         currentTarget = null;
@@ -123,16 +127,21 @@ public class Ally : MonoBehaviour
     {
         if (isDead) return;
 
+        // --- YENİ: Saldırı sesi çal ---
+        PlayVoiceLine(acknowledgeAttackSounds);
+
         isCommandActive = true;
         currentState = AllyState.CommandFocusFire; 
         currentTarget = targetEnemy;               
     }
 
     // F TUŞU ZEMİNE BASINCA: Oraya gider ve bekler
-    // F TUŞU ZEMİNE BASINCA: Oraya gider ve bekler
     public void CommandMoveToLocation(Vector3 targetPos)
     {
         if (isDead) return;
+
+        // --- YENİ: Hareket sesi çal ---
+        PlayVoiceLine(acknowledgeMoveSounds);
 
         isCommandActive = true; 
         currentState = AllyState.CommandMoveTo; 
@@ -143,10 +152,7 @@ public class Ally : MonoBehaviour
             agent.isStopped = false;
             agent.updateRotation = true; 
             agent.speed = runSpeed;
-            
-            // --- BUG ÇÖZÜMÜ: Hedefin tam ortasına gitmesi için durma mesafesini küçültüyoruz ---
             agent.stoppingDistance = 0.2f; 
-            
             agent.SetDestination(commandTargetPosition);
         }
     }
@@ -158,7 +164,6 @@ public class Ally : MonoBehaviour
         SetAnimatorBoolIfExists("IsAiming", false);
         SetAnimatorBoolIfExists("Shoot", false);
 
-        // --- DÜZELTİLDİ: 1.5f yerine belirlediğimiz o küçük mesafeye gelene kadar bekle ---
         if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
         {
             agent.isStopped = true;
@@ -170,14 +175,12 @@ public class Ally : MonoBehaviour
 
     void UpdateFocusFireState()
     {
-        // Hedef yok olduysa otomatik olarak takibe (oyuncunun yanına) geri dön
         if (currentTarget == null || !currentTarget.gameObject.activeInHierarchy)
         {
             CommandRegroup();
             return;
         }
 
-        // Düşmanın çarpışma kutusu kapandıysa (öldüyse) sıkmayı kes ve yanıma dön
         Collider enemyCol = currentTarget.GetComponentInChildren<Collider>();
         if (enemyCol != null && !enemyCol.enabled)
         {
@@ -187,8 +190,6 @@ public class Ally : MonoBehaviour
 
         UpdateCombatState(); 
     }
-
-    
 
     void UpdateFollowState()
     {
@@ -223,16 +224,11 @@ public class Ally : MonoBehaviour
         
         if (distanceToEnemy > combatStopDistance) 
         {
-            // ================= 1. AŞAMA: HEDEFE İNTİKAL (NİŞAN ALMAK YOK) =================
             agent.isStopped = false;
-            
-            // Düşmanın üstüne taktiksel bir hızla gitsin istersen burayı runSpeed yapabilirsin
             agent.speed = runSpeed; 
             agent.stoppingDistance = combatStopDistance; 
             agent.updateRotation = true; 
             
-            // --- SENİN FİKRİN: Yürürken/Koşarken nişan almayı KESİNLİKLE KAPAT ---
-            // Böylece normal, pürüzsüz yürüme/koşma animasyonu devreye girer, bacak titremez!
             SetAnimatorBoolIfExists("IsAiming", false); 
             SetAnimatorBoolIfExists("Shoot", false); 
 
@@ -243,13 +239,10 @@ public class Ally : MonoBehaviour
         }
         else
         {
-            // ================= 2. AŞAMA: DUR VE SAVAŞ (NİŞAN AL VE ATEŞ ET) =================
             agent.isStopped = true;
             agent.velocity = Vector3.zero; 
             agent.updateRotation = false; 
             
-            // --- HEDEFE VARINCA NİŞAN AL ---
-            // Karakter durduğu saniye silahını kaldırıp aim animasyonuna pürüzsüzce geçer
             SetAnimatorBoolIfExists("IsAiming", true); 
 
             Vector3 direction = (currentTarget.position - transform.position).normalized;
@@ -359,4 +352,29 @@ public class Ally : MonoBehaviour
     }
 
     public void step() { }
+
+    // ================= TELSİZ SES SİSTEMİ =================
+    private void PlayVoiceLine(AudioClip[] voiceClips)
+    {
+        // Ses listesi boşsa veya adam öldüyse çalma
+        if (voiceClips == null || voiceClips.Length == 0 || isDead || audioSource == null) return;
+
+        // SPAM ENGELLEYİCİ: Eğer şu anki zaman, adamın konuşmasının bitiş zamanından erkense yeni ses ÇALMA!
+        if (Time.time < nextVoiceTime) return; 
+
+        // Rastgele bir ses seç
+        int randomIndex = Random.Range(0, voiceClips.Length);
+        AudioClip selectedClip = voiceClips[randomIndex];
+
+        if (selectedClip != null)
+        {
+            // PlayOneShot yerine direkt hoparlöre atayıp çalıyoruz
+            audioSource.clip = selectedClip;
+            audioSource.Play();
+
+            // SİHİRLİ KISIM: Sisteme "Bu sesin uzunluğu ne kadarsa (örn: 1.5 saniye), o süre bitene kadar telsizi kilitle" diyoruz. 
+            // Sonuna eklediğimiz + 0.5f ise konuşmalar arasına yarım saniyelik gerçekçi bir nefes alma/telsiz bekleme süresi koyar.
+            nextVoiceTime = Time.time + selectedClip.length + 0.5f;
+        }
+    }
 }

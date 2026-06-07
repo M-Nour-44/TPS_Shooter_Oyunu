@@ -21,7 +21,6 @@ public class TacticalCommander : MonoBehaviour
     private GameObject activeMoveMarker;
     private GameObject activeAttackMarker;
 
-    // --- YENİ EKLENDİ: İşaretlenen düşmanı aklımızda tutuyoruz ---
     private Enemy currentTargetEnemy;
 
     void Start()
@@ -41,6 +40,25 @@ public class TacticalCommander : MonoBehaviour
 
     void Update()
     {
+        // ================= KESİN ÇÖZÜM (YOK OLMA VE ÖLÜM KONTROLÜ) =================
+        // Eğer Ally oyundan tamamen silindiyse (null) VEYA öldüyse (isDead):
+        if (allyScript == null || (allyScript != null && allyScript.isDead))
+        {
+            if (activeMoveMarker != null && activeMoveMarker.activeSelf)
+            {
+                activeMoveMarker.SetActive(false);
+            }
+
+            if (activeAttackMarker != null && activeAttackMarker.activeSelf)
+            {
+                activeAttackMarker.transform.SetParent(null);
+                activeAttackMarker.SetActive(false);
+            }
+            
+            return; // Kod burada kesilir, komut verilmez!
+        }
+        // ===========================================================================
+
         if (Input.GetKeyDown(KeyCode.F))
         {
             GiveTacticalCommand();
@@ -56,14 +74,12 @@ public class TacticalCommander : MonoBehaviour
         {
             bool hideMarker = false;
 
-            // Düşman tamamen yok olduysa
             if (currentTargetEnemy == null || !currentTargetEnemy.gameObject.activeInHierarchy)
             {
                 hideMarker = true;
             }
             else
             {
-                // Düşman henüz silinmedi ama ÖLDÜYSE (Çarpışma kutusu kapandıysa)
                 Collider enemyCol = currentTargetEnemy.GetComponentInChildren<Collider>();
                 if (enemyCol != null && !enemyCol.enabled)
                 {
@@ -73,10 +89,9 @@ public class TacticalCommander : MonoBehaviour
 
             if (hideMarker)
             {
-                // ÇOK ÖNEMLİ: İşaretçiyi cesedin içinden koparıyoruz ki cesetle birlikte yok olmasın!
                 activeAttackMarker.transform.SetParent(null); 
                 activeAttackMarker.SetActive(false);
-                currentTargetEnemy = null; // Hafızayı temizle
+                currentTargetEnemy = null; 
             }
         }
     }
@@ -92,12 +107,12 @@ public class TacticalCommander : MonoBehaviour
 
             if (enemyHit != null && enemyHit.gameObject.activeInHierarchy)
             {
-                if (allyScript != null) allyScript.CommandAttackTarget(enemyHit.transform);
+                allyScript.CommandAttackTarget(enemyHit.transform);
                 
                 if (activeMoveMarker != null) activeMoveMarker.SetActive(false);
                 if (activeAttackMarker != null)
                 {
-                    currentTargetEnemy = enemyHit; // Düşmanı hafızaya al
+                    currentTargetEnemy = enemyHit; 
 
                     activeAttackMarker.SetActive(true);
                     activeAttackMarker.transform.SetParent(enemyHit.transform);
@@ -106,11 +121,11 @@ public class TacticalCommander : MonoBehaviour
             }
             else if ((groundLayer.value & (1 << hit.transform.gameObject.layer)) > 0)
             {
-                if (allyScript != null) allyScript.CommandMoveToLocation(hit.point);
+                allyScript.CommandMoveToLocation(hit.point);
 
                 if (activeAttackMarker != null) 
                 {
-                    activeAttackMarker.transform.SetParent(null); // Zaten açıksa serbest bırak
+                    activeAttackMarker.transform.SetParent(null); 
                     activeAttackMarker.SetActive(false);
                 }
                 
@@ -128,7 +143,7 @@ public class TacticalCommander : MonoBehaviour
 
     void RegroupCommand()
     {
-        if (allyScript != null) allyScript.CommandRegroup(); 
+        allyScript.CommandRegroup(); 
 
         if (activeMoveMarker != null) activeMoveMarker.SetActive(false);
         if (activeAttackMarker != null) 
