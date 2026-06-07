@@ -62,6 +62,12 @@ public class PlayerScript : MonoBehaviour
     [Header("Aim / Shooting Rotation")]
     public float aimTurnSpeed = 15f;
 
+    [Header("Weapon Accuracy")]
+    public float baseSpread = 0.01f;
+    public float moveSpreadMultiplier = 3f;
+    public float sprintSpreadMultiplier = 5f;
+    public float sitSpreadMultiplier = 0.5f;
+
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -305,6 +311,20 @@ public class PlayerScript : MonoBehaviour
 
         return walkNoiseRadius;
     }
+
+    public float GetCurrentSpread()
+{
+    if (!hasMovementInput)
+        return baseSpread;
+
+    if (isCurrentlySprinting)
+        return baseSpread * sprintSpreadMultiplier;
+
+    if (isSitting)
+        return baseSpread * sitSpreadMultiplier;
+
+    return baseSpread * moveSpreadMultiplier;
+}
 
     public void MakeGunShotNoise(float radius)
     {
