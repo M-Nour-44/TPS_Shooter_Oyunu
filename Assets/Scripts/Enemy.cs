@@ -242,10 +242,48 @@ public class Enemy : MonoBehaviour
             }
         }
 
-        // KULLANICI ISTEGI: Düşmanlar asla Ally'a odaklanmayacak, sadece oyuncuya odaklanacak
-        if (cachedPlayerTransform != null) 
+        if (cachedAlly == null)
         {
-            playerBody = cachedPlayerTransform;
+            cachedAlly = FindObjectOfType<Ally>();
+        }
+
+        float playerDist = cachedPlayerTransform != null ? Vector3.Distance(transform.position, cachedPlayerTransform.position) : float.MaxValue;
+        float allyDist = (cachedAlly != null && cachedAlly.gameObject.activeInHierarchy && !cachedAlly.isDead) ? Vector3.Distance(transform.position, cachedAlly.transform.position) : float.MaxValue;
+
+        // Görüş hattı ve FOV kontrolleri
+        bool playerVisible = (playerDist <= visionRadius) && CheckVisibility(cachedPlayerTransform);
+        bool allyVisible = (allyDist <= visionRadius) && CheckVisibility(cachedAlly.transform);
+
+        Transform target = null;
+
+        if (playerVisible && allyVisible)
+        {
+            target = playerDist < allyDist ? cachedPlayerTransform : cachedAlly.transform;
+        }
+        else if (playerVisible)
+        {
+            target = cachedPlayerTransform;
+        }
+        else if (allyVisible)
+        {
+            target = cachedAlly.transform;
+        }
+        else
+        {
+            // İkisi de görünmüyorsa (veya menzil dışındaysa) matematiksel olarak en yakını seç (ses duyma için)
+            if (playerDist < allyDist)
+            {
+                target = cachedPlayerTransform;
+            }
+            else if (allyDist < float.MaxValue)
+            {
+                target = cachedAlly.transform;
+            }
+        }
+
+        if (target != null)
+        {
+            playerBody = target;
         }
     }
 
@@ -620,77 +658,64 @@ public class Enemy : MonoBehaviour
 
     private bool IsPlayerInsideRadiusAndFOV(float radius)
     {
-        if (playerBody == null)
-        {
-            FindPlayer();
+        if (playerBody == null) return false;
 
-            if (playerBody == null)
-            {
-                return false;
-            }
-        }
+        float distance = Vector3.Distance(transform.position, playerBody.position);
 
-        bool insideRadius = Physics.CheckSphere(transform.position, radius, PlayerLayer);
+        if (distance > radius) return false;
 
-        if (!insideRadius)
-        {
-            return false;
-        }
+        return CheckVisibility(playerBody);
+    }
+
+    private bool CheckVisibility(Transform targetTransform)
+    {
+        if (targetTransform == null) return false;
 
         // --- Görüş Açısı (FOV) Kontrolü ---
         if (useFieldOfView)
         {
-            Vector3 directionToPlayer = playerBody.position - transform.position;
-            directionToPlayer.y = 0f;
+            Vector3 directionToTarget = targetTransform.position - transform.position;
+            directionToTarget.y = 0f;
 
-            if (directionToPlayer.sqrMagnitude > 0.001f)
+            if (directionToTarget.sqrMagnitude > 0.001f)
             {
-                float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer.normalized);
-
-                if (angleToPlayer > fieldOfViewAngle * 0.5f)
-                {
-                    return false; // FOV dışında
-                }
+                float angle = Vector3.Angle(transform.forward, directionToTarget.normalized);
+                if (angle > fieldOfViewAngle * 0.5f) return false; // FOV dışında
             }
         }
 
         // --- Görüş Hattı (LOS) Kontrolü — Duvar Tespiti ---
         if (useLineOfSight)
         {
-            return HasLineOfSight();
+            Vector3 origin = transform.position + Vector3.up * eyeHeight;
+            Vector3 targetPos = GetTargetPos(targetTransform);
+            Vector3 direction = targetPos - origin;
+            float dist = direction.magnitude;
+
+            if (dist > 0f && Physics.Raycast(origin, direction.normalized, out RaycastHit hit, dist, obstacleMask))
+            {
+                // Eğer çarptığımız obje bizzat hedefin kendisi veya hedefin altındaki bir parçaysa (silah, çanta vs.)
+                // bu bir duvar değildir, hedef görünüyordur.
+                if (!hit.transform.IsChildOf(targetTransform) && hit.transform != targetTransform)
+                {
+                    return false; // Duvar / engel tespit edildi
+                }
+            }
         }
 
         return true;
     }
 
-    /// <summary>
-    /// Düşman ile playerBody arasında temiz bir görüş hattı var mı kontrol eder.
-    /// obstacleMask katmanlarına çarpan bir şey varsa false döner (duvar var).
-    /// </summary>
-    private bool HasLineOfSight()
+    private Vector3 GetTargetPos(Transform target)
     {
-        if (playerBody == null)
+        Collider c = target.GetComponent<Collider>();
+        if (c != null)
         {
-            return false;
+            // Karakterin Collider merkezinden (göğüs hizası civarı) biraz yukarıyı (kafa/göğüs) hedef al
+            return c.bounds.center + Vector3.up * (c.bounds.extents.y * 0.5f);
         }
-
-        Vector3 origin = transform.position + Vector3.up * eyeHeight;
-        Vector3 target = playerBody.position + Vector3.up * targetEyeHeight;
-        Vector3 direction = target - origin;
-        float distance = direction.magnitude;
-
-        if (distance <= 0f)
-        {
-            return true;
-        }
-
-        // obstacleMask katmanlarında çarpışan bir nesne varsa görüş hattı kesilir
-        if (Physics.Raycast(origin, direction.normalized, distance, obstacleMask))
-        {
-            return false; // Duvar / engel tespit edildi
-        }
-
-        return true; // Temiz görüş hattı
+        // Eğer Collider yoksa varsayılan mantığa dön
+        return target.position + Vector3.up * targetEyeHeight;
     }
 
     private void LookAtPlayerYOnly()
