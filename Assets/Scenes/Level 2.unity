@@ -163815,8 +163815,8 @@ MonoBehaviour:
     m_Bits: 128
   moveMarkerPrefab: {fileID: 7200897700257957541, guid: 433c24d9d172645458f1c0f4da13b5c5, type: 3}
   attackMarkerPrefab: {fileID: 5354007390290556121, guid: ba0d52841fcdf7e49bf5aefbfa14f2fa, type: 3}
-  moveMarkerYOffset: 0.05
-  attackMarkerYOffset: -1
+  moveMarkerYOffset: 0
+  attackMarkerYOffset: 0
 --- !u!1 &789783804
 GameObject:
   m_ObjectHideFlags: 0
