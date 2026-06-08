@@ -374,6 +374,26 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    public void HealPlayer(float healAmount)
+    {
+        if (isDead)
+        {
+            return;
+        }
+
+        presentHealth += healAmount;
+
+        if (presentHealth > playerHealth)
+        {
+            presentHealth = playerHealth;
+        }
+
+        if (healthBar != null)
+        {
+            healthBar.SetHealth(presentHealth);
+        }
+    }
+
     private void PlayerDie()
     {
         if (isDead)

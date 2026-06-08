@@ -9,7 +9,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float enemyHealth = 120f;
     private float presentHealth;
     public float giveDamage = 5f;
-    public HealthBar healthBar;
+    public EnemyHealthBar healthBar;
 
     [Header("Enemy Things")]
     public NavMeshAgent enemyAgent;
@@ -122,11 +122,21 @@ public class Enemy : MonoBehaviour
             enemyAgent.speed = walkSpeed;
         }
 
+        // ==========================================
+        // التعديل الذكي لربط شريط الصحة تلقائياً!
+        // ==========================================
+        if (healthBar == null)
+        {
+            // السكريبت سيبحث عن شريط الصحة داخل مجسم العدو تلقائياً
+            healthBar = GetComponentInChildren<EnemyHealthBar>();
+        }
+
         presentHealth = enemyHealth;
 
         if (healthBar != null)
         {
-            healthBar.GiveFullHealth(enemyHealth);
+            // تم تعديل الأمر ليتوافق مع السكريبت الجديد
+            healthBar.SetMaxHealth(enemyHealth);
         }
 
         if (playerBody == null)
@@ -139,7 +149,6 @@ public class Enemy : MonoBehaviour
             }
         }
 
-        // Cache başlatma — Awake'de tek sefer çalışır
         cachedPlayerTransform = playerBody;
         if (cachedPlayerTransform != null)
         {
@@ -147,14 +156,13 @@ public class Enemy : MonoBehaviour
             if (cachedPlayerScript == null)
                 cachedPlayerScript = cachedPlayerTransform.GetComponent<PlayerScript>();
         }
-        cachedAlly = FindObjectOfType<Ally>(); // Awake'de bir kez bulmak kabul edilebilir
+        cachedAlly = FindObjectOfType<Ally>(); 
 
         SetEnemyAnimation(0f, false, false);
     }
 
     private void OnEnable()
     {
-        // Bu düşmanı global listeye ekle (AlertEnemiesAround için)
         if (!allEnemies.Contains(this))
         {
             allEnemies.Add(this);
@@ -163,7 +171,6 @@ public class Enemy : MonoBehaviour
 
     private void OnDisable()
     {
-        // Bu düşmanı listeden çıkar
         allEnemies.Remove(this);
     }
 
@@ -190,7 +197,6 @@ public class Enemy : MonoBehaviour
         bool playerInsideVision = IsPlayerInsideRadiusAndFOV(visionRadius);
         bool playerInsideShooting = IsPlayerInsideRadiusAndFOV(shootingRadius);
 
-        // KULLANICI ISTEGI: Eger oyunucuyu gorurse, son gordugu konumu hafizaya kazisin.
         if (playerInsideVision && playerBody != null)
         {
             lastHeardPosition = playerBody.position;
@@ -199,7 +205,6 @@ public class Enemy : MonoBehaviour
 
         playerHeard = useHearing && CanHearPlayer();
 
-        // X-Ray hilesi veren isAlerted silindi, artik sadece gercekten gorurse takip edecek
         playerInVisionRadius = playerInsideVision;
         playerInShootingRadius = playerInsideShooting;
 
@@ -230,7 +235,6 @@ public class Enemy : MonoBehaviour
 
     private void SelectClosestTarget()
     {
-        // Cache kaybolduysa yeniden bul (yalnızca gerektiğinde)
         if (cachedPlayerTransform == null)
         {
             GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
@@ -250,7 +254,6 @@ public class Enemy : MonoBehaviour
         float playerDist = cachedPlayerTransform != null ? Vector3.Distance(transform.position, cachedPlayerTransform.position) : float.MaxValue;
         float allyDist = (cachedAlly != null && cachedAlly.gameObject.activeInHierarchy && !cachedAlly.isDead) ? Vector3.Distance(transform.position, cachedAlly.transform.position) : float.MaxValue;
 
-        // Görüş hattı ve FOV kontrolleri
         bool playerVisible = (playerDist <= visionRadius) && CheckVisibility(cachedPlayerTransform);
         bool allyVisible = (allyDist <= visionRadius) && CheckVisibility(cachedAlly.transform);
 
@@ -270,7 +273,6 @@ public class Enemy : MonoBehaviour
         }
         else
         {
-            // İkisi de görünmüyorsa (veya menzil dışındaysa) matematiksel olarak en yakını seç (ses duyma için)
             if (playerDist < allyDist)
             {
                 target = cachedPlayerTransform;
@@ -350,7 +352,7 @@ public class Enemy : MonoBehaviour
                 enemyAgent.speed = walkSpeed;
                 enemyAgent.isStopped = false;
                 enemyAgent.SetDestination(initialPosition);
-                SetEnemyAnimation(0.5f, false, false); // Yürüme animasyonu
+                SetEnemyAnimation(0.5f, false, false); 
             }
             else
             {
@@ -564,8 +566,6 @@ public class Enemy : MonoBehaviour
         }
 
         isWaitingAtSearchPoint = false;
-        // KULLANICI ISTEGI: Hafiza kaybina sebep olan satiri kaldirdik.
-        // Artik arama iptal edilse bile son gorulen konum hafizada kalacak.
     }
 
     private void FireAtPlayer()
@@ -603,20 +603,18 @@ public class Enemy : MonoBehaviour
 
             if (Physics.Raycast(ShootingRaycastArea.transform.position, shootDirection, out hit, shootingRadius))
             {
-
                 PlayerScript player = hit.transform.GetComponentInParent<PlayerScript>();
                 Ally ally = hit.transform.GetComponentInParent<Ally>(); 
 
-        if (player != null)
-        {
-            player.playerHitDamage(giveDamage);
-        }
-        else if (ally != null)
-        { 
-            ally.allyHitDamage(giveDamage);
-        }
-    
-}
+                if (player != null)
+                {
+                    player.playerHitDamage(giveDamage);
+                }
+                else if (ally != null)
+                { 
+                    ally.allyHitDamage(giveDamage);
+                }
+            }
         }
 
         previouslyShoot = true;
@@ -625,7 +623,6 @@ public class Enemy : MonoBehaviour
 
     private bool CanHearPlayer()
     {
-        // Cache'lenmiş oyuncu referansını kullan (her frame GetComponent çağrısından kaçın)
         if (cachedPlayerTransform == null)
         {
             return false;
@@ -671,7 +668,6 @@ public class Enemy : MonoBehaviour
     {
         if (targetTransform == null) return false;
 
-        // --- Görüş Açısı (FOV) Kontrolü ---
         if (useFieldOfView)
         {
             Vector3 directionToTarget = targetTransform.position - transform.position;
@@ -680,11 +676,10 @@ public class Enemy : MonoBehaviour
             if (directionToTarget.sqrMagnitude > 0.001f)
             {
                 float angle = Vector3.Angle(transform.forward, directionToTarget.normalized);
-                if (angle > fieldOfViewAngle * 0.5f) return false; // FOV dışında
+                if (angle > fieldOfViewAngle * 0.5f) return false; 
             }
         }
 
-        // --- Görüş Hattı (LOS) Kontrolü — Duvar Tespiti ---
         if (useLineOfSight)
         {
             Vector3 origin = transform.position + Vector3.up * eyeHeight;
@@ -694,11 +689,9 @@ public class Enemy : MonoBehaviour
 
             if (dist > 0f && Physics.Raycast(origin, direction.normalized, out RaycastHit hit, dist, obstacleMask))
             {
-                // Eğer çarptığımız obje bizzat hedefin kendisi veya hedefin altındaki bir parçaysa (silah, çanta vs.)
-                // bu bir duvar değildir, hedef görünüyordur.
                 if (!hit.transform.IsChildOf(targetTransform) && hit.transform != targetTransform)
                 {
-                    return false; // Duvar / engel tespit edildi
+                    return false; 
                 }
             }
         }
@@ -711,17 +704,13 @@ public class Enemy : MonoBehaviour
         Collider c = target.GetComponent<Collider>();
         if (c != null)
         {
-            // Karakterin Collider merkezinden (göğüs hizası civarı) biraz yukarıyı (kafa/göğüs) hedef al
             return c.bounds.center + Vector3.up * (c.bounds.extents.y * 0.5f);
         }
-        // Eğer Collider yoksa varsayılan mantığa dön
         return target.position + Vector3.up * targetEyeHeight;
     }
 
     private void LookAtPlayerYOnly()
     {
-        // Artık Inspector'daki sabit LookPoint'i değil, 
-        // SelectClosestTarget() ile belirlediğimiz aktif hedefi (Ally veya Sen) baz alacak.
         if (playerBody != null)
         {
             LookAtPositionYOnly(playerBody.position);
@@ -800,7 +789,6 @@ public class Enemy : MonoBehaviour
 
     public static void AlertEnemiesAround(Vector3 position, float radius, bool chasePlayer)
     {
-        // FindObjectsOfType yerine cache'lenmiş listeyi kullan (çok daha hızlı)
         for (int i = allEnemies.Count - 1; i >= 0; i--)
         {
             Enemy enemy = allEnemies[i];
@@ -851,7 +839,6 @@ public class Enemy : MonoBehaviour
         if (player != null)
         {
             playerBody = player.transform;
-            // Cache'i de güncelle
             cachedPlayerTransform = playerBody;
             if (cachedPlayerScript == null)
             {
