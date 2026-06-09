@@ -245,6 +245,13 @@ public class Rifle : MonoBehaviour
                 }
             }
 
+            Ally ally = hitInfo.transform.GetComponentInParent<Ally>();
+
+            if (ally != null)
+            {
+                return;
+            }
+
             Objects obj = hitInfo.transform.GetComponentInParent<Objects>();
             Enemy enemy = hitInfo.transform.GetComponentInParent<Enemy>();
 
@@ -258,12 +265,10 @@ public class Rifle : MonoBehaviour
                 enemy.enemyHitDamage(giveDamageOf);
                 SpawnImpact(hitInfo, goreEffect);
             }
-            // --- الكود الجديد الذي يضيف أثر الرصاص على الجدران وأي شيء آخر ---
-            else 
+            else
             {
                 SpawnImpact(hitInfo, impactEffect);
             }
-            // -----------------------------------------------------------
         }
     }
 
