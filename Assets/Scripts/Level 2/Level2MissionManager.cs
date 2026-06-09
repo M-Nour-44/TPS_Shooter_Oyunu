@@ -25,6 +25,7 @@ public class Level2MissionManager : MonoBehaviour
     [Header("Level Complete Audio")]
     public AudioSource levelCompleteAudioSource;
     public AudioClip levelCompleteSound;
+    public float soundDelay = 2f; // المتغير الجديد للتحكم بتأخير الصوت
 
     [Header("Start Hint UI")]
     public GameObject startHintUI;
@@ -503,21 +504,29 @@ public class Level2MissionManager : MonoBehaviour
             taskListPanel.SetActive(false);
         }
 
+        // إظهار لوحة إكمال المرحلة فوراً
         if (levelCompletePanel != null)
         {
             levelCompletePanel.SetActive(true);
         }
-        
-        if (levelCompleteAudioSource != null && levelCompleteSound != null)
-        {
-            levelCompleteAudioSource.PlayOneShot(levelCompleteSound);
-        }
 
+        // تحديث النص فوراً
         if (levelCompleteText != null)
         {
             levelCompleteText.text = levelCompleteMessage;
         }
 
+        // ----------------------------------------------------
+        // تأخير تشغيل الصوت (لكي ينتهي صوت تفكيك القنبلة أولاً)
+        yield return new WaitForSecondsRealtime(soundDelay);
+        // ----------------------------------------------------
+
+        if (levelCompleteAudioSource != null && levelCompleteSound != null)
+        {
+            levelCompleteAudioSource.PlayOneShot(levelCompleteSound);
+        }
+
+        // الانتظار الإضافي قبل الانتقال للمشهد التالي
         yield return new WaitForSecondsRealtime(levelCompleteDelay);
 
         Time.timeScale = 1f;

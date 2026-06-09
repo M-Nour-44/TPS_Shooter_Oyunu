@@ -52359,7 +52359,7 @@ Transform:
   m_GameObject: {fileID: 815234135}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0020943934, y: -0, z: -0, w: 0.9999978}
-  m_LocalPosition: {x: -5.164059, y: 1.7460246, z: -14.651424}
+  m_LocalPosition: {x: -5.163651, y: 1.7460246, z: -14.651423}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -186349,7 +186349,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bda32f5f5c8fa3a4882b0d2a49b7c3c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healAmount: 40
+  healAmount: 120
   healSound: {fileID: 8300000, guid: 4841e78cf4acaf847b45bb4e76be80e5, type: 3}
 --- !u!65 &2084620298373582939
 BoxCollider:
@@ -197729,7 +197729,7 @@ Transform:
   m_GameObject: {fileID: 5157071428694018547}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0020943934, y: -0, z: -0, w: 0.9999978}
-  m_LocalPosition: {x: -5.164059, y: 1.7460247, z: -14.651424}
+  m_LocalPosition: {x: -5.163651, y: 1.7460246, z: -14.651424}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

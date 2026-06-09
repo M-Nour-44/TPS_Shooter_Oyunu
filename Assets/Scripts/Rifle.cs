@@ -17,7 +17,7 @@ public class Rifle : MonoBehaviour
     public float gunShotAlertRadius = 35f;
 
     [Header("Rifle Ammunition and shooting")]
-    private int maximumAmmunition = 20;
+    private int maximumAmmunition = 30;
     private int mag = 15;
     private int presentAmmunition;
     public float reloadingTime = 1.3f;
@@ -38,6 +38,7 @@ public class Rifle : MonoBehaviour
 
     private float originalPlayerSpeed = 3f;
     private float originalPlayerSprint = 6f;
+    private float originalPlayerSit = 1.5f;
 
     private void Awake()
     {
@@ -60,6 +61,7 @@ public class Rifle : MonoBehaviour
         {
             originalPlayerSpeed = player.playerSpeed;
             originalPlayerSprint = player.playerSprint;
+            originalPlayerSit = player.sitSpeed;
         }
 
         if (AmmoCount.occurrence != null)
@@ -256,6 +258,12 @@ public class Rifle : MonoBehaviour
                 enemy.enemyHitDamage(giveDamageOf);
                 SpawnImpact(hitInfo, goreEffect);
             }
+            // --- الكود الجديد الذي يضيف أثر الرصاص على الجدران وأي شيء آخر ---
+            else 
+            {
+                SpawnImpact(hitInfo, impactEffect);
+            }
+            // -----------------------------------------------------------
         }
     }
 
@@ -297,6 +305,7 @@ public class Rifle : MonoBehaviour
         {
             player.playerSpeed = 0f;
             player.playerSprint = 0f;
+            player.sitSpeed = 0f;
         }
 
         if (audioSource != null && reloadingSound != null)
@@ -319,6 +328,7 @@ public class Rifle : MonoBehaviour
         {
             player.playerSpeed = originalPlayerSpeed;
             player.playerSprint = originalPlayerSprint;
+            player.sitSpeed = originalPlayerSit;
         }
 
         SetAnimatorBoolIfExists("Reloading", false);

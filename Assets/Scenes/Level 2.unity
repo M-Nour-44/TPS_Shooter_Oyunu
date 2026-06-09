@@ -80710,7 +80710,7 @@ Transform:
   m_GameObject: {fileID: 383970752}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0020943934, y: 0, z: 0, w: 0.9999978}
-  m_LocalPosition: {x: -9.585172, y: 1.6170744, z: -50.13829}
+  m_LocalPosition: {x: -9.5846405, y: 1.6170744, z: -50.13829}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -430487,6 +430487,7 @@ MonoBehaviour:
   - Defuse the bomb
   levelCompleteAudioSource: {fileID: 1369509025}
   levelCompleteSound: {fileID: 8300000, guid: 3edab463511769f44abeff93bc924543, type: 3}
+  soundDelay: 2
   startHintUI: {fileID: 151822803}
   startHintCanvasGroup: {fileID: 151822804}
   startHintDuration: 12
@@ -691202,7 +691203,7 @@ Transform:
   m_GameObject: {fileID: 2671857128727565850}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0020943934, y: 0, z: 0, w: 0.9999978}
-  m_LocalPosition: {x: -9.585172, y: 1.6170744, z: -50.13829}
+  m_LocalPosition: {x: -9.5846405, y: 1.6170744, z: -50.13829}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
