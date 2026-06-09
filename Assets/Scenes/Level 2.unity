@@ -80590,7 +80590,7 @@ Transform:
   m_GameObject: {fileID: 383970752}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0020943934, y: 0, z: 0, w: 0.9999978}
-  m_LocalPosition: {x: -9.377302, y: 0.90507454, z: -50.13429}
+  m_LocalPosition: {x: -9.584931, y: 1.6170744, z: -50.13829}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -134950,7 +134950,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 43.100018, y: -15.099945}
+  m_AnchoredPosition: {x: 43.100037, y: -15.099976}
   m_SizeDelta: {x: 692.1714, y: 100}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &614374981
@@ -163689,7 +163689,7 @@ Transform:
   m_GameObject: {fileID: 788695260}
   serializedVersion: 2
   m_LocalRotation: {x: -0.0028352363, y: 0.016773708, z: -0.0038935253, w: 0.99984777}
-  m_LocalPosition: {x: -10.22, y: 0.1, z: -48.54}
+  m_LocalPosition: {x: -10.215, y: 0.812, z: -48.544}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -690248,7 +690248,7 @@ Transform:
   m_GameObject: {fileID: 2671857128727565850}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0020943934, y: 0, z: 0, w: 0.9999978}
-  m_LocalPosition: {x: -9.377302, y: 0.90507454, z: -50.13429}
+  m_LocalPosition: {x: -9.584931, y: 1.6170744, z: -50.138287}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -727124,6 +727124,7 @@ GameObject:
   - component: {fileID: 6760827801998398071}
   - component: {fileID: 6042575547354052764}
   - component: {fileID: 2145053229015124069}
+  - component: {fileID: 6760827801998398072}
   - component: {fileID: 3071645386504996975}
   - component: {fileID: 1086818231183132160}
   - component: {fileID: 4366068152343645660}
@@ -733289,8 +733290,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   camera: {fileID: 383970754}
-  giveDamageOf: 10
-  shootingRange: 100
+  giveDamageOf: 6
+  shootingRange: 32
   fireCharge: 15
   animator: {fileID: 788695262}
   player: {fileID: 788695269}
@@ -739179,6 +739180,41 @@ CapsuleCollider:
   m_Height: 2.2627406
   m_Direction: 1
   m_Center: {x: -0.1445508, y: 2.6675355, z: 0}
+--- !u!114 &6760827801998398072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5618146093640941999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f131dd35d296fca4e90efc4ed717e48b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Target: {fileID: 0}
+  OffSet: {x: 0, y: 0, z: 0}
+  iconData: {fileID: 11400000, guid: d6cb55882c176594c9b1e79dc1e31058, type: 2}
+  ShowCircleArea: 0
+  CircleAreaRadius: 10
+  CircleAreaColor: {r: 1, g: 1, b: 1, a: 0.9}
+  isInteractable: 1
+  interacableAction: 0
+  InfoItem: Info Icon here
+  keepTextAlwaysFacingUp: 0
+  onClick:
+    m_PersistentCalls:
+      m_Calls: []
+  OffScreen: 0
+  opacityBasedDistance: 0
+  maxDistance: 250
+  iconFaceDirection: 0
+  enableDisableWithTarget: 1
+  DestroyWithObject: 1
+  BorderOffScreen: 0.01
+  RenderDelay: 0.3
+  m_Effect: 2
+  CustomIconPrefab: {fileID: 0}
 --- !u!33 &6767706345732495664
 MeshFilter:
   m_ObjectHideFlags: 0
