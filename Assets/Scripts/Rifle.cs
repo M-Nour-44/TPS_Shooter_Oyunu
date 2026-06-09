@@ -47,10 +47,14 @@ public class Rifle : MonoBehaviour
     private void Start()
     {
         if (player == null)
+        {
             player = GetComponentInParent<PlayerScript>();
+        }
 
         if (player == null)
+        {
             player = FindObjectOfType<PlayerScript>();
+        }
 
         if (player != null)
         {
@@ -68,20 +72,22 @@ public class Rifle : MonoBehaviour
     void Update()
     {
         if (player == null || player.IsDead())
+        {
             return;
+        }
 
         HandleReloadStateLock();
         HandleReloadInput();
         HandleAutoReload();
-
         HandleShooting();
     }
 
-    // ---------------- CORE STATES ----------------
-
     void HandleReloadStateLock()
     {
-        if (!setReloading) return;
+        if (!setReloading)
+        {
+            return;
+        }
 
         SetAnimatorBoolIfExists("Fire", false);
         SetAnimatorBoolIfExists("FireWalk", false);
@@ -89,9 +95,15 @@ public class Rifle : MonoBehaviour
 
     void HandleReloadInput()
     {
-        if (setReloading) return;
-        if (player != null && !player.IsOnGround()) return;
-        if (player != null && player.IsSitting()) return;
+        if (setReloading)
+        {
+            return;
+        }
+
+        if (player != null && !player.IsOnGround())
+        {
+            return;
+        }
 
         if (Input.GetKeyDown(KeyCode.R) && mag > 0 && presentAmmunition < maximumAmmunition)
         {
@@ -101,8 +113,15 @@ public class Rifle : MonoBehaviour
 
     void HandleAutoReload()
     {
-        if (setReloading) return;
-        if (mag <= 0) return;
+        if (setReloading)
+        {
+            return;
+        }
+
+        if (mag <= 0)
+        {
+            return;
+        }
 
         if (presentAmmunition <= 0)
         {
@@ -110,12 +129,17 @@ public class Rifle : MonoBehaviour
         }
     }
 
-    // ---------------- SHOOTING ----------------
-
     void HandleShooting()
     {
-        if (setReloading) return;
-        if (player != null && !player.IsOnGround()) return;
+        if (setReloading)
+        {
+            return;
+        }
+
+        if (player != null && !player.IsOnGround())
+        {
+            return;
+        }
 
         bool isShooting = Input.GetButton("Fire1");
 
@@ -151,98 +175,117 @@ public class Rifle : MonoBehaviour
         }
     }
 
-    // ---------------- SHOOT ----------------
-
     void Shoot()
-{
-    if (presentAmmunition <= 0)
     {
-        if (mag == 0)
-            StartCoroutine(ShowAmmoOut());
-
-        return;
-    }
-
-    presentAmmunition--;
-
-    if (AmmoCount.occurrence != null)
-    {
-        AmmoCount.occurrence.UpdateAmmoText(presentAmmunition);
-        AmmoCount.occurrence.UpdateMagText(mag);
-    }
-
-    if (muzzleSpark != null && muzzleSpark.gameObject.activeInHierarchy)
-        muzzleSpark.Play();
-
-    if (audioSource != null && shootingSound != null)
-        audioSource.PlayOneShot(shootingSound);
-
-    if (alertEnemiesWhenShooting && player != null)
-        player.MakeGunShotNoise(gunShotAlertRadius);
-
-    if (camera == null || player == null) return;
-
-    // ================= SPREAD EKLENDİ =================
-    Vector3 shootDir = camera.transform.forward;
-
-    float spread = player.GetCurrentSpread();
-
-    shootDir += new Vector3(
-        Random.Range(-spread, spread),
-        Random.Range(-spread, spread),
-        Random.Range(-spread, spread)
-    );
-
-    shootDir.Normalize();
-    // ===================================================
-
-    if (Physics.Raycast(camera.transform.position, shootDir, out RaycastHit hitInfo, shootingRange))
-    {
-        Vector3 chestOrigin = player.transform.position + Vector3.up * 1.4f;
-        Vector3 dirToTarget = hitInfo.point - chestOrigin;
-
-        int mask = ~LayerMask.GetMask("Player", "Ignore Raycast");
-
-        if (Physics.Raycast(chestOrigin, dirToTarget.normalized, out RaycastHit chestHit, dirToTarget.magnitude, mask))
+        if (presentAmmunition <= 0)
         {
-            if (chestHit.transform != hitInfo.transform &&
-                Vector3.Distance(chestHit.point, hitInfo.point) > 0.3f)
+            if (mag == 0)
             {
-                hitInfo = chestHit;
+                StartCoroutine(ShowAmmoOut());
+            }
+
+            return;
+        }
+
+        presentAmmunition--;
+
+        if (AmmoCount.occurrence != null)
+        {
+            AmmoCount.occurrence.UpdateAmmoText(presentAmmunition);
+            AmmoCount.occurrence.UpdateMagText(mag);
+        }
+
+        if (muzzleSpark != null && muzzleSpark.gameObject.activeInHierarchy)
+        {
+            muzzleSpark.Play();
+        }
+
+        if (audioSource != null && shootingSound != null)
+        {
+            audioSource.PlayOneShot(shootingSound);
+        }
+
+        if (alertEnemiesWhenShooting && player != null)
+        {
+            player.MakeGunShotNoise(gunShotAlertRadius);
+        }
+
+        if (camera == null || player == null)
+        {
+            return;
+        }
+
+        Vector3 shootDir = camera.transform.forward;
+
+        float spread = player.GetCurrentSpread();
+
+        shootDir += new Vector3(
+            Random.Range(-spread, spread),
+            Random.Range(-spread, spread),
+            Random.Range(-spread, spread)
+        );
+
+        shootDir.Normalize();
+
+        if (Physics.Raycast(camera.transform.position, shootDir, out RaycastHit hitInfo, shootingRange))
+        {
+            Vector3 chestOrigin = player.transform.position + Vector3.up * 1.4f;
+            Vector3 dirToTarget = hitInfo.point - chestOrigin;
+
+            int mask = ~LayerMask.GetMask("Player", "Ignore Raycast");
+
+            if (Physics.Raycast(chestOrigin, dirToTarget.normalized, out RaycastHit chestHit, dirToTarget.magnitude, mask))
+            {
+                if (chestHit.transform != hitInfo.transform &&
+                    Vector3.Distance(chestHit.point, hitInfo.point) > 0.3f)
+                {
+                    hitInfo = chestHit;
+                }
+            }
+
+            Objects obj = hitInfo.transform.GetComponentInParent<Objects>();
+            Enemy enemy = hitInfo.transform.GetComponentInParent<Enemy>();
+
+            if (obj != null)
+            {
+                obj.objectHitDamage(giveDamageOf);
+                SpawnImpact(hitInfo, impactEffect);
+            }
+            else if (enemy != null)
+            {
+                enemy.enemyHitDamage(giveDamageOf);
+                SpawnImpact(hitInfo, goreEffect);
             }
         }
-
-        Objects obj = hitInfo.transform.GetComponentInParent<Objects>();
-        Enemy enemy = hitInfo.transform.GetComponentInParent<Enemy>();
-
-        if (obj != null)
-        {
-            obj.objectHitDamage(giveDamageOf);
-            SpawnImpact(hitInfo, impactEffect);
-        }
-        else if (enemy != null)
-        {
-            enemy.enemyHitDamage(giveDamageOf);
-            SpawnImpact(hitInfo, goreEffect);
-        }
     }
-}
 
     void SpawnImpact(RaycastHit hit, GameObject fx)
     {
-        if (fx == null) return;
+        if (fx == null)
+        {
+            return;
+        }
 
         GameObject go = Instantiate(fx, hit.point, Quaternion.LookRotation(hit.normal));
         Destroy(go, 1.5f);
     }
 
-    // ---------------- RELOAD ----------------
-
     IEnumerator Reload()
     {
-        if (setReloading) yield break;
-        if (mag <= 0) yield break;
-        if (player != null && player.IsSitting()) yield break;
+        if (setReloading)
+        {
+            yield break;
+        }
+
+        if (mag <= 0)
+        {
+            yield break;
+        }
+
+        if (player != null && !player.IsOnGround())
+        {
+            yield break;
+        }
 
         setReloading = true;
 
@@ -257,7 +300,9 @@ public class Rifle : MonoBehaviour
         }
 
         if (audioSource != null && reloadingSound != null)
+        {
             audioSource.PlayOneShot(reloadingSound);
+        }
 
         yield return new WaitForSeconds(reloadingTime);
 
@@ -282,14 +327,15 @@ public class Rifle : MonoBehaviour
 
     IEnumerator ShowAmmoOut()
     {
-        if (AmmoOutUI == null) yield break;
+        if (AmmoOutUI == null)
+        {
+            yield break;
+        }
 
         AmmoOutUI.SetActive(true);
         yield return new WaitForSeconds(timeToShowUI);
         AmmoOutUI.SetActive(false);
     }
-
-    // ---------------- UTIL ----------------
 
     public void AddMagazine(int amount)
     {
@@ -304,11 +350,18 @@ public class Rifle : MonoBehaviour
 
     private bool HasAnimatorParameter(string name, AnimatorControllerParameterType type)
     {
-        if (animator == null) return false;
+        if (animator == null)
+        {
+            return false;
+        }
 
         foreach (var p in animator.parameters)
+        {
             if (p.name == name && p.type == type)
+            {
                 return true;
+            }
+        }
 
         return false;
     }
@@ -316,6 +369,8 @@ public class Rifle : MonoBehaviour
     private void SetAnimatorBoolIfExists(string name, bool value)
     {
         if (HasAnimatorParameter(name, AnimatorControllerParameterType.Bool))
+        {
             animator.SetBool(name, value);
+        }
     }
 }
