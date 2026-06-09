@@ -11,7 +11,10 @@ public class LoadingScreen : MonoBehaviour {
     [Tooltip("Scene retrieved to load. If empty, it will load main menu.")]
     public string sceneToLoad;
 
+
     [Header("Loading Bar")]
+
+
     
     [Tooltip("Loading Bar")]
     public Slider loadingBar;
@@ -69,9 +72,11 @@ public class LoadingScreen : MonoBehaviour {
     AsyncOperation asyncOperation;
     #endregion
 
+
     // Use this for initialization
     void Start()
     {
+        
         //init loading bar one time and make scene ready to load
         init();
 

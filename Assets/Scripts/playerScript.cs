@@ -45,9 +45,17 @@ public class PlayerScript : MonoBehaviour
 
     [Header("Player Sounds")]
     public AudioSource playerAudioSource;
+    public AudioSource DeathAudioSource;
+    public AudioClip deathSound;
     public AudioClip hitSound;
     public float hitSoundCooldown = 0.5f;
     private float nextHitSoundTime = 0f;
+
+    
+
+    [Header("Death UI Elements")]
+    public GameObject gameOverImage; 
+    public float delayBeforeMenu = 3f; 
 
     [Header("Player Jumping and Velocity")]
     public float jumpRange = 1f;
@@ -403,6 +411,18 @@ public class PlayerScript : MonoBehaviour
 
         isDead = true;
 
+        // 1. تشغيل صوت الموت فوراً
+        if (DeathAudioSource != null && deathSound != null)
+        {
+            DeathAudioSource.PlayOneShot(deathSound);
+        }
+
+        // 2. إظهار صورة Game Over فوراً
+        if (gameOverImage != null)
+        {
+            gameOverImage.SetActive(true);
+        }
+
         if (cC != null)
         {
             cC.enabled = false;
@@ -440,6 +460,22 @@ public class PlayerScript : MonoBehaviour
             }
         }
 
+        // 3. تشغيل المؤقت الزمني لفتح القائمة بعد 3 ثوانٍ
+        StartCoroutine(OpenMenuAfterDelay());
+
+        if (destroyPlayerAfterDeath)
+        {
+            Destroy(gameObject, destroyDelay);
+        }
+    }
+
+    // دالة المؤقت الزمني الجديدة
+    private System.Collections.IEnumerator OpenMenuAfterDelay()
+    {
+        // اللعبة ستستمر بالعمل هنا لمدة 3 ثوانٍ لكي يكتمل الصوت والأنيميشن
+        yield return new WaitForSeconds(delayBeforeMenu);
+
+        // بعد انتهاء الوقت، سيتم فتح القائمة وإيقاف اللعبة
         UIController uiController = FindObjectOfType<UIController>();
 
         if (uiController != null)
@@ -451,11 +487,6 @@ public class PlayerScript : MonoBehaviour
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
             Time.timeScale = 0.0001f;
-        }
-
-        if (destroyPlayerAfterDeath)
-        {
-            Destroy(gameObject, destroyDelay);
         }
     }
 

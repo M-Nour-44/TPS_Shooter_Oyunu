@@ -22,6 +22,10 @@ public class Level2MissionManager : MonoBehaviour
         "Defuse the bomb"
     };
 
+    [Header("Level Complete Audio")]
+    public AudioSource levelCompleteAudioSource;
+    public AudioClip levelCompleteSound;
+
     [Header("Start Hint UI")]
     public GameObject startHintUI;
     public CanvasGroup startHintCanvasGroup;
@@ -502,6 +506,11 @@ public class Level2MissionManager : MonoBehaviour
         if (levelCompletePanel != null)
         {
             levelCompletePanel.SetActive(true);
+        }
+        
+        if (levelCompleteAudioSource != null && levelCompleteSound != null)
+        {
+            levelCompleteAudioSource.PlayOneShot(levelCompleteSound);
         }
 
         if (levelCompleteText != null)

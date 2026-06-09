@@ -37,7 +37,11 @@ public class Ally : MonoBehaviour
     [Header("Savaş Efektleri")]
     public ParticleSystem muzzleSpark;
     public AudioSource audioSource;
+
+    [Header("Shooting Sound")]
+    public AudioSource ShootingAudioSource;
     public AudioClip shootingSound;
+
 
     [Header("Telsiz Sesleri (Voice Lines)")]
     public AudioClip[] acknowledgeMoveSounds;
@@ -49,7 +53,7 @@ public class Ally : MonoBehaviour
     private float presentHealth;
     [HideInInspector] public bool isDead = false;
 
-    public HealthBar healthBar;
+    public AllyHealthBar healthBar;
 
     private Transform currentTarget;
     private NavMeshAgent agent;
@@ -644,7 +648,7 @@ public class Ally : MonoBehaviour
             muzzleSpark.Play();
         }
 
-        if (audioSource != null && shootingSound != null)
+        if (ShootingAudioSource != null && shootingSound != null)
         {
             audioSource.PlayOneShot(shootingSound);
         }

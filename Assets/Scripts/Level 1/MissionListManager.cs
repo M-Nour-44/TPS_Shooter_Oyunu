@@ -40,6 +40,10 @@ public class MissionListManager : MonoBehaviour
     public string levelCompleteMessage = "LEVEL 1 COMPLETED";
     public float levelCompleteDelay = 5f;
 
+    [Header("Level Complete Audio")]
+    public AudioSource levelCompleteAudioSource;
+    public AudioClip levelCompleteSound;
+
     [Header("Stop Objects On Level Complete")]
     public GameObject[] objectsToStopOnLevelComplete;
     public bool disableObjectsOnLevelComplete = false;
@@ -531,6 +535,11 @@ public class MissionListManager : MonoBehaviour
         if (levelCompletePanel != null)
         {
             levelCompletePanel.SetActive(true);
+        }
+
+        if (levelCompleteAudioSource != null && levelCompleteSound != null)
+        {
+            levelCompleteAudioSource.PlayOneShot(levelCompleteSound);
         }
 
         if (levelCompleteText != null)

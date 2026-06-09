@@ -69,12 +69,21 @@ public class HealthBar : MonoBehaviour
         // ==========================================
         // 2. التحكم بتأثيرات الدم ونبض القلب
         // ==========================================
-        if (currentHealth <= lowHealthThreshold && currentHealth > 0)
+        if (currentHealth <= 0)
         {
-            // إذا كان الدم قليلاً واللاعب لا يزال حياً
+            // 1. حالة الموت: إبقاء صورة الدم ظاهرة، وإيقاف صوت النبض
             if (bloodScreen != null) bloodScreen.SetActive(true);
             
-            // تشغيل الصوت إذا لم يكن يعمل بالفعل
+            if (heartbeatSource != null && heartbeatSource.isPlaying)
+            {
+                heartbeatSource.Stop();
+            }
+        }
+        else if (currentHealth <= lowHealthThreshold)
+        {
+            // 2. حالة الخطر (الدم قليل): إظهار صورة الدم وتشغيل النبض
+            if (bloodScreen != null) bloodScreen.SetActive(true);
+            
             if (heartbeatSource != null && !heartbeatSource.isPlaying)
             {
                 heartbeatSource.Play();
@@ -82,7 +91,7 @@ public class HealthBar : MonoBehaviour
         }
         else
         {
-            // إخفاء الدم وإيقاف النبض إذا تعالج اللاعب أو إذا مات (الصحة صفر)
+            // 3. حالة التعافي (الدم مليء): إخفاء صورة الدم وإيقاف النبض
             if (bloodScreen != null) bloodScreen.SetActive(false);
             
             if (heartbeatSource != null && heartbeatSource.isPlaying)
