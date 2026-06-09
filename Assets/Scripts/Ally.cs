@@ -72,6 +72,10 @@ public class Ally : MonoBehaviour
         {
             healthBar.GiveFullHealth(allyHealth);
         }
+
+        SetAnimatorBoolIfExists("IsAiming", false);
+        SetAnimatorBoolIfExists("Shoot", false);
+        SetAnimatorBoolIfExists("Die", false);
     }
 
     void Update()
@@ -353,10 +357,7 @@ public class Ally : MonoBehaviour
             return;
         }
 
-        Vector3 rayOrigin = transform.position + Vector3.up * 1.5f + transform.forward * 0.5f;
-        Vector3 targetPos = currentTarget.position + Vector3.up * 1.5f;
         float distanceToEnemy = Vector3.Distance(transform.position, currentTarget.position);
-
         bool canSeeEnemy = HasLineOfSightToTarget(currentTarget);
 
         if (distanceToEnemy > shootingRange || !canSeeEnemy)
@@ -524,6 +525,28 @@ public class Ally : MonoBehaviour
         return target.GetComponentInParent<Enemy>() != null;
     }
 
+    private bool ShouldReturnToAimAfterHit()
+    {
+        if (!IsTargetValid(currentTarget))
+        {
+            return false;
+        }
+
+        float distanceToTarget = Vector3.Distance(transform.position, currentTarget.position);
+
+        if (distanceToTarget > shootingRange)
+        {
+            return false;
+        }
+
+        if (!HasLineOfSightToTarget(currentTarget))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     public void allyHitDamage(float takeDamage)
     {
         if (isDead)
@@ -537,8 +560,6 @@ public class Ally : MonoBehaviour
         {
             healthBar.SetHealth(presentHealth);
         }
-
-        SetAnimatorTriggerIfExists("Hit");
 
         if (presentHealth <= 0)
         {
@@ -560,6 +581,11 @@ public class Ally : MonoBehaviour
                 BeginCommandMoveCombatInterrupt(attackerGuess);
             }
         }
+
+        bool returnToAim = ShouldReturnToAimAfterHit();
+
+        SetAnimatorBoolIfExists("IsAiming", returnToAim);
+        SetAnimatorTriggerIfExists("Hit");
     }
 
     void AllyDie()

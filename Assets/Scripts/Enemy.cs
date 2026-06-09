@@ -761,6 +761,14 @@ public class Enemy : MonoBehaviour
         {
             EnemyDie();
         }
+        else
+        {
+            if (Time.time >= nextHitAnimationTime)
+            {
+                SetAnimatorTriggerIfExists("Hit");
+                nextHitAnimationTime = Time.time + hitAnimationCooldown;
+            }
+        }
     }
 
     public void ReceiveGunshotAlert(Vector3 noisePosition, bool chasePlayer)
