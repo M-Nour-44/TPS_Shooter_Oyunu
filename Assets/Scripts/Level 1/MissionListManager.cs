@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.AI;
 
 public class MissionListManager : MonoBehaviour
 {
@@ -38,6 +39,10 @@ public class MissionListManager : MonoBehaviour
     public TextMeshProUGUI levelCompleteText;
     public string levelCompleteMessage = "LEVEL 1 COMPLETED";
     public float levelCompleteDelay = 5f;
+
+    [Header("Stop Objects On Level Complete")]
+    public GameObject[] objectsToStopOnLevelComplete;
+    public bool disableObjectsOnLevelComplete = false;
 
     [Header("Loading")]
     public string loadingSceneName = "LoadingScreen";
@@ -419,9 +424,101 @@ public class MissionListManager : MonoBehaviour
         }
     }
 
+    private void StopLevelCompleteObjects()
+    {
+        if (objectsToStopOnLevelComplete == null)
+        {
+            return;
+        }
+
+        foreach (GameObject obj in objectsToStopOnLevelComplete)
+        {
+            if (obj == null)
+            {
+                continue;
+            }
+
+            NavMeshAgent agent = obj.GetComponent<NavMeshAgent>();
+
+            if (agent != null && agent.enabled)
+            {
+                if (agent.isOnNavMesh)
+                {
+                    agent.isStopped = true;
+                    agent.ResetPath();
+                    agent.velocity = Vector3.zero;
+                }
+
+                agent.enabled = false;
+            }
+
+            Animator animator = obj.GetComponent<Animator>();
+
+            if (animator != null)
+            {
+                animator.SetFloat("Speed", 0f);
+                animator.SetBool("Shoot", false);
+                animator.SetBool("IsAiming", false);
+            }
+
+            Rigidbody rb = obj.GetComponent<Rigidbody>();
+
+            if (rb != null)
+            {
+                rb.velocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+                rb.isKinematic = true;
+            }
+
+            ParticleSystem[] particles = obj.GetComponentsInChildren<ParticleSystem>();
+
+            foreach (ParticleSystem particle in particles)
+            {
+                if (particle != null)
+                {
+                    particle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                }
+            }
+
+            AudioSource[] audioSources = obj.GetComponentsInChildren<AudioSource>();
+
+            foreach (AudioSource audioSource in audioSources)
+            {
+                if (audioSource != null)
+                {
+                    audioSource.Stop();
+                }
+            }
+
+            MonoBehaviour[] scripts = obj.GetComponents<MonoBehaviour>();
+
+            foreach (MonoBehaviour script in scripts)
+            {
+                if (script == null)
+                {
+                    continue;
+                }
+
+                if (script == this)
+                {
+                    continue;
+                }
+
+                script.enabled = false;
+            }
+
+            if (disableObjectsOnLevelComplete)
+            {
+                obj.SetActive(false);
+            }
+        }
+    }
+
     private IEnumerator LevelCompleteRoutine()
     {
         levelChanging = true;
+
+        StopLevelCompleteObjects();
 
         HideStartHint();
         HideCurrentObjective();

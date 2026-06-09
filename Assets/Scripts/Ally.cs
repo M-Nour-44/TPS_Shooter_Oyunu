@@ -8,13 +8,13 @@ public class Ally : MonoBehaviour
     public enum AllyState
     {
         FollowPlayer,
-        CommandMoveTo,   
-        CommandFocusFire 
+        CommandMoveTo,
+        CommandFocusFire
     }
-    
+
     [Header("Durum Makinesi (FSM)")]
     public AllyState currentState = AllyState.FollowPlayer;
-    public bool isCommandActive = false; 
+    public bool isCommandActive = false;
 
     [Header("Hedef Ayarları")]
     public Transform player;
@@ -26,51 +26,60 @@ public class Ally : MonoBehaviour
     public float runDistanceThreshold = 6f;
 
     [Header("Savaş Ayarları (Menziller)")]
-    public float combatStopDistance = 24f; 
+    public float enemyDetectionRadius = 30f;
+    public float shootingRange = 18f;
 
     [Header("Savaş Ayarları (Ateş Etme)")]
     public float giveDamage = 9f;
     public float timeBetweenShots = 0.5f;
     public Transform shootingPoint;
-    
+
     [Header("Savaş Efektleri")]
     public ParticleSystem muzzleSpark;
     public AudioSource audioSource;
     public AudioClip shootingSound;
 
     [Header("Telsiz Sesleri (Voice Lines)")]
-    public AudioClip[] acknowledgeMoveSounds;    
-    public AudioClip[] acknowledgeAttackSounds;  
-    public AudioClip[] acknowledgeRegroupSounds; 
+    public AudioClip[] acknowledgeMoveSounds;
+    public AudioClip[] acknowledgeAttackSounds;
+    public AudioClip[] acknowledgeRegroupSounds;
 
     [Header("Ally Can Ayarları")]
     public float allyHealth = 120f;
     private float presentHealth;
     [HideInInspector] public bool isDead = false;
 
-    public HealthBar healthBar; 
+    public HealthBar healthBar;
 
     private Transform currentTarget;
     private NavMeshAgent agent;
     private Animator animator;
     private float nextTimeToShoot = 0f;
     private float nextVoiceTime = 0f;
+    private bool isCommandMoveInterruptedByCombat = false;
 
-    [HideInInspector] public Vector3 commandTargetPosition; 
+    [HideInInspector] public Vector3 commandTargetPosition;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
-        agent.stoppingDistance = followDistance;
-        presentHealth = allyHealth; 
 
-        if (healthBar != null) healthBar.GiveFullHealth(allyHealth);
+        agent.stoppingDistance = followDistance;
+        presentHealth = allyHealth;
+
+        if (healthBar != null)
+        {
+            healthBar.GiveFullHealth(allyHealth);
+        }
     }
 
     void Update()
     {
-        if (isDead) return;
+        if (isDead)
+        {
+            return;
+        }
 
         if (!isCommandActive)
         {
@@ -82,10 +91,12 @@ public class Ally : MonoBehaviour
             case AllyState.FollowPlayer:
                 UpdateFollowState();
                 break;
-            case AllyState.CommandMoveTo: 
+
+            case AllyState.CommandMoveTo:
                 UpdateCommandMoveToState();
                 break;
-            case AllyState.CommandFocusFire: 
+
+            case AllyState.CommandFocusFire:
                 UpdateFocusFireState();
                 break;
         }
@@ -100,71 +111,83 @@ public class Ally : MonoBehaviour
         }
     }
 
-    // ================= TAKTİKSEL EMİRLER =================
-
     public void CommandRegroup()
     {
-        if (isDead) return;
+        if (isDead)
+        {
+            return;
+        }
 
         PlayVoiceLine(acknowledgeRegroupSounds);
 
         isCommandActive = false;
+        isCommandMoveInterruptedByCombat = false;
         currentTarget = null;
         currentState = AllyState.FollowPlayer;
-        
+
         if (agent != null && agent.isOnNavMesh)
         {
             agent.isStopped = false;
             agent.updateRotation = true;
             agent.stoppingDistance = followDistance;
         }
+
+        SetAnimatorBoolIfExists("IsAiming", false);
+        SetAnimatorBoolIfExists("Shoot", false);
     }
 
     public void CommandAttackTarget(Transform targetEnemy)
     {
-        if (isDead) return;
+        if (isDead)
+        {
+            return;
+        }
 
         PlayVoiceLine(acknowledgeAttackSounds);
 
         isCommandActive = true;
-        currentState = AllyState.CommandFocusFire; 
-        currentTarget = targetEnemy;               
+        isCommandMoveInterruptedByCombat = false;
+        currentState = AllyState.CommandFocusFire;
+        currentTarget = targetEnemy;
     }
 
     public void CommandMoveToLocation(Vector3 targetPos)
     {
-        if (isDead) return;
+        if (isDead)
+        {
+            return;
+        }
 
         PlayVoiceLine(acknowledgeMoveSounds);
 
-        isCommandActive = true; 
-        currentState = AllyState.CommandMoveTo; 
-        commandTargetPosition = targetPos;      
+        isCommandActive = true;
+        isCommandMoveInterruptedByCombat = false;
+        currentState = AllyState.CommandMoveTo;
+        commandTargetPosition = targetPos;
 
         if (agent != null && agent.isOnNavMesh)
         {
             agent.isStopped = false;
-            agent.updateRotation = true; 
+            agent.updateRotation = true;
             agent.speed = runSpeed;
-            agent.stoppingDistance = 0.2f; 
+            agent.stoppingDistance = 0.2f;
             agent.SetDestination(commandTargetPosition);
-            
-            // Yola çıkarken savaşı hemen bırakmasını garantile
+
             SetAnimatorBoolIfExists("IsAiming", false);
             SetAnimatorBoolIfExists("Shoot", false);
-            currentTarget = null; 
+            currentTarget = null;
         }
     }
 
-    // ================= DİSİPLİNLİ DURUM GÜNCELLEMELERİ =================
-
     void UpdateFollowState()
     {
-        if (player == null) return;
+        if (player == null)
+        {
+            return;
+        }
 
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
-        // 1. KESİN DÖNÜŞ (G Tuşu İtaati): Oyuncudan uzaksak her şeyi bırakıp koş!
         if (distanceToPlayer > runDistanceThreshold)
         {
             SetAnimatorBoolIfExists("IsAiming", false);
@@ -172,20 +195,19 @@ public class Ally : MonoBehaviour
             currentTarget = null;
 
             agent.isStopped = false;
-            agent.updateRotation = true; 
+            agent.updateRotation = true;
             agent.speed = runSpeed;
             agent.stoppingDistance = followDistance;
             agent.SetDestination(player.position);
-            return; // Burası aşağıyı okumayı engeller, yani düşmanı görmezden gelir!
+            return;
         }
 
-        // 2. OTONOM KORUMA: Oyuncunun yanına geldiysek veya zaten yanındaysak etrafı tara
-        Transform autoTarget = FindNearestActiveEnemy(combatStopDistance);
+        Transform autoTarget = FindNearestVisibleEnemy(enemyDetectionRadius);
 
         if (autoTarget != null)
         {
             currentTarget = autoTarget;
-            ExecuteCombatLogic(false); 
+            ExecuteCombatLogic(false);
         }
         else
         {
@@ -195,7 +217,7 @@ public class Ally : MonoBehaviour
             if (distanceToPlayer > followDistance)
             {
                 agent.isStopped = false;
-                agent.updateRotation = true; 
+                agent.updateRotation = true;
                 agent.speed = walkSpeed;
                 agent.stoppingDistance = followDistance;
                 agent.SetDestination(player.position);
@@ -203,19 +225,51 @@ public class Ally : MonoBehaviour
             else
             {
                 agent.isStopped = true;
-                agent.velocity = Vector3.zero; 
+                agent.velocity = Vector3.zero;
             }
         }
     }
 
     void UpdateCommandMoveToState()
     {
+        if (isCommandMoveInterruptedByCombat)
+        {
+            if (!IsTargetValid(currentTarget))
+            {
+                ResumeCommandMoveAfterCombat();
+                return;
+            }
+
+            ExecuteCombatLogic(true);
+
+            if (!IsTargetValid(currentTarget))
+            {
+                ResumeCommandMoveAfterCombat();
+            }
+
+            return;
+        }
+
+        Transform enemyOnPath = FindNearestVisibleEnemy(enemyDetectionRadius);
+
+        if (enemyOnPath != null)
+        {
+            BeginCommandMoveCombatInterrupt(enemyOnPath);
+            ExecuteCombatLogic(true);
+            return;
+        }
+
+        ContinueCommandMoveToPosition();
+    }
+
+    private void ContinueCommandMoveToPosition()
+    {
         bool isMovingToTarget = agent.pathPending || agent.remainingDistance > agent.stoppingDistance;
 
-        // 1. KESİN İNTİKAL (F Tuşu İtaati): Hedefe varana kadar düşmanla İLGİLENME!
         if (isMovingToTarget)
         {
-            agent.updateRotation = true; 
+            agent.updateRotation = true;
+
             SetAnimatorBoolIfExists("IsAiming", false);
             SetAnimatorBoolIfExists("Shoot", false);
 
@@ -224,8 +278,8 @@ public class Ally : MonoBehaviour
                 agent.isStopped = false;
                 agent.speed = runSpeed;
                 agent.stoppingDistance = 0.2f;
-                
-                if (agent.destination != commandTargetPosition)
+
+                if (!agent.hasPath || Vector3.Distance(agent.destination, commandTargetPosition) > 0.5f)
                 {
                     agent.SetDestination(commandTargetPosition);
                 }
@@ -233,15 +287,15 @@ public class Ally : MonoBehaviour
         }
         else
         {
-            // 2. BÖLGEYİ SAVUN: Hedefe vardık. Dur ve etrafı taramaya başla!
             agent.isStopped = true;
             agent.velocity = Vector3.zero;
 
-            Transform autoTarget = FindNearestActiveEnemy(combatStopDistance);
+            Transform autoTarget = FindNearestVisibleEnemy(enemyDetectionRadius);
+
             if (autoTarget != null)
             {
                 currentTarget = autoTarget;
-                ExecuteCombatLogic(false); 
+                ExecuteCombatLogic(false);
             }
             else
             {
@@ -251,96 +305,139 @@ public class Ally : MonoBehaviour
         }
     }
 
-    void UpdateFocusFireState()
+    private void BeginCommandMoveCombatInterrupt(Transform targetEnemy)
     {
-        if (currentTarget == null || !currentTarget.gameObject.activeInHierarchy)
+        if (targetEnemy == null)
         {
-            CommandRegroup(); 
             return;
         }
 
-        Collider enemyCol = currentTarget.GetComponentInChildren<Collider>();
-        if (enemyCol != null && !enemyCol.enabled)
-        {
-            CommandRegroup(); 
-            return;
-        }
-
-        ExecuteCombatLogic(true); 
+        currentTarget = targetEnemy;
+        isCommandMoveInterruptedByCombat = true;
+        currentState = AllyState.CommandMoveTo;
     }
 
-    // ================= GARANTİLİ SAVAŞ VE GÖRÜŞ MANTIĞI =================
+    private void ResumeCommandMoveAfterCombat()
+    {
+        isCommandMoveInterruptedByCombat = false;
+        currentTarget = null;
+
+        SetAnimatorBoolIfExists("IsAiming", false);
+        SetAnimatorBoolIfExists("Shoot", false);
+
+        if (agent != null && agent.isOnNavMesh)
+        {
+            agent.isStopped = false;
+            agent.updateRotation = true;
+            agent.speed = runSpeed;
+            agent.stoppingDistance = 0.2f;
+            agent.SetDestination(commandTargetPosition);
+        }
+    }
+
+    void UpdateFocusFireState()
+    {
+        if (!IsTargetValid(currentTarget))
+        {
+            CommandRegroup();
+            return;
+        }
+
+        ExecuteCombatLogic(true);
+    }
 
     void ExecuteCombatLogic(bool allowChasing)
     {
-        if (currentTarget == null) return;
-
-        Vector3 rayOrigin = transform.position + Vector3.up * 1.5f + transform.forward * 0.5f; 
-        Vector3 targetPos = currentTarget.position + Vector3.up * 1.5f;
-        Vector3 directionToEnemy = (targetPos - rayOrigin).normalized;
-        float distanceToEnemy = Vector3.Distance(transform.position, currentTarget.position);
-
-        bool canSeeEnemy = false;
-        RaycastHit hit;
-
-        if (Physics.Raycast(rayOrigin, directionToEnemy, out hit, distanceToEnemy + 2f))
+        if (currentTarget == null)
         {
-            if (hit.transform.root == currentTarget.root || hit.transform.GetComponentInParent<Enemy>() != null)
-            {
-                canSeeEnemy = true;
-            }
+            return;
         }
 
-        if (distanceToEnemy > combatStopDistance || !canSeeEnemy)
+        Vector3 rayOrigin = transform.position + Vector3.up * 1.5f + transform.forward * 0.5f;
+        Vector3 targetPos = currentTarget.position + Vector3.up * 1.5f;
+        float distanceToEnemy = Vector3.Distance(transform.position, currentTarget.position);
+
+        bool canSeeEnemy = HasLineOfSightToTarget(currentTarget);
+
+        if (distanceToEnemy > shootingRange || !canSeeEnemy)
         {
+            SetAnimatorBoolIfExists("Shoot", false);
+            SetAnimatorBoolIfExists("IsAiming", false);
+
             if (allowChasing)
             {
                 agent.isStopped = false;
                 agent.speed = runSpeed;
-                agent.updateRotation = true; 
-                
+                agent.updateRotation = true;
+                agent.stoppingDistance = Mathf.Max(1.5f, shootingRange * 0.75f);
+
                 if (!agent.hasPath || Vector3.Distance(agent.destination, currentTarget.position) > 1.5f)
                 {
-                    agent.stoppingDistance = 1.5f;
                     agent.SetDestination(currentTarget.position);
                 }
-                
-                SetAnimatorBoolIfExists("IsAiming", false); 
-                SetAnimatorBoolIfExists("Shoot", false); 
             }
             else
             {
-                SetAnimatorBoolIfExists("IsAiming", false); 
-                SetAnimatorBoolIfExists("Shoot", false);
-                currentTarget = null; 
+                currentTarget = null;
             }
+
+            return;
         }
-        else
+
+        agent.isStopped = true;
+        agent.velocity = Vector3.zero;
+        agent.ResetPath();
+        agent.updateRotation = false;
+
+        SetAnimatorBoolIfExists("IsAiming", true);
+        SetAnimatorBoolIfExists("Shoot", true);
+
+        Vector3 lookDirection = (currentTarget.position - transform.position).normalized;
+
+        if (lookDirection != Vector3.zero)
         {
-            agent.isStopped = true;
-            agent.velocity = Vector3.zero; 
-            agent.updateRotation = false; 
-            
-            SetAnimatorBoolIfExists("IsAiming", true); 
+            Quaternion lookRotation = Quaternion.LookRotation(new Vector3(lookDirection.x, 0f, lookDirection.z));
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10f);
+        }
 
-            Vector3 lookDirection = (currentTarget.position - transform.position).normalized;
-            if (lookDirection != Vector3.zero) 
+        if (Time.time >= nextTimeToShoot)
+        {
+            ShootAtEnemy();
+            nextTimeToShoot = Time.time + timeBetweenShots;
+        }
+    }
+
+    private bool HasLineOfSightToTarget(Transform target)
+    {
+        if (target == null)
+        {
+            return false;
+        }
+
+        Vector3 rayOrigin = transform.position + Vector3.up * 1.5f + transform.forward * 0.5f;
+        Vector3 targetPos = target.position + Vector3.up * 1.5f;
+        Vector3 directionToEnemy = (targetPos - rayOrigin).normalized;
+        float distanceToEnemy = Vector3.Distance(rayOrigin, targetPos);
+
+        RaycastHit hit;
+
+        if (Physics.Raycast(rayOrigin, directionToEnemy, out hit, distanceToEnemy + 2f))
+        {
+            Enemy hitEnemy = hit.transform.GetComponentInParent<Enemy>();
+            Enemy targetEnemy = target.GetComponentInParent<Enemy>();
+
+            if (hit.transform.root == target.root)
             {
-                Quaternion lookRotation = Quaternion.LookRotation(new Vector3(lookDirection.x, 0, lookDirection.z));
-                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10f); 
+                return true;
             }
 
-            if (Time.time >= nextTimeToShoot)
+            if (hitEnemy != null && targetEnemy != null && hitEnemy == targetEnemy)
             {
-                SetAnimatorBoolIfExists("Shoot", true); 
-                ShootAtEnemy();
-                nextTimeToShoot = Time.time + timeBetweenShots;
-            }
-            else
-            {
-                SetAnimatorBoolIfExists("Shoot", false); 
+                return true;
             }
         }
+
+        return false;
     }
 
     private Transform FindNearestActiveEnemy(float radius)
@@ -351,12 +448,17 @@ public class Ally : MonoBehaviour
 
         foreach (Enemy e in enemies)
         {
-            if (e == null) continue;
+            if (e == null)
+            {
+                continue;
+            }
 
             Collider enemyCol = e.GetComponentInChildren<Collider>();
+
             if (enemyCol != null && enemyCol.enabled)
             {
                 float dist = Vector3.Distance(transform.position, e.transform.position);
+
                 if (dist < minDistance)
                 {
                     minDistance = dist;
@@ -364,27 +466,115 @@ public class Ally : MonoBehaviour
                 }
             }
         }
+
         return nearestEnemy;
     }
 
-    // ================= HASAR VE SES ALTYAPISI =================
+    private Transform FindNearestVisibleEnemy(float radius)
+    {
+        Enemy[] enemies = FindObjectsOfType<Enemy>();
+        Transform nearestEnemy = null;
+        float minDistance = radius;
+
+        foreach (Enemy e in enemies)
+        {
+            if (e == null)
+            {
+                continue;
+            }
+
+            Collider enemyCol = e.GetComponentInChildren<Collider>();
+
+            if (enemyCol == null || !enemyCol.enabled)
+            {
+                continue;
+            }
+
+            float dist = Vector3.Distance(transform.position, e.transform.position);
+
+            if (dist < minDistance && HasLineOfSightToTarget(e.transform))
+            {
+                minDistance = dist;
+                nearestEnemy = e.transform;
+            }
+        }
+
+        return nearestEnemy;
+    }
+
+    private bool IsTargetValid(Transform target)
+    {
+        if (target == null)
+        {
+            return false;
+        }
+
+        if (!target.gameObject.activeInHierarchy)
+        {
+            return false;
+        }
+
+        Collider enemyCol = target.GetComponentInChildren<Collider>();
+
+        if (enemyCol == null || !enemyCol.enabled)
+        {
+            return false;
+        }
+
+        return target.GetComponentInParent<Enemy>() != null;
+    }
 
     public void allyHitDamage(float takeDamage)
     {
-        if (isDead) return;
+        if (isDead)
+        {
+            return;
+        }
 
         presentHealth -= takeDamage;
-        if (healthBar != null) healthBar.SetHealth(presentHealth);
+
+        if (healthBar != null)
+        {
+            healthBar.SetHealth(presentHealth);
+        }
+
         SetAnimatorTriggerIfExists("Hit");
-        if (presentHealth <= 0) AllyDie();
+
+        if (presentHealth <= 0)
+        {
+            AllyDie();
+            return;
+        }
+
+        if (currentState == AllyState.CommandMoveTo && isCommandActive)
+        {
+            Transform attackerGuess = FindNearestVisibleEnemy(enemyDetectionRadius);
+
+            if (attackerGuess == null)
+            {
+                attackerGuess = FindNearestActiveEnemy(enemyDetectionRadius);
+            }
+
+            if (attackerGuess != null)
+            {
+                BeginCommandMoveCombatInterrupt(attackerGuess);
+            }
+        }
     }
 
     void AllyDie()
     {
-        if (isDead) return;
+        if (isDead)
+        {
+            return;
+        }
+
         isDead = true;
-        
-        if (healthBar != null) healthBar.gameObject.SetActive(false); 
+
+        if (healthBar != null)
+        {
+            healthBar.gameObject.SetActive(false);
+        }
 
         if (agent != null && agent.enabled)
         {
@@ -393,6 +583,7 @@ public class Ally : MonoBehaviour
                 agent.isStopped = true;
                 agent.ResetPath();
             }
+
             agent.enabled = false;
         }
 
@@ -403,23 +594,41 @@ public class Ally : MonoBehaviour
         SetAnimatorBoolIfExists("Die", true);
 
         Collider[] colliders = GetComponentsInChildren<Collider>();
-        foreach (Collider col in colliders) col.enabled = false;
+
+        foreach (Collider col in colliders)
+        {
+            col.enabled = false;
+        }
 
         Destroy(gameObject, 5f);
     }
 
     void ShootAtEnemy()
     {
+        if (currentTarget == null)
+        {
+            return;
+        }
+
         Vector3 rayOrigin = shootingPoint != null ? shootingPoint.position : transform.position + Vector3.up * 1.5f;
         Vector3 targetDirection = (currentTarget.position + Vector3.up * 1.5f) - rayOrigin;
 
-        if (muzzleSpark != null) muzzleSpark.Play();
-        if (audioSource != null && shootingSound != null) audioSource.PlayOneShot(shootingSound);
+        if (muzzleSpark != null)
+        {
+            muzzleSpark.Play();
+        }
+
+        if (audioSource != null && shootingSound != null)
+        {
+            audioSource.PlayOneShot(shootingSound);
+        }
 
         RaycastHit hit;
-        if (Physics.Raycast(rayOrigin, targetDirection.normalized, out hit, 100f))
+
+        if (Physics.Raycast(rayOrigin, targetDirection.normalized, out hit, shootingRange))
         {
             Enemy hitEnemy = hit.transform.GetComponentInParent<Enemy>();
+
             if (hitEnemy != null)
             {
                 hitEnemy.enemyHitDamage(giveDamage);
@@ -429,7 +638,11 @@ public class Ally : MonoBehaviour
 
     private void SetAnimatorBoolIfExists(string parameterName, bool value)
     {
-        if (animator == null) return;
+        if (animator == null)
+        {
+            return;
+        }
+
         foreach (AnimatorControllerParameter parameter in animator.parameters)
         {
             if (parameter.name == parameterName && parameter.type == AnimatorControllerParameterType.Bool)
@@ -442,7 +655,11 @@ public class Ally : MonoBehaviour
 
     private void SetAnimatorTriggerIfExists(string parameterName)
     {
-        if (animator == null) return;
+        if (animator == null)
+        {
+            return;
+        }
+
         foreach (AnimatorControllerParameter parameter in animator.parameters)
         {
             if (parameter.name == parameterName && parameter.type == AnimatorControllerParameterType.Trigger)
@@ -453,12 +670,21 @@ public class Ally : MonoBehaviour
         }
     }
 
-    public void step() { }
+    public void step()
+    {
+    }
 
     private void PlayVoiceLine(AudioClip[] voiceClips)
     {
-        if (voiceClips == null || voiceClips.Length == 0 || isDead || audioSource == null) return;
-        if (audioSource.isPlaying && audioSource.clip != shootingSound) return; 
+        if (voiceClips == null || voiceClips.Length == 0 || isDead || audioSource == null)
+        {
+            return;
+        }
+
+        if (audioSource.isPlaying && audioSource.clip != shootingSound)
+        {
+            return;
+        }
 
         int randomIndex = Random.Range(0, voiceClips.Length);
         AudioClip selectedClip = voiceClips[randomIndex];
