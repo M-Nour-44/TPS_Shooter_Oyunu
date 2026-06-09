@@ -1019,4 +1019,8 @@ public class Enemy : MonoBehaviour
             anim.SetTrigger(parameterName);
         }
     }
+    public bool IsEnemyDead()
+    {
+        return isDead;
+    }
 }

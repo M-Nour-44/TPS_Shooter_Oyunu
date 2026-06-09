@@ -266,7 +266,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.491}
+  m_Color: {r: 0.11372549, g: 0.11372549, b: 0.11372549, a: 0.98039216}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -5256,7 +5256,17 @@ MonoBehaviour:
   LevelTitleText: {fileID: 1958642777}
   LevelDescriptionText: {fileID: 1396366665}
   LevelImage: {fileID: 659412345}
+  playButton: {fileID: 1786878459}
+  unlockedImageColor: {r: 1, g: 1, b: 1, a: 1}
+  lockedImageColor: {r: 0.25, g: 0.25, b: 0.25, a: 0.7}
+  disablePlayButtonWhenLocked: 1
+  lockedDescriptionText: LOCKED
   AllLevelsData:
+  - LevelTitle: Tutorial
+    LevelDescription: Learn the basic controls, practice shooting, command your ally,
+      and eliminate training enemies before entering the real mission.
+    SceneToLoad: Tutorial
+    LevelSprite: {fileID: 21300000, guid: 1f7c7f48367d4574493c0fec0f161361, type: 3}
   - LevelTitle: Level 1
     LevelDescription: 'Infiltrate the target facility. Your mission: breach the building,
       disable the mainframe, and shut down the power generators then exit immediately.'
@@ -10469,6 +10479,9 @@ MonoBehaviour:
   newGameSceneName: MainMenu
   quickSaveSlotID: 6
   UseLevelSelectMenu: 1
+  openLevelSelectKey: OpenLevelSelect
+  autoOpenDelay: 0.3
+  startToLevelSelectDelay: 0.45
   MainMenuToStartMenu: MainMenuToStartMenu
   StartMenuToMainMenu: StartMenuToMainMenu
   StartMenuToLevelSelectMenu: StartMenuToLevelSelectMenu
@@ -18548,14 +18561,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1943327045}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce3157f957c328f48b37f66f8ab3bd6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   shader: {fileID: 4800000, guid: 6d384c74656a5394db29e09554da2247, type: 3}
-  _Brightness: 1
-  _Contrast: 1
+  _Brightness: 1.573
+  _Contrast: 1.213
 --- !u!65 &1945771884
 BoxCollider:
   m_ObjectHideFlags: 0

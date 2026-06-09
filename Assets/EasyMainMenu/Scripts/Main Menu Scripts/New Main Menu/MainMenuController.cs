@@ -11,6 +11,11 @@ namespace EMM
         public int quickSaveSlotID;
         public bool UseLevelSelectMenu;
 
+        [Header("Auto Open Level Select")]
+        public string openLevelSelectKey = "OpenLevelSelect";
+        public float autoOpenDelay = 0.3f;
+        public float startToLevelSelectDelay = 0.45f;
+
         [Header("Anims")]
         public string MainMenuToStartMenu;
         public string StartMenuToMainMenu;
@@ -45,23 +50,53 @@ namespace EMM
 
         UnityEngine.EventSystems.EventSystem eventSystem;
 
-        // Use this for initialization
         void Start()
         {
             if (EasyAudioUtility.instance == null)
+            {
                 Instantiate(Resources.Load("Prefabs/EasyAudioUtility"));
+            }
 
             PlayerPrefs.SetInt("quickSaveSlot", quickSaveSlotID);
 
-            //play main menu sfx
-            EasyAudioUtility.instance.Play(MainMenuSFX);
+            if (EasyAudioUtility.instance != null)
+            {
+                EasyAudioUtility.instance.Play(MainMenuSFX);
+            }
 
             eventSystem = FindObjectOfType<UnityEngine.EventSystems.EventSystem>();
+
+            Time.timeScale = 1f;
+            AudioListener.pause = false;
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+
+            if (PlayerPrefs.GetInt(openLevelSelectKey, 0) == 1)
+            {
+                PlayerPrefs.SetInt(openLevelSelectKey, 0);
+                OpenLevelSelectInstantly();
+            }
         }
 
-        //-------------------------
-        //From x menu to y menu
-        //-------------------------
+        void OpenLevelSelectInstantly()
+        {
+            if (MenuButtonsAnimator == null)
+            {
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(MainMenuToStartMenu))
+            {
+                MenuButtonsAnimator.Play(MainMenuToStartMenu, 0, 1f);
+                MenuButtonsAnimator.Update(0f);
+            }
+
+            if (!string.IsNullOrEmpty(StartMenuToLevelSelectMenu))
+            {
+                MenuButtonsAnimator.Play(StartMenuToLevelSelectMenu, 0, 1f);
+                MenuButtonsAnimator.Update(0f);
+            }
+        }
 
         public void FromMainMenuToStartMenu()
         {
@@ -77,17 +112,20 @@ namespace EMM
 
         public void FromStartMenuToNewGame()
         {
-            //either open level select
-            if(UseLevelSelectMenu)
+            if (UseLevelSelectMenu)
+            {
                 MenuButtonsAnimator.Play(StartMenuToLevelSelectMenu);
+            }
             else
             {
-                //or load just as it is the new game scene
                 PlayerPrefs.SetString("sceneToLoad", newGameSceneName);
 
-                //load level via fader
                 Fader fader = FindObjectOfType<Fader>();
-                fader.FadeIntoLevel("LoadingScreen");
+
+                if (fader != null)
+                {
+                    fader.FadeIntoLevel("LoadingScreen");
+                }
             }
 
             PlayClickSound();
@@ -121,9 +159,10 @@ namespace EMM
         {
             MenuButtonsAnimator.Play(CharMenuToMainMenu);
 
-            //Re Init while going back to main menu
             if (FindObjectOfType<CharacterSelectMenuController>())
+            {
                 FindObjectOfType<CharacterSelectMenuController>().GetCharacter();
+            }
 
             PlayClickSound();
         }
@@ -173,26 +212,34 @@ namespace EMM
         {
             yield return new WaitForSeconds(0.25f);
 
-            eventSystem.SetSelectedGameObject(Btn);
+            if (eventSystem != null)
+            {
+                eventSystem.SetSelectedGameObject(Btn);
+            }
 
-            if (Btn.GetComponent<UnityEngine.UI.Button>())
+            if (Btn != null && Btn.GetComponent<UnityEngine.UI.Button>())
+            {
                 Btn.GetComponent<UnityEngine.UI.Button>().Select();
+            }
         }
 
         public void QuitGame()
         {
             PlayClickSound();
-            #if UNITY_EDITOR
-                 UnityEditor.EditorApplication.isPlaying = false;
-            #else
-                Application.Quit();
-                #endif
+
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
         }
 
         void PlayClickSound()
         {
             if (EasyAudioUtility.instance)
+            {
                 EasyAudioUtility.instance.Play(ButtonClickSFX);
+            }
         }
     }
 }

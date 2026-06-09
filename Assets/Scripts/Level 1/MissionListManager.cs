@@ -50,7 +50,9 @@ public class MissionListManager : MonoBehaviour
 
     [Header("Loading")]
     public string loadingSceneName = "LoadingScreen";
-    public string nextLevelSceneName = "Level 2";
+    public string mainMenuSceneName = "MainMenu";
+    public string openLevelSelectKey = "OpenLevelSelect";
+    public bool openLevelSelectAfterComplete = true;
 
     private bool mission1Completed = false;
     private bool mission2Completed = false;
@@ -550,12 +552,20 @@ public class MissionListManager : MonoBehaviour
         yield return new WaitForSecondsRealtime(levelCompleteDelay);
 
         Time.timeScale = 1f;
+        AudioListener.pause = false;
+
+        EMM.LevelProgressManager.CompleteLevel1();
+
+        if (openLevelSelectAfterComplete)
+        {
+            PlayerPrefs.SetInt(openLevelSelectKey, 1);
+        }
 
 #if !EMM_ES2
-        PlayerPrefs.SetString("sceneToLoad", nextLevelSceneName);
+        PlayerPrefs.SetString("sceneToLoad", mainMenuSceneName);
 #else
-        PlayerPrefs.SetString("sceneToLoad", nextLevelSceneName);
-        ES2.Save(nextLevelSceneName, "sceneToLoad");
+        PlayerPrefs.SetString("sceneToLoad", mainMenuSceneName);
+        ES2.Save(mainMenuSceneName, "sceneToLoad");
 #endif
 
         SceneManager.LoadScene(loadingSceneName);

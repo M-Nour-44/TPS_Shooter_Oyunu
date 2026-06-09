@@ -36,14 +36,10 @@ public class Ally : MonoBehaviour
 
     [Header("Savaş Efektleri")]
     public ParticleSystem muzzleSpark;
-    public AudioSource audioSource;
-
-    [Header("Shooting Sound")]
-    public AudioSource ShootingAudioSource;
-    public AudioClip shootingSound;
-
+    public AllyWeaponSound allyWeaponSound;
 
     [Header("Telsiz Sesleri (Voice Lines)")]
+    public AudioSource audioSource;
     public AudioClip[] acknowledgeMoveSounds;
     public AudioClip[] acknowledgeAttackSounds;
     public AudioClip[] acknowledgeRegroupSounds;
@@ -52,7 +48,6 @@ public class Ally : MonoBehaviour
     public float allyHealth = 120f;
     private float presentHealth;
     [HideInInspector] public bool isDead = false;
-
     public AllyHealthBar healthBar;
 
     private Transform currentTarget;
@@ -69,7 +64,21 @@ public class Ally : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
 
-        agent.stoppingDistance = followDistance;
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+        }
+
+        if (allyWeaponSound == null)
+        {
+            allyWeaponSound = GetComponentInChildren<AllyWeaponSound>();
+        }
+
+        if (agent != null)
+        {
+            agent.stoppingDistance = followDistance;
+        }
+
         presentHealth = allyHealth;
 
         if (healthBar != null)
@@ -85,6 +94,11 @@ public class Ally : MonoBehaviour
     void Update()
     {
         if (isDead)
+        {
+            return;
+        }
+
+        if (agent == null || !agent.enabled || !agent.isOnNavMesh)
         {
             return;
         }
@@ -133,7 +147,7 @@ public class Ally : MonoBehaviour
         currentTarget = null;
         currentState = AllyState.FollowPlayer;
 
-        if (agent != null && agent.isOnNavMesh)
+        if (agent != null && agent.enabled && agent.isOnNavMesh)
         {
             agent.isStopped = false;
             agent.updateRotation = true;
@@ -173,7 +187,7 @@ public class Ally : MonoBehaviour
         currentState = AllyState.CommandMoveTo;
         commandTargetPosition = targetPos;
 
-        if (agent != null && agent.isOnNavMesh)
+        if (agent != null && agent.enabled && agent.isOnNavMesh)
         {
             agent.isStopped = false;
             agent.updateRotation = true;
@@ -183,6 +197,7 @@ public class Ally : MonoBehaviour
 
             SetAnimatorBoolIfExists("IsAiming", false);
             SetAnimatorBoolIfExists("Shoot", false);
+
             currentTarget = null;
         }
     }
@@ -200,6 +215,7 @@ public class Ally : MonoBehaviour
         {
             SetAnimatorBoolIfExists("IsAiming", false);
             SetAnimatorBoolIfExists("Shoot", false);
+
             currentTarget = null;
 
             agent.isStopped = false;
@@ -333,7 +349,7 @@ public class Ally : MonoBehaviour
         SetAnimatorBoolIfExists("IsAiming", false);
         SetAnimatorBoolIfExists("Shoot", false);
 
-        if (agent != null && agent.isOnNavMesh)
+        if (agent != null && agent.enabled && agent.isOnNavMesh)
         {
             agent.isStopped = false;
             agent.updateRotation = true;
@@ -648,9 +664,9 @@ public class Ally : MonoBehaviour
             muzzleSpark.Play();
         }
 
-        if (ShootingAudioSource != null && shootingSound != null)
+        if (allyWeaponSound != null)
         {
-            audioSource.PlayOneShot(shootingSound);
+            allyWeaponSound.PlayShootingSound();
         }
 
         RaycastHit hit;
@@ -711,7 +727,17 @@ public class Ally : MonoBehaviour
             return;
         }
 
-        if (audioSource.isPlaying && audioSource.clip != shootingSound)
+        if (!audioSource.enabled || !audioSource.gameObject.activeInHierarchy)
+        {
+            return;
+        }
+
+        if (Time.time < nextVoiceTime)
+        {
+            return;
+        }
+
+        if (audioSource.isPlaying)
         {
             return;
         }

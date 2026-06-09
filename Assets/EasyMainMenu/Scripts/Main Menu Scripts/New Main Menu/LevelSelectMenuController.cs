@@ -11,6 +11,15 @@ namespace EMM
         public Text LevelTitleText;
         public Text LevelDescriptionText;
         public Image LevelImage;
+        public Button playButton;
+
+        [Header("Locked Image Settings")]
+        public Color unlockedImageColor = Color.white;
+        public Color lockedImageColor = new Color(0.25f, 0.25f, 0.25f, 0.7f);
+        public bool disablePlayButtonWhenLocked = true;
+
+        [Header("Locked Description")]
+        public string lockedDescriptionText = "LOCKED";
 
         [HideInInspector]
         public List<AllLevelsData> AllLevelsData = new List<AllLevelsData>();
@@ -18,53 +27,108 @@ namespace EMM
         int _totalLevels;
         int _currentSelectedLevelCount;
         string _currentSelectedLevelSceneName;
+        bool _currentSelectedLevelLocked;
+        AllLevelsData _currentLevelData;
 
-        // Use this for initialization
         void Start()
         {
-            //get all levels count
             _totalLevels = AllLevelsData.Count;
 
-            //init
+            if (_totalLevels <= 0)
+            {
+                return;
+            }
+
             ChangeLevel();
         }
 
         public void ChangeLevel()
         {
-            //set UI
-            LevelTitleText.text = AllLevelsData[_currentSelectedLevelCount].LevelTitle;
-            LevelDescriptionText.text = AllLevelsData[_currentSelectedLevelCount].LevelDescription;
-            LevelImage.sprite = AllLevelsData[_currentSelectedLevelCount].LevelSprite;
-            _currentSelectedLevelSceneName = AllLevelsData[_currentSelectedLevelCount].SceneToLoad;
+            if (AllLevelsData == null || AllLevelsData.Count == 0)
+            {
+                return;
+            }
 
-            //increment count
-            if (_currentSelectedLevelCount < _totalLevels-1)
+            _currentLevelData = AllLevelsData[_currentSelectedLevelCount];
+            _currentSelectedLevelSceneName = _currentLevelData.SceneToLoad;
+
+            RefreshLockState();
+
+            if (LevelTitleText != null)
+            {
+                LevelTitleText.text = _currentLevelData.LevelTitle;
+            }
+
+            if (LevelDescriptionText != null)
+            {
+                LevelDescriptionText.text = _currentSelectedLevelLocked ? lockedDescriptionText : _currentLevelData.LevelDescription;
+            }
+
+            if (LevelImage != null)
+            {
+                LevelImage.sprite = _currentLevelData.LevelSprite;
+            }
+
+            if (_currentSelectedLevelCount < _totalLevels - 1)
+            {
                 _currentSelectedLevelCount++;
+            }
             else
+            {
                 _currentSelectedLevelCount = 0;
+            }
 
-            PlayClickSound(); 
+            PlayClickSound();
+        }
+
+        private void RefreshLockState()
+        {
+            _currentSelectedLevelLocked = !LevelProgressManager.IsLevelUnlocked(_currentSelectedLevelSceneName);
+
+            if (LevelImage != null)
+            {
+                LevelImage.color = _currentSelectedLevelLocked ? lockedImageColor : unlockedImageColor;
+            }
+
+            if (playButton != null && disablePlayButtonWhenLocked)
+            {
+                playButton.interactable = !_currentSelectedLevelLocked;
+            }
         }
 
         void PlayClickSound()
         {
             if (EasyAudioUtility.instance)
-                EasyAudioUtility.instance.Play(FindObjectOfType<MainMenuController>().ButtonClickSFX);
+            {
+                MainMenuController mainMenuController = FindObjectOfType<MainMenuController>();
+
+                if (mainMenuController != null)
+                {
+                    EasyAudioUtility.instance.Play(mainMenuController.ButtonClickSFX);
+                }
+            }
         }
 
         public void PlayLevel()
         {
-            //open the level which is selected via level select
-            PlayerPrefs.SetString("sceneToLoad", _currentSelectedLevelSceneName);
+            RefreshLockState();
 
-            //reset slot count
+            if (_currentSelectedLevelLocked)
+            {
+                PlayClickSound();
+                return;
+            }
+
+            PlayerPrefs.SetString("sceneToLoad", _currentSelectedLevelSceneName);
             PlayerPrefs.SetInt("slotLoaded_", -1);
 
-            //load level via fader
             Fader fader = FindObjectOfType<Fader>();
-            fader.FadeIntoLevel("LoadingScreen");
-        }
 
+            if (fader != null)
+            {
+                fader.FadeIntoLevel("LoadingScreen");
+            }
+        }
     }
 
     [System.Serializable]
