@@ -14,7 +14,7 @@ PlayerSettings:
   accelerometerFrequency: 60
   companyName: DefaultCompany
   productName: TPS Shooter Oyunu
-  defaultCursor: {fileID: 2800000, guid: 6d8c0ef9063230046aa4bfcd0f6ed180, type: 3}
+  defaultCursor: {fileID: 2800000, guid: 839d227855acf4147aebda5239e070df, type: 3}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
   m_ShowUnitySplashScreen: 1
