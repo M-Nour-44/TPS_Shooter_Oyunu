@@ -43,7 +43,7 @@ namespace EMM
                 return PlayerPrefs.GetInt(Level1CompletedKey, 0) == 1;
             }
 
-            return true;
+            return false;
         }
 
         public static string GetLockedMessage(string sceneName)
