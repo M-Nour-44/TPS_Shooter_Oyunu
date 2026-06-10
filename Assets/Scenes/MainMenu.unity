@@ -11224,7 +11224,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 20.000069, y: -10.5}
+  m_AnchoredPosition: {x: 20.000069, y: 62}
   m_SizeDelta: {x: 765, y: 32.6}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!1 &1163510375
@@ -14217,7 +14217,7 @@ MonoBehaviour:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
-            m_FloatArgument: 0.2
+            m_FloatArgument: 1
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
@@ -14229,7 +14229,7 @@ MonoBehaviour:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
-            m_FloatArgument: 1
+            m_FloatArgument: 0.2
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
@@ -14290,8 +14290,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1130260312}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: FromStartMenuToLoadSlotMenu
+        m_TargetAssemblyTypeName: EMM.MainMenuController, Assembly-CSharp
+        m_MethodName: FromStartMenuToNewGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -14306,7 +14306,7 @@ MonoBehaviour:
         m_MethodName: ChangeSelectedGameobject
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 1157337403}
+          m_ObjectArgument: {fileID: 1581824414}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -18122,7 +18122,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: New Game
+  m_Text: Play Game
 --- !u!222 &1899320178
 CanvasRenderer:
   m_ObjectHideFlags: 0
